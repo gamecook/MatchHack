@@ -47,8 +47,8 @@ package com.gamecook.matchhack.activities {
 			gameBackground.y = fullSizeHeight - gameBackground.height;
 
             var tileContainer:Sprite = addChild(new Sprite()) as Sprite;
-            tileContainer.x = 73;
-            tileContainer.y = 178;
+            tileContainer.x = 55;
+            tileContainer.y = 160;
 
             var total:int = 12;
             var columns:int = 3;
