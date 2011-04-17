@@ -15,11 +15,11 @@ package
 	 */
 
     [SWF(width="480",height="800",backgroundColor="#000000",frameRate="60")]
-	public class MatchHackApp extends AbstractApplication
+	public class MatchHack extends AbstractApplication
 	{
 
 
-		public function MatchHackApp()
+		public function MatchHack()
 		{
 			configureStage();
 			super(new ActivityManager(), SplashActivity, 0, 0, 2)
