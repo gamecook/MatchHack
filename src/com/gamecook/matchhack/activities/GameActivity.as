@@ -246,11 +246,13 @@ package com.gamecook.matchhack.activities {
 
         private function onPlayerDead():void
         {
+            player.flip();
             startNextActivityTimer(LoseActivity, 2);
         }
 
         private function onMonsterDead():void
         {
+            monster.flip();
             startNextActivityTimer(WinActivity, 2);
         }
 
