@@ -12,6 +12,7 @@ package com.gamecook.matchhack.activities {
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
+    import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -54,13 +55,13 @@ package com.gamecook.matchhack.activities {
             var i:int;
             var tile:PaperSprite;
 
-            var factory:SpriteFactory = new SpriteFactory();
-            var sprites:Array = factory.createSprites(6);
+            var sprites:Array = SpriteFactory.createSprites(6);
 
             var typeIndex:int = -1;
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
 
+            //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
             {
                 if(i % typeCount == 0)
@@ -74,36 +75,38 @@ package com.gamecook.matchhack.activities {
 
             }
 
+            var difficulty:int = 2;// 1, 2 or 3
+            player = tileContainer.addChild(new CharacterView("player", total/difficulty)) as CharacterView;
+            monster = tileContainer.addChild(new CharacterView("monster", total/2)) as CharacterView;
+
+
             layoutTiles();
 
             enableLogo();
 
-            var difficulty:int = 2;// 1, 2 or 3
-            player = new CharacterView("player", total/difficulty);
-            monster = new CharacterView("monster", total/2);
+
         }
 
         private function layoutTiles():void
         {
             tileInstances = ArrayUtil.shuffleArray(tileInstances);
+
+            tileInstances.splice(4,0,player);
+            tileInstances.splice(7,0,monster);
+
             var total:int = tileInstances.length;
             var columns:int = 3;
             var i:int;
             var nextX:int = 0;
             var nextY:int = 0;
-            var tile:PaperSprite;
+            var tile:DisplayObject;
 
             for (i = 0; i < total; i++)
             {
-                if(i == 4 || i == 6)
-                {
-                    nextX += 64;
-                }
-
                 tile = tileInstances[i];
                 tile.x = nextX;
                 tile.y = nextY;
-                tile.pivotX = .5;
+
                 nextX += 64;
                 if(nextX % columns == 0)
                 {

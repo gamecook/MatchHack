@@ -13,12 +13,17 @@ package com.gamecook.matchhack.views {
         [Embed(source="../../../../../build/assets/player.png")]
         private var Player : Class;
 
-        public var life:int;
+
+
+        private var lifeBar:LifeBarView;
+
+        //public var life:int;
 
         public function CharacterView(name:String, life:int)
         {
             this.name = name;
-            this.life = life;
+            lifeBar = addChild(new LifeBarView(life)) as LifeBarView;
+
             createImage();
         }
 
@@ -29,22 +34,22 @@ package com.gamecook.matchhack.views {
 
         public function subtractLife(value:int):void
         {
-            life -= value;
+            lifeBar.subtractTotal(value)
         }
 
         public function addLife(value:int):void
         {
-            life += value;
+            lifeBar.addTotal(value)
         }
 
         public function isDead():Boolean
         {
-            return (life <= 0);
+            return (lifeBar.getTotal() <= 0);
         }
 
         public function getLife():int
         {
-            return life;
+            return lifeBar.getTotal();
         }
     }
 }

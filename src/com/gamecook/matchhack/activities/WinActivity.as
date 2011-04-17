@@ -27,17 +27,20 @@ package com.gamecook.matchhack.activities {
         {
             super.onStart();
 
+
+            //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
 			youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
 			youWin.y = fullSizeHeight - youWin.height - 50;
 
             addEventListener(MouseEvent.CLICK, onClick);
 
+
         }
 
         private function onClick(event:MouseEvent):void
         {
-            nextActivity(StartActivity);
+            nextActivity(GameActivity);
         }
     }
 }

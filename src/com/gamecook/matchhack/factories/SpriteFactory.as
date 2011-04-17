@@ -11,141 +11,141 @@ package com.gamecook.matchhack.factories {
     public class SpriteFactory {
 
         [Embed(source="../../../../../build/assets/sprites/sprite_01.png")]
-        private var Sprite1 : Class;
+        private static var Sprite1 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_02.png")]
-        private var Sprite2 : Class;
+        private static var Sprite2 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_03.png")]
-        private var Sprite3 : Class;
+        private static var Sprite3 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_04.png")]
-        private var Sprite4 : Class;
+        private static var Sprite4 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_05.png")]
-        private var Sprite5 : Class;
+        private static var Sprite5 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_06.png")]
-        private var Sprite6 : Class;
+        private static var Sprite6 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_07.png")]
-        private var Sprite7 : Class;
+        private static var Sprite7 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_08.png")]
-        private var Sprite8 : Class;
+        private static var Sprite8 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_09.png")]
-        private var Sprite9 : Class;
+        private static var Sprite9 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_10.png")]
-        private var Sprite10 : Class;
+        private static var Sprite10 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_11.png")]
-        private var Sprite11 : Class;
+        private static var Sprite11 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_12.png")]
-        private var Sprite12 : Class;
+        private static var Sprite12 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_13.png")]
-        private var Sprite13 : Class;
+        private static var Sprite13 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_14.png")]
-        private var Sprite14 : Class;
+        private static var Sprite14 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_15.png")]
-        private var Sprite15 : Class;
+        private static var Sprite15 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_16.png")]
-        private var Sprite16 : Class;
+        private static var Sprite16 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_17.png")]
-        private var Sprite17 : Class;
+        private static var Sprite17 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_18.png")]
-        private var Sprite18 : Class;
+        private static var Sprite18 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_19.png")]
-        private var Sprite19 : Class;
+        private static var Sprite19 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_20.png")]
-        private var Sprite20 : Class;
+        private static var Sprite20 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_21.png")]
-        private var Sprite21 : Class;
+        private static var Sprite21 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_22.png")]
-        private var Sprite22 : Class;
+        private static var Sprite22 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_23.png")]
-        private var Sprite23 : Class;
+        private static var Sprite23 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_24.png")]
-        private var Sprite24 : Class;
+        private static var Sprite24 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_25.png")]
-        private var Sprite25 : Class;
+        private static var Sprite25 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_26.png")]
-        private var Sprite26 : Class;
+        private static var Sprite26 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_27.png")]
-        private var Sprite27 : Class;
+        private static var Sprite27 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_28.png")]
-        private var Sprite28 : Class;
+        private static var Sprite28 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_29.png")]
-        private var Sprite29 : Class;
+        private static var Sprite29 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_30.png")]
-        private var Sprite30 : Class;
+        private static var Sprite30 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_31.png")]
-        private var Sprite31 : Class;
+        private static var Sprite31 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_32.png")]
-        private var Sprite32 : Class;
+        private static var Sprite32 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_33.png")]
-        private var Sprite33 : Class;
+        private static var Sprite33 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_34.png")]
-        private var Sprite34 : Class;
+        private static var Sprite34 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_35.png")]
-        private var Sprite35 : Class;
+        private static var Sprite35 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_36.png")]
-        private var Sprite36 : Class;
+        private static var Sprite36 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_37.png")]
-        private var Sprite37 : Class;
+        private static var Sprite37 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_38.png")]
-        private var Sprite38 : Class;
+        private static var Sprite38 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_39.png")]
-        private var Sprite39 : Class;
+        private static var Sprite39 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_40.png")]
-        private var Sprite40 : Class;
+        private static var Sprite40 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_41.png")]
-        private var Sprite41 : Class;
+        private static var Sprite41 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_42.png")]
-        private var Sprite42 : Class;
+        private static var Sprite42 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_43.png")]
-        private var Sprite43 : Class;
+        private static var Sprite43 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_44.png")]
-        private var Sprite44 : Class;
+        private static var Sprite44 : Class;
 
         [Embed(source="../../../../../build/assets/sprites/sprite_45.png")]
-        private var Sprite45 : Class;
+        private static var Sprite45 : Class;
 
-        private var sprites:Array =[Sprite1,
+        private static var sprites:Array =[Sprite1,
                                     Sprite2,
                                     Sprite3,
                                     Sprite4,
@@ -191,12 +191,9 @@ package com.gamecook.matchhack.factories {
                                     Sprite44,
                                     Sprite45];
 
-        public function SpriteFactory()
+        public static function createSprites(number:int):Array
         {
-        }
-
-        public function createSprites(number:int):Array
-        {
+            //TODO need to add in logic to make sure there is a potion or gold in at least one round
             return ArrayUtil.shuffleArray(sprites).slice(0,number);
         }
 
