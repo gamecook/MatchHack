@@ -16,11 +16,6 @@ package com.gamecook.matchhack.activities {
 
     public class StartActivity extends LogoActivity{
 
-
-
-        [Embed(source="../../../../../build/assets/instructions.png")]
-        private var Instructions : Class;
-
         [Embed(source="../../../../../build/assets/new_game_up.png")]
         private var NewGameUp : Class;
 
@@ -45,15 +40,9 @@ package com.gamecook.matchhack.activities {
         {
             super.onStart();
 
-
-
-            var instructions : Bitmap = addChild(Bitmap(new Instructions())) as Bitmap;
-			instructions.x = (fullSizeWidth - logo.width) * .5;
-			instructions.y = logo.x + logo.height + 15;
-
             var newGameBTN:SimpleButton = addChild(new SimpleButton(new NewGameUp(), new NewGameUp(), new NewGameDown(), new NewGameUp())) as SimpleButton;
             newGameBTN.x = (fullSizeWidth - newGameBTN.width) * .5;
-            newGameBTN.y = instructions.y + instructions.height + 10;
+            newGameBTN.y = logo.y + logo.height + 20;
             newGameBTN.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var creditsBTN:SimpleButton = addChild(new SimpleButton(new CreditsUp(), new CreditsUp(), new CreditsDown(), new CreditsUp())) as SimpleButton;
@@ -64,12 +53,21 @@ package com.gamecook.matchhack.activities {
             var homeSplash : Bitmap = addChild(Bitmap(new HomeSplashImage())) as Bitmap;
 			homeSplash.x = (fullSizeWidth - homeSplash.width) * .5;
 			homeSplash.y = fullSizeHeight - homeSplash.height - 15;
+
+            startNextActivityTimer(CreditsActivity, 5);
+
+            addEventListener(MouseEvent.CLICK, onClick)
+        }
+
+        private function onClick(event:MouseEvent):void
+        {
+            nextScreenCounter = 0;
         }
 
         private function onNewGame(event:MouseEvent):void
         {
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onNewGame);
-            nextActivity(GameActivity);
+            nextActivity(LoadingActivity);
         }
 
         private function onCredits(event:MouseEvent):void

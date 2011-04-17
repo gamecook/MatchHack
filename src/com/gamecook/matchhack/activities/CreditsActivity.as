@@ -10,6 +10,7 @@ package com.gamecook.matchhack.activities {
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
+    import flash.events.MouseEvent;
 
     public class CreditsActivity extends LogoActivity{
 
@@ -21,7 +22,6 @@ package com.gamecook.matchhack.activities {
             super(activityManager, data);
         }
 
-
         override public function onStart():void
         {
             super.onStart();
@@ -31,6 +31,15 @@ package com.gamecook.matchhack.activities {
 			credits.y = (fullSizeHeight - credits.height) - 5;
 
             enableLogo();
+
+            startNextActivityTimer(StartActivity, 5);
+
+            addEventListener(MouseEvent.CLICK, onClick)
+        }
+
+        private function onClick(event:MouseEvent):void
+        {
+            nextActivity(StartActivity);
         }
     }
 }

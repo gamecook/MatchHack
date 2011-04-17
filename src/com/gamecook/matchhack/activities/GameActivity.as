@@ -42,17 +42,13 @@ package com.gamecook.matchhack.activities {
         {
             super.onStart();
 
-            var pp1:PerspectiveProjection=new PerspectiveProjection();
-            pp1.fieldOfView=1;
-            pp1.projectionCenter=new Point(200,0);
-
             var gameBackground:Bitmap = addChild(Bitmap(new GameBoardImage())) as Bitmap;
 			gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
 			gameBackground.y = fullSizeHeight - gameBackground.height;
 
             tileContainer = addChild(new Sprite()) as Sprite;
-            tileContainer.x = 55;
-            tileContainer.y = 160;
+            tileContainer.x = gameBackground.x + 55;
+            tileContainer.y = gameBackground.y + 50;
 
             var total:int = 10;
             var i:int;

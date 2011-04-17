@@ -31,10 +31,6 @@ package com.gamecook.matchhack.activities {
 			youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
 			youWin.y = fullSizeHeight - youWin.height - 50;
 
-            graphics.beginFill(0xff0000,0);
-            graphics.drawRect(0,0, fullSizeWidth, fullSizeHeight);
-            graphics.endFill();
-
             addEventListener(MouseEvent.CLICK, onClick);
 
         }

@@ -33,6 +33,7 @@
         <fullScreen>true</fullScreen>
         <aspectRatio>portrait</aspectRatio>
         <autoOrients>false</autoOrients>
+        <renderMode>gpu</renderMode>
     </initialWindow>
     <icon>
         <image72x72>images/icons/icon-72x72.png</image72x72>

@@ -22,7 +22,6 @@ package com.gamecook.matchhack.activities {
             super(activityManager, data);
         }
 
-
         override public function onStart():void
         {
             super.onStart();
@@ -30,10 +29,6 @@ package com.gamecook.matchhack.activities {
             var youLose:Bitmap = addChild(Bitmap(new YouLoseImage())) as Bitmap;
 			youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
 			youLose.y = fullSizeHeight - youLose.height - 50;
-
-            graphics.beginFill(0xff0000,0);
-            graphics.drawRect(0,0, fullSizeWidth, fullSizeHeight);
-            graphics.endFill();
 
             addEventListener(MouseEvent.CLICK, onClick);
 

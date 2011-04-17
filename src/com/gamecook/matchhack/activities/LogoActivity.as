@@ -25,6 +25,14 @@ package com.gamecook.matchhack.activities {
             super(activityManager, data);
         }
 
+        override protected function onCreate():void
+        {
+            graphics.beginFill(0xff0000,0);
+            graphics.drawRect(0,0, fullSizeWidth, fullSizeHeight);
+            graphics.endFill();
+
+            super.onCreate();
+        }
 
         override public function onStart():void
         {
