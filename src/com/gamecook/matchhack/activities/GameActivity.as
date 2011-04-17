@@ -12,7 +12,6 @@ package com.gamecook.matchhack.activities {
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
-    import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -55,7 +54,7 @@ package com.gamecook.matchhack.activities {
             tileContainer.x = 55;
             tileContainer.y = 160;
 
-            var total:int = 12;
+            var total:int = 10;
             var i:int;
             var tile:PaperSprite;
 
@@ -83,7 +82,7 @@ package com.gamecook.matchhack.activities {
 
             enableLogo();
 
-            var difficulty:int = 1;// 1, 2 or 3
+            var difficulty:int = 2;// 1, 2 or 3
             player = new CharacterView("player", total/difficulty);
             monster = new CharacterView("monster", total/2);
         }
@@ -100,6 +99,11 @@ package com.gamecook.matchhack.activities {
 
             for (i = 0; i < total; i++)
             {
+                if(i == 4 || i == 6)
+                {
+                    nextX += 64;
+                }
+
                 tile = tileInstances[i];
                 tile.x = nextX;
                 tile.y = nextY;
