@@ -6,17 +6,18 @@
  * To change this template use File | Settings | File Templates.
  */
 package com.gamecook.matchhack.activities {
+    import com.gamecook.matchhack.factories.SpriteFactory;
+    import com.gamecook.matchhack.utils.ArrayUtil;
+    import com.gamecook.matchhack.views.CharacterView;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
+    import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
-    import flash.events.TimerEvent;
     import flash.geom.PerspectiveProjection;
     import flash.geom.Point;
-
-    import flash.utils.Timer;
 
     import uk.co.soulwire.display.PaperSprite;
 
@@ -27,6 +28,10 @@ package com.gamecook.matchhack.activities {
         private var flipping:Boolean;
         private var activeTiles:Array = [];
         private var maxActiveTiles:int = 1;
+        private var tileContainer:Sprite;
+        private var tileInstances:Array = [];
+        private var player:CharacterView;
+        private var monster:CharacterView;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -46,28 +51,56 @@ package com.gamecook.matchhack.activities {
 			gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
 			gameBackground.y = fullSizeHeight - gameBackground.height;
 
-            var tileContainer:Sprite = addChild(new Sprite()) as Sprite;
+            tileContainer = addChild(new Sprite()) as Sprite;
             tileContainer.x = 55;
             tileContainer.y = 160;
 
             var total:int = 12;
-            var columns:int = 3;
             var i:int;
-            var nextX:int = 0;
-            var nextY:int = 0;
             var tile:PaperSprite;
 
-            var types:Array = ["type1", "type2", "type3", "type4", "type6", "type7"];
+            var factory:SpriteFactory = new SpriteFactory();
+            var sprites:Array = factory.createSprites(6);
+
             var typeIndex:int = -1;
             var typeCount:int = 2;
+            var tileBitmap:Bitmap;
 
             for (i = 0; i < total; i++)
             {
                 if(i % typeCount == 0)
                     typeIndex ++;
 
-                tile = tileContainer.addChild(createTile()) as PaperSprite;
-                tile.name = types[typeIndex];
+                tileBitmap = new sprites[typeIndex]() as Bitmap;
+
+                tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
+                tileInstances.push(tile);
+                tile.name = "type"+typeIndex;
+
+            }
+
+            layoutTiles();
+
+            enableLogo();
+
+            var difficulty:int = 1;// 1, 2 or 3
+            player = new CharacterView("player", total/difficulty);
+            monster = new CharacterView("monster", total/2);
+        }
+
+        private function layoutTiles():void
+        {
+            tileInstances = ArrayUtil.shuffleArray(tileInstances);
+            var total:int = tileInstances.length;
+            var columns:int = 3;
+            var i:int;
+            var nextX:int = 0;
+            var nextY:int = 0;
+            var tile:PaperSprite;
+
+            for (i = 0; i < total; i++)
+            {
+                tile = tileInstances[i];
                 tile.x = nextX;
                 tile.y = nextY;
                 tile.pivotX = .5;
@@ -78,13 +111,10 @@ package com.gamecook.matchhack.activities {
                     nextY += 64;
                 }
 
-
             }
-
-            enableLogo();
         }
 
-        private function createTile():PaperSprite
+        private function createTile(tile:Bitmap):PaperSprite
         {
             // Create Sprite for front
             var front:Sprite = new Sprite();
@@ -92,14 +122,8 @@ package com.gamecook.matchhack.activities {
             front.graphics.drawRect(0, 0, 64, 64);
             front.graphics.endFill();
 
-            // Create Sprite for back
-            var back:Sprite = new Sprite();
-            back.graphics.beginFill(0x0000ff);
-            back.graphics.drawRect(0, 0, 64, 64);
-            back.graphics.endFill();
-
             // Create TwoSidedPlane
-            var tempPlane:PaperSprite = new PaperSprite(front, back);
+            var tempPlane:PaperSprite = new PaperSprite(front, tile);
             tempPlane.addEventListener(MouseEvent.CLICK, onClick);
             tempPlane.mouseChildren = false;
             tempPlane.buttonMode = true;
@@ -114,7 +138,7 @@ package com.gamecook.matchhack.activities {
             {
                 var target:PaperSprite = event.target as PaperSprite;
 
-                if(activeTiles.indexOf(target) != -1)
+                if((activeTiles.indexOf(target) != -1) || player.isDead())
                     return;
 
                 activeTiles.push(target);
@@ -136,9 +160,32 @@ package com.gamecook.matchhack.activities {
             {
 
                 findMatches();
-                trace("Reset Active Tiles");
                 resetActiveTiles();
+                //validateWin();
             }
+
+            trace("Player", player.getLife(), "Monster", monster.getLife());
+        }
+
+        private function validateWin():void
+        {
+            var success:Boolean = testTiles();
+
+            if(success)
+                startNextActivityTimer(WinActivity, 2);
+        }
+
+        private function testTiles():Boolean
+        {
+            for each(var tile:PaperSprite in tileInstances)
+            {
+                if(tile.visible == true)
+                    return false;
+
+            }
+
+            return true;
+
         }
 
         private function findMatches():void
@@ -147,7 +194,8 @@ package com.gamecook.matchhack.activities {
             var total:int = activeTiles.length;
             var currentTile:PaperSprite;
             var testTile:PaperSprite;
-            var matches:Array = [];
+
+            var match:Boolean;
 
             for(i=0; i < total; i++)
             {
@@ -157,11 +205,18 @@ package com.gamecook.matchhack.activities {
                     testTile = activeTiles[j];
                     if((currentTile != testTile) && (currentTile.name == testTile.name))
                     {
-                        trace("Match Found");
-                        matches.push(testTile);
+                        currentTile.visible = false;
+                        testTile.visible = false;
+                        match = true;
+
                     }
                 }
             }
+
+            if(match)
+                onMatch();
+            else
+                onNoMatch();
         }
 
         private function resetActiveTiles():void
@@ -174,13 +229,26 @@ package com.gamecook.matchhack.activities {
 
         private function onNoMatch():void
         {
+            player.subtractLife(1);
+            if(player.isDead())
+                onPlayerDead();
         }
 
         private function onMatch():void
         {
+            monster.subtractLife(1);
+            if(monster.isDead())
+                onMonsterDead();
+        }
 
+        private function onPlayerDead():void
+        {
+            startNextActivityTimer(LoseActivity, 2);
+        }
 
-
+        private function onMonsterDead():void
+        {
+            startNextActivityTimer(WinActivity, 2);
         }
 
     }
