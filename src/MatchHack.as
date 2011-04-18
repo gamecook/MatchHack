@@ -34,12 +34,13 @@ package
     import flash.display.StageScaleMode;
     import flash.events.Event;
 
-    [SWF(width="480",height="800",backgroundColor="#000000",frameRate="60")]
+    [SWF(width="768",height="1024",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
     {
 
         protected var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
         private var tracker:GATracker;
+        private var scale:Number = 1;
 
         /*
             You will need to create a class called analytics.as with the following in it:
@@ -51,17 +52,22 @@ package
 
         public function MatchHack()
         {
+            scale = stage.stageHeight / 400;
+
             tracker = new GATracker(this, key, "AS3", false);
+
             configureStage();
-            super(new MHActivityManager(tracker), SplashActivity, 0, 0, 2)
+
+            super(new MHActivityManager(tracker), SplashActivity, 0, 0, scale)
         }
 
         private function configureStage():void
         {
             stage.align = StageAlign.TOP_LEFT;
             stage.scaleMode = StageScaleMode.NO_SCALE;
-            BaseActivity.fullSizeWidth = stage.stageWidth * .5;
-            BaseActivity.fullSizeHeight = stage.stageHeight * .5;
+
+            BaseActivity.fullSizeWidth = stage.stageWidth / scale;
+            BaseActivity.fullSizeHeight = stage.stageHeight / scale;
         }
 
         override protected function onFlashResume (event:Event):void
