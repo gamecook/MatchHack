@@ -1,11 +1,27 @@
-/**
- * Created by IntelliJ IDEA.
- * User: jessefreeman
- * Date: 4/15/11
- * Time: 10:11 PM
- * To change this template use File | Settings | File Templates.
+/*
+ * Copyright (c) 2011 Jesse Freeman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
-package com.gamecook.matchhack.activities {
+
+package com.gamecook.matchhack.activities
+{
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
@@ -16,15 +32,14 @@ package com.gamecook.matchhack.activities {
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
-    import flash.geom.PerspectiveProjection;
-    import flash.geom.Point;
 
     import uk.co.soulwire.display.PaperSprite;
 
-    public class GameActivity extends LogoActivity{
+    public class GameActivity extends LogoActivity
+    {
 
         [Embed(source="../../../../../build/assets/game_board.png")]
-        private var GameBoardImage : Class;
+        private var GameBoardImage:Class;
         private var flipping:Boolean;
         private var activeTiles:Array = [];
         private var maxActiveTiles:int = 1;
@@ -44,8 +59,8 @@ package com.gamecook.matchhack.activities {
             super.onStart();
 
             var gameBackground:Bitmap = addChild(Bitmap(new GameBoardImage())) as Bitmap;
-			gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
-			gameBackground.y = fullSizeHeight - gameBackground.height;
+            gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
+            gameBackground.y = fullSizeHeight - gameBackground.height;
 
             tileContainer = addChild(new Sprite()) as Sprite;
             tileContainer.x = gameBackground.x + 55;
@@ -64,20 +79,20 @@ package com.gamecook.matchhack.activities {
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
             {
-                if(i % typeCount == 0)
+                if (i % typeCount == 0)
                     typeIndex ++;
 
                 tileBitmap = new sprites[typeIndex]() as Bitmap;
 
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
-                tile.name = "type"+typeIndex;
+                tile.name = "type" + typeIndex;
 
             }
 
             var difficulty:int = 2;// 1, 2 or 3
-            player = tileContainer.addChild(new CharacterView("player", total/difficulty)) as CharacterView;
-            monster = tileContainer.addChild(new CharacterView("monster", total/2)) as CharacterView;
+            player = tileContainer.addChild(new CharacterView("player", total / difficulty)) as CharacterView;
+            monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
 
 
             layoutTiles();
@@ -91,8 +106,8 @@ package com.gamecook.matchhack.activities {
         {
             tileInstances = ArrayUtil.shuffleArray(tileInstances);
 
-            tileInstances.splice(4,0,player);
-            tileInstances.splice(7,0,monster);
+            tileInstances.splice(4, 0, player);
+            tileInstances.splice(7, 0, monster);
 
             var total:int = tileInstances.length;
             var columns:int = 3;
@@ -108,7 +123,7 @@ package com.gamecook.matchhack.activities {
                 tile.y = nextY;
 
                 nextX += 64;
-                if(nextX % columns == 0)
+                if (nextX % columns == 0)
                 {
                     nextX = 0;
                     nextY += 64;
@@ -121,7 +136,7 @@ package com.gamecook.matchhack.activities {
         {
             // Create Sprite for front
             var front:Sprite = new Sprite();
-            front.graphics.beginFill(0x000000,.5);
+            front.graphics.beginFill(0x000000, .5);
             front.graphics.drawRect(0, 0, 64, 64);
             front.graphics.endFill();
 
@@ -137,11 +152,11 @@ package com.gamecook.matchhack.activities {
 
         private function onClick(event:MouseEvent):void
         {
-            if(!flipping)
+            if (!flipping)
             {
                 var target:PaperSprite = event.target as PaperSprite;
 
-                if((activeTiles.indexOf(target) != -1) || player.isDead())
+                if ((activeTiles.indexOf(target) != -1) || player.isDead())
                     return;
 
                 activeTiles.push(target);
@@ -159,7 +174,7 @@ package com.gamecook.matchhack.activities {
             trace("Target.isFrontFacing", target.isFrontFacing);
             flipping = false;
 
-            if(activeTiles.length > maxActiveTiles)
+            if (activeTiles.length > maxActiveTiles)
             {
 
                 findMatches();
@@ -174,7 +189,7 @@ package com.gamecook.matchhack.activities {
         {
             var success:Boolean = testTiles();
 
-            if(success)
+            if (success)
                 startNextActivityTimer(WinActivity, 2);
         }
 
@@ -182,7 +197,7 @@ package com.gamecook.matchhack.activities {
         {
             for each(var tile:PaperSprite in tileInstances)
             {
-                if(tile.visible == true)
+                if (tile.visible == true)
                     return false;
 
             }
@@ -200,13 +215,13 @@ package com.gamecook.matchhack.activities {
 
             var match:Boolean;
 
-            for(i=0; i < total; i++)
+            for (i = 0; i < total; i++)
             {
                 currentTile = activeTiles[i];
-                for (j =0; j < total; j++)
+                for (j = 0; j < total; j++)
                 {
                     testTile = activeTiles[j];
-                    if((currentTile != testTile) && (currentTile.name == testTile.name))
+                    if ((currentTile != testTile) && (currentTile.name == testTile.name))
                     {
                         currentTile.visible = false;
                         testTile.visible = false;
@@ -216,7 +231,7 @@ package com.gamecook.matchhack.activities {
                 }
             }
 
-            if(match)
+            if (match)
                 onMatch();
             else
                 onNoMatch();
@@ -224,7 +239,8 @@ package com.gamecook.matchhack.activities {
 
         private function resetActiveTiles():void
         {
-            for each (var tile:PaperSprite in activeTiles) {
+            for each (var tile:PaperSprite in activeTiles)
+            {
                 tile.flip();
             }
             activeTiles.length = 0;
@@ -233,14 +249,14 @@ package com.gamecook.matchhack.activities {
         private function onNoMatch():void
         {
             player.subtractLife(1);
-            if(player.isDead())
+            if (player.isDead())
                 onPlayerDead();
         }
 
         private function onMatch():void
         {
             monster.subtractLife(1);
-            if(monster.isDead())
+            if (monster.isDead())
                 onMonsterDead();
         }
 
