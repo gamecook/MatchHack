@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
@@ -115,6 +116,7 @@ package com.gamecook.matchhack.activities
             }
 
             trace("New Game Difficulty", difficulty);
+            soundManager.play(MHSoundClasses.WalkStairsSound);
 
             nextActivity(GameActivity);
         }

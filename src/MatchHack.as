@@ -23,22 +23,37 @@
 package
 {
     import com.gamecook.matchhack.activities.SplashActivity;
+    import com.gamecook.matchhack.managers.MHActivityManager;
+    import com.gamecook.matchhack.managers.SingletonManager;
+    import com.gamecook.matchhack.managers.SoundManager;
+    import com.google.analytics.GATracker;
     import com.jessefreeman.factivity.AbstractApplication;
     import com.jessefreeman.factivity.activities.BaseActivity;
-    import com.jessefreeman.factivity.managers.ActivityManager;
 
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
+    import flash.events.Event;
 
     [SWF(width="480",height="800",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
     {
 
+        protected var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
+        private var tracker:GATracker;
+
+        /*
+            You will need to create a class called analytics.as with the following in it:
+
+            private var key:String = "UA-xxxxxxxx-x";
+
+         */
+        include "analytics.as";
 
         public function MatchHack()
         {
+            tracker = new GATracker(this, key, "AS3", false);
             configureStage();
-            super(new ActivityManager(), SplashActivity, 0, 0, 2)
+            super(new MHActivityManager(tracker), SplashActivity, 0, 0, 2)
         }
 
         private function configureStage():void
@@ -47,6 +62,19 @@ package
             stage.scaleMode = StageScaleMode.NO_SCALE;
             BaseActivity.fullSizeWidth = stage.stageWidth * .5;
             BaseActivity.fullSizeHeight = stage.stageHeight * .5;
+        }
+
+        override protected function onFlashResume (event:Event):void
+        {
+            soundManager.playSounds();
+            super.onFlashResume(event);
+
+        }
+
+        override protected function onFlashDeactivate (event:Event):void
+        {
+            soundManager.pauseSounds();
+            super.onFlashDeactivate(event);
         }
     }
 }

@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
@@ -58,12 +59,19 @@ package com.gamecook.matchhack.activities
         [Embed(source="../../../../../build/assets/welcome_text.png")]
         private var WelcomeImage:Class;
 
-        private var sound:Boolean = true;
         private var soundBTN:SimpleButton;
 
         public function StartActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
+        }
+
+
+        override protected function onCreate():void
+        {
+            soundManager.playMusic(MHSoundClasses.DungeonLooper);
+
+            super.onCreate();
         }
 
         override public function onStart():void
@@ -109,8 +117,10 @@ package com.gamecook.matchhack.activities
 
         private function onSoundToggle(event:MouseEvent = null):void
         {
-            sound = !sound;
-            if(sound)
+
+            soundManager.mute = !soundManager.mute;
+
+            if(!soundManager.mute)
             {
                 soundBTN.upState = new SoundOn();
                 soundBTN.overState = new SoundOn();
@@ -122,6 +132,8 @@ package com.gamecook.matchhack.activities
                 soundBTN.overState = new SoundOff();
                 soundBTN.downState = new SoundOff();
             }
+
+            soundManager.play(MHSoundClasses.WallHit);
         }
 
         private function onClick(event:MouseEvent):void
@@ -131,12 +143,14 @@ package com.gamecook.matchhack.activities
 
         private function onNewGame(event:MouseEvent):void
         {
+            soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onNewGame);
             nextActivity(NewGameActivity);
         }
 
         private function onCredits(event:MouseEvent):void
         {
+            soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onCredits);
             nextActivity(CreditsActivity);
         }

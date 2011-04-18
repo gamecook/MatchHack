@@ -22,6 +22,8 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.managers.SingletonManager;
+    import com.gamecook.matchhack.managers.SoundManager;
     import com.jessefreeman.factivity.activities.BaseActivity;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
@@ -36,6 +38,7 @@ package com.gamecook.matchhack.activities
         private var LogoImage:Class;
         protected var logo:Bitmap;
         protected var logoContainer:Sprite;
+        protected var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
 
         public function LogoActivity(activityManager:IActivityManager, data:*)
         {
@@ -75,5 +78,6 @@ package com.gamecook.matchhack.activities
             event.target.removeEventListener(MouseEvent.CLICK, onHome);
             nextActivity(StartActivity);
         }
+
     }
 }

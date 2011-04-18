@@ -23,6 +23,7 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.factories.SpriteFactory;
+    import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.jessefreeman.factivity.managers.IActivityManager;
@@ -53,6 +54,12 @@ package com.gamecook.matchhack.activities
             super(activityManager, data);
         }
 
+
+        override protected function onCreate():void
+        {
+            soundManager.playMusic(MHSoundClasses.DungeonLooper);
+            super.onCreate();
+        }
 
         override public function onStart():void
         {
@@ -154,6 +161,8 @@ package com.gamecook.matchhack.activities
         {
             if (!flipping)
             {
+                soundManager.play(MHSoundClasses.WallHit);
+
                 var target:PaperSprite = event.target as PaperSprite;
 
                 if ((activeTiles.indexOf(target) != -1) || player.isDead())
@@ -179,18 +188,9 @@ package com.gamecook.matchhack.activities
 
                 findMatches();
                 resetActiveTiles();
-                //validateWin();
             }
 
             trace("Player", player.getLife(), "Monster", monster.getLife());
-        }
-
-        private function validateWin():void
-        {
-            var success:Boolean = testTiles();
-
-            if (success)
-                startNextActivityTimer(WinActivity, 2);
         }
 
         private function testTiles():Boolean
@@ -249,6 +249,7 @@ package com.gamecook.matchhack.activities
         private function onNoMatch():void
         {
             player.subtractLife(1);
+            soundManager.play(MHSoundClasses.EnemyAttack);
             if (player.isDead())
                 onPlayerDead();
         }
@@ -256,6 +257,7 @@ package com.gamecook.matchhack.activities
         private function onMatch():void
         {
             monster.subtractLife(1);
+            soundManager.play(MHSoundClasses.PotionSound);
             if (monster.isDead())
                 onMonsterDead();
         }
@@ -263,12 +265,16 @@ package com.gamecook.matchhack.activities
         private function onPlayerDead():void
         {
             player.flip();
+            soundManager.destroySounds(true);
+            soundManager.play(MHSoundClasses.DeathTheme);
             startNextActivityTimer(LoseActivity, 2);
         }
 
         private function onMonsterDead():void
         {
             monster.flip();
+            soundManager.destroySounds(true);
+            soundManager.play(MHSoundClasses.WinBattle);
             startNextActivityTimer(WinActivity, 2);
         }
 
