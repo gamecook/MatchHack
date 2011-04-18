@@ -19,14 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-/**
- * Created by IntelliJ IDEA.
- * User: jfreeman
- * Date: 3/18/11
- * Time: 3:46 PM
- * To change this template use File | Settings | File Templates.
- */
 package com.gamecook.matchhack.states
 {
     import flash.net.SharedObject;

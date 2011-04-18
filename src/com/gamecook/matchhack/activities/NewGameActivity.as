@@ -105,18 +105,24 @@ package com.gamecook.matchhack.activities
             switch(event.target.name)
             {
                 case EASY:
-                    difficulty = 0;
-                break;
-                case MEDIUM:
                     difficulty = 1;
                 break;
-                case HARD:
+                case MEDIUM:
                     difficulty = 2;
+                break;
+                case HARD:
+                    difficulty = 3;
                 break;
             }
 
             trace("New Game Difficulty", difficulty);
             soundManager.play(MHSoundClasses.WalkStairsSound);
+
+            activeState.clear();
+
+            activeState.difficulty = difficulty;
+            activeState.playerLevel = 1;
+            activeState.activeGame = true;
 
             nextActivity(GameActivity);
         }

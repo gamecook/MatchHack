@@ -48,6 +48,7 @@ package com.gamecook.matchhack.activities
         private var tileInstances:Array = [];
         private var player:CharacterView;
         private var monster:CharacterView;
+        private var difficulty:int;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -59,11 +60,15 @@ package com.gamecook.matchhack.activities
         {
             soundManager.playMusic(MHSoundClasses.DungeonLooper);
             super.onCreate();
+
+            difficulty = activeState.difficulty;
         }
 
         override public function onStart():void
         {
             super.onStart();
+
+            trace("Player Level", activeState.playerLevel,"\nTurns", activeState.turns);
 
             var gameBackground:Bitmap = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
@@ -83,6 +88,8 @@ package com.gamecook.matchhack.activities
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
 
+
+
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
             {
@@ -94,10 +101,12 @@ package com.gamecook.matchhack.activities
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
                 tile.name = "type" + typeIndex;
+                if(difficulty == 1)
+                    tile.flip();
 
             }
 
-            var difficulty:int = 2;// 1, 2 or 3
+
             player = tileContainer.addChild(new CharacterView("player", total / difficulty)) as CharacterView;
             monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
 
@@ -169,9 +178,18 @@ package com.gamecook.matchhack.activities
                     return;
 
                 activeTiles.push(target);
-                target.addEventListener(Event.COMPLETE, onFlipComplete);
-                target.flip();
-                flipping = true;
+                if(difficulty > 1)
+                {
+                    target.addEventListener(Event.COMPLETE, onFlipComplete);
+
+                    target.flip();
+                    flipping = true;
+                }
+                else
+                {
+                    endTurn();
+                }
+
             }
 
         }
@@ -180,17 +198,24 @@ package com.gamecook.matchhack.activities
         {
             var target:PaperSprite = event.target as PaperSprite;
             target.removeEventListener(Event.COMPLETE, onFlipComplete);
-            trace("Target.isFrontFacing", target.isFrontFacing);
             flipping = false;
+
+            endTurn();
+        }
+
+        private function endTurn():void
+        {
+
 
             if (activeTiles.length > maxActiveTiles)
             {
 
                 findMatches();
                 resetActiveTiles();
+
+                activeState.turns += 1;
             }
 
-            trace("Player", player.getLife(), "Monster", monster.getLife());
         }
 
         private function testTiles():Boolean
@@ -241,7 +266,8 @@ package com.gamecook.matchhack.activities
         {
             for each (var tile:PaperSprite in activeTiles)
             {
-                tile.flip();
+                if(difficulty > 1)
+                    tile.flip();
             }
             activeTiles.length = 0;
         }
@@ -267,6 +293,9 @@ package com.gamecook.matchhack.activities
             player.flip();
             soundManager.destroySounds(true);
             soundManager.play(MHSoundClasses.DeathTheme);
+
+            activeState.clear();
+
             startNextActivityTimer(LoseActivity, 2);
         }
 
@@ -275,6 +304,7 @@ package com.gamecook.matchhack.activities
             monster.flip();
             soundManager.destroySounds(true);
             soundManager.play(MHSoundClasses.WinBattle);
+            activeState.playerLevel += 1;
             startNextActivityTimer(WinActivity, 2);
         }
 

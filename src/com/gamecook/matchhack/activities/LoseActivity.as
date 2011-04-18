@@ -52,6 +52,7 @@ package com.gamecook.matchhack.activities
 
         private function onClick(event:MouseEvent):void
         {
+            soundManager.destroySounds(true);
             nextActivity(StartActivity);
         }
     }

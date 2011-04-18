@@ -24,6 +24,7 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.managers.SingletonManager;
     import com.gamecook.matchhack.managers.SoundManager;
+    import com.gamecook.matchhack.states.ActiveGameState;
     import com.jessefreeman.factivity.activities.BaseActivity;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
@@ -39,6 +40,7 @@ package com.gamecook.matchhack.activities
         protected var logo:Bitmap;
         protected var logoContainer:Sprite;
         protected var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
+        protected var activeState:ActiveGameState;
 
         public function LogoActivity(activityManager:IActivityManager, data:*)
         {
@@ -50,6 +52,9 @@ package com.gamecook.matchhack.activities
             graphics.beginFill(0xff0000, 0);
             graphics.drawRect(0, 0, fullSizeWidth, fullSizeHeight);
             graphics.endFill();
+
+            activeState = new ActiveGameState();
+            activeState.load();
 
             super.onCreate();
         }
@@ -79,5 +84,10 @@ package com.gamecook.matchhack.activities
             nextActivity(StartActivity);
         }
 
+        override public function onStop():void
+        {
+            activeState.save();
+            super.onStop();
+        }
     }
 }

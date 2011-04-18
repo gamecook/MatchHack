@@ -72,6 +72,8 @@ package com.gamecook.matchhack.activities
             soundManager.playMusic(MHSoundClasses.DungeonLooper);
 
             super.onCreate();
+
+            soundManager.mute = activeState.mute;
         }
 
         override public function onStart():void
@@ -88,12 +90,19 @@ package com.gamecook.matchhack.activities
             newGameBTN.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var creditsBTN:SimpleButton = addChild(new SimpleButton(new ContinueUp(), new ContinueOver(), new ContinueOver(), new ContinueUp())) as SimpleButton;
-            //Disable button
-            creditsBTN.enabled = false;
-            creditsBTN.upState = new ContinueDisabled();
-
-            // TODO need to connect up continue
-            //creditsBTN.addEventListener(MouseEvent.MOUSE_UP, onCredits);
+            if(activeState.activeGame)
+            {
+                creditsBTN.upState = new ContinueUp();
+                creditsBTN.overState = new ContinueOver();
+                creditsBTN.downState = new ContinueOver();
+                creditsBTN.addEventListener(MouseEvent.MOUSE_UP, onContinue);
+            }
+            else
+            {
+                //Disable button
+                creditsBTN.enabled = false;
+                creditsBTN.upState = new ContinueDisabled();
+            }
 
             creditsBTN.x = (fullSizeWidth - creditsBTN.width) * .5;
             creditsBTN.y = newGameBTN.y + newGameBTN.height + 4;
@@ -104,7 +113,7 @@ package com.gamecook.matchhack.activities
             soundBTN.x = (fullSizeWidth - soundBTN.width) * .5;
             soundBTN.y = creditsBTN.y + creditsBTN.height + 4;
             soundBTN.addEventListener(MouseEvent.MOUSE_UP, onSoundToggle);
-            onSoundToggle();
+            updateMuteButtonState();
 
             var homeSplash:Bitmap = addChild(Bitmap(new HomeSplashImage())) as Bitmap;
             homeSplash.x = (fullSizeWidth - homeSplash.width) * .5;
@@ -120,7 +129,14 @@ package com.gamecook.matchhack.activities
 
             soundManager.mute = !soundManager.mute;
 
-            if(!soundManager.mute)
+            updateMuteButtonState();
+
+            soundManager.play(MHSoundClasses.WallHit);
+        }
+
+        private function updateMuteButtonState():void
+        {
+            if (!soundManager.mute)
             {
                 soundBTN.upState = new SoundOn();
                 soundBTN.overState = new SoundOn();
@@ -132,8 +148,6 @@ package com.gamecook.matchhack.activities
                 soundBTN.overState = new SoundOff();
                 soundBTN.downState = new SoundOff();
             }
-
-            soundManager.play(MHSoundClasses.WallHit);
         }
 
         private function onClick(event:MouseEvent):void
@@ -148,11 +162,11 @@ package com.gamecook.matchhack.activities
             nextActivity(NewGameActivity);
         }
 
-        private function onCredits(event:MouseEvent):void
+        private function onContinue(event:MouseEvent):void
         {
             soundManager.play(MHSoundClasses.WallHit);
-            event.target.removeEventListener(MouseEvent.MOUSE_UP, onCredits);
-            nextActivity(CreditsActivity);
+            event.target.removeEventListener(MouseEvent.MOUSE_UP, onContinue);
+            nextActivity(GameActivity);
         }
     }
 }
