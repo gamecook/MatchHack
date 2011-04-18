@@ -90,6 +90,8 @@ package com.gamecook.matchhack.activities
             newGameBTN.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var creditsBTN:SimpleButton = addChild(new SimpleButton(new ContinueUp(), new ContinueOver(), new ContinueOver(), new ContinueUp())) as SimpleButton;
+
+            // Check to see if an activeGame exists
             if(activeState.activeGame)
             {
                 creditsBTN.upState = new ContinueUp();
@@ -99,11 +101,13 @@ package com.gamecook.matchhack.activities
             }
             else
             {
-                //Disable button
+                // If no game is active, disable the button.
                 creditsBTN.enabled = false;
                 creditsBTN.upState = new ContinueDisabled();
             }
 
+
+            // Layout credits button.
             creditsBTN.x = (fullSizeWidth - creditsBTN.width) * .5;
             creditsBTN.y = newGameBTN.y + newGameBTN.height + 4;
 
@@ -124,6 +128,12 @@ package com.gamecook.matchhack.activities
             addEventListener(MouseEvent.CLICK, onClick)
         }
 
+        /**
+         *
+         * Toggles the Mute value in the SoundManager
+         *
+         * @param event
+         */
         private function onSoundToggle(event:MouseEvent = null):void
         {
 
@@ -134,6 +144,11 @@ package com.gamecook.matchhack.activities
             soundManager.play(MHSoundClasses.WallHit);
         }
 
+        /**
+         *
+         * Updates the visual state of the Mute Button.
+         *
+         */
         private function updateMuteButtonState():void
         {
             if (!soundManager.mute)
@@ -150,11 +165,23 @@ package com.gamecook.matchhack.activities
             }
         }
 
+        /**
+         *
+         * This allows the player to delay the feature timer whenever a click is detected on the background.
+         *
+         * @param event
+         */
         private function onClick(event:MouseEvent):void
         {
             nextScreenCounter = 0;
         }
 
+        /**
+         *
+         * Activates the NewGameActivity
+         *
+         * @param event
+         */
         private function onNewGame(event:MouseEvent):void
         {
             soundManager.play(MHSoundClasses.WallHit);
@@ -162,6 +189,12 @@ package com.gamecook.matchhack.activities
             nextActivity(NewGameActivity);
         }
 
+        /**
+         *
+         * Activates the GameActivity when the Continue button is active.
+         *
+         * @param event
+         */
         private function onContinue(event:MouseEvent):void
         {
             soundManager.play(MHSoundClasses.WallHit);

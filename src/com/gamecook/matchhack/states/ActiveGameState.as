@@ -87,5 +87,14 @@ package com.gamecook.matchhack.states
         {
             _dataObject.turns = value;
         }
+
+
+        override public function clear():void
+        {
+
+            super.clear();
+
+            _dataObject.mute = soundManager.mute;
+        }
     }
 }

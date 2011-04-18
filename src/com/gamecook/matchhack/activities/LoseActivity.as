@@ -27,6 +27,11 @@ package com.gamecook.matchhack.activities
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
 
+    /**
+     *
+     * Activity displayed when the player dies.
+     *
+     */
     public class LoseActivity extends LogoActivity
     {
 
@@ -42,17 +47,22 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            // Add you lose bitmap.
             var youLose:Bitmap = addChild(Bitmap(new YouLoseImage())) as Bitmap;
             youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
             youLose.y = fullSizeHeight - youLose.height - 50;
 
+            // Add click handler
             addEventListener(MouseEvent.CLICK, onClick);
 
         }
 
         private function onClick(event:MouseEvent):void
         {
+            // Kill all sounds
             soundManager.destroySounds(true);
+
+            // Return to start activity
             nextActivity(StartActivity);
         }
     }

@@ -42,19 +42,24 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            // Setup Credits image and lay it out
             var credits:Bitmap = addChild(Bitmap(new CreditsImage())) as Bitmap;
             credits.x = (fullSizeWidth - credits.width) * .5;
             credits.y = (fullSizeHeight - credits.height) - 5;
 
+            // Enable the logo to go back
             enableLogo();
 
+            // create a time delay to show the StartActivity
             startNextActivityTimer(StartActivity, 5);
 
+            // Add click handler to skip the timer and go to start
             addEventListener(MouseEvent.CLICK, onClick)
         }
 
         private function onClick(event:MouseEvent):void
         {
+            // Load the start activity
             nextActivity(StartActivity);
         }
     }

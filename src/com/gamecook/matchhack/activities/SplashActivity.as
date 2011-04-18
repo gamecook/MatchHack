@@ -27,6 +27,11 @@ package com.gamecook.matchhack.activities
 
     import flash.display.Bitmap;
 
+    /**
+     *
+     * This is displayed when the game loads up.
+     *
+     */
     public class SplashActivity extends BaseActivity
     {
 
@@ -44,11 +49,13 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
-
+            // Setup the splash image and align it
             var img:Bitmap = addChild(Bitmap(new SplashImage())) as Bitmap;
             img.x = (fullSizeWidth * .5) - (img.width * .5);
             img.y = (fullSizeHeight * .5) - (img.height * .5);
 
+
+            // Go to the main activity after 3 seconds
             startNextActivityTimer(StartActivity, 3);
         }
     }

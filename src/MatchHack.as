@@ -52,24 +52,36 @@ package
 
         public function MatchHack()
         {
+            // Automatically figures out the scale based on stage's height. Used to scale up on each device.
             scale = stage.stageHeight / 400;
 
+            // Google Analytics Tracker
             tracker = new GATracker(this, key, "AS3", false);
 
+            // Configures the stage
             configureStage();
 
+            // Passes up a custom ActivityManager to super along with the start activity and scale.
             super(new MHActivityManager(tracker), SplashActivity, 0, 0, scale)
         }
 
         private function configureStage():void
         {
+            // Setup stage align and scale mode.
             stage.align = StageAlign.TOP_LEFT;
             stage.scaleMode = StageScaleMode.NO_SCALE;
 
+            // Set up the screen size for BaseActivity
             BaseActivity.fullSizeWidth = stage.stageWidth / scale;
             BaseActivity.fullSizeHeight = stage.stageHeight / scale;
         }
 
+        /**
+         *
+         * Called when the game get's focus. All sounds should resume.
+         *
+         * @param event
+         */
         override protected function onFlashResume (event:Event):void
         {
             soundManager.playSounds();
@@ -77,6 +89,12 @@ package
 
         }
 
+        /**
+         *
+         * Called when the game loses focus. All sounds are killed.
+         *
+         * @param event
+         */
         override protected function onFlashDeactivate (event:Event):void
         {
             soundManager.pauseSounds();

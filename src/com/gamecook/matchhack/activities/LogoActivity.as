@@ -32,6 +32,12 @@ package com.gamecook.matchhack.activities
     import flash.display.Sprite;
     import flash.events.MouseEvent;
 
+    /**
+     *
+     * This is the base Activity all of the game Activities should extend from. It has logic for displaying the LOGO
+     * and also enabling the logo to be clickable to go back to the home screen.
+     *
+     */
     public class LogoActivity extends BaseActivity
     {
 
@@ -49,10 +55,12 @@ package com.gamecook.matchhack.activities
 
         override protected function onCreate():void
         {
+            // This fills in the Activity's background with a solid color so there is something to click on.
             graphics.beginFill(0xff0000, 0);
             graphics.drawRect(0, 0, fullSizeWidth, fullSizeHeight);
             graphics.endFill();
 
+            // Sets up the ActiveGameState object
             activeState = new ActiveGameState();
             activeState.load();
 
@@ -63,14 +71,21 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            // Creates a container for the logo
             logoContainer = addChild(new Sprite()) as Sprite;
 
+            // Attaches the logo
             logo = logoContainer.addChild(Bitmap(new LogoImage())) as Bitmap;
             logo.x = (fullSizeWidth - logo.width) * .5;
             logo.y = 6;
 
         }
 
+        /**
+         *
+         * Call this to turn the Logo into a Back Button.
+         *
+         */
         protected function enableLogo():void
         {
             logoContainer.useHandCursor = true;
@@ -78,12 +93,23 @@ package com.gamecook.matchhack.activities
             logoContainer.addEventListener(MouseEvent.CLICK, onHome);
         }
 
+        /**
+         *
+         * Called when the logo is clicked and returns to StartActivity.
+         *
+         * @param event
+         */
         protected function onHome(event:MouseEvent):void
         {
             event.target.removeEventListener(MouseEvent.CLICK, onHome);
             nextActivity(StartActivity);
         }
 
+        /**
+         *
+         * Forces the ActiveState object to save when an activity stops.
+         *
+         */
         override public function onStop():void
         {
             activeState.save();

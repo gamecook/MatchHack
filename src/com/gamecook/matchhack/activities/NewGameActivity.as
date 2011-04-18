@@ -31,6 +31,11 @@ package com.gamecook.matchhack.activities
 
     import org.osmf.elements.f4mClasses.Media;
 
+    /**
+     *
+     * This handles creating a new game, setting the difficulty level and resetting the ActiveGameState object
+     *
+     */
     public class NewGameActivity extends LogoActivity
     {
         [Embed(source="../../../../../build/assets/new_game_label.png")]
@@ -76,6 +81,8 @@ package com.gamecook.matchhack.activities
             newGameLabel.x = (fullSizeWidth - newGameLabel.width) * .5;
             newGameLabel.y = logo.y + logo.height + 50;
 
+            // Adding and setting up difficulty level buttons.
+
             var easyButton:SimpleButton = addChild(new SimpleButton(new EasyUp(), new EasyOver(), new EasyOver(), new EasyUp())) as SimpleButton;
             easyButton.name = EASY;
             easyButton.x = (fullSizeWidth - easyButton.width) * .5;
@@ -94,14 +101,23 @@ package com.gamecook.matchhack.activities
             hardButton.y = mediumButton.y + mediumButton.height + 5;
             hardButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
+            // Sets up teh difficulty description image
             var difficultyImage:Bitmap = addChild(new DifficultyImage()) as Bitmap;
             difficultyImage.x = (fullSizeWidth - difficultyImage.width) * .5;
             difficultyImage.y = fullSizeHeight - difficultyImage.height - 25;
         }
 
+        /**
+         *
+         * Sets up the correct game mode and passes it along to the next activity.
+         *
+         * @param event
+         */
         private function onNewGame(event:MouseEvent):void
         {
             var difficulty:int;
+
+            // Set up difficulty mode based on currently click on target's name.
             switch(event.target.name)
             {
                 case EASY:
@@ -115,15 +131,18 @@ package com.gamecook.matchhack.activities
                 break;
             }
 
-            trace("New Game Difficulty", difficulty);
+            // Play walking sound for player entering the new game
             soundManager.play(MHSoundClasses.WalkStairsSound);
 
+            // Clear the active state for a new game
             activeState.clear();
 
+            // Reset active state values
             activeState.difficulty = difficulty;
             activeState.playerLevel = 1;
             activeState.activeGame = true;
 
+            // Go to next activity, GameActivity
             nextActivity(GameActivity);
         }
     }

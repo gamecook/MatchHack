@@ -28,6 +28,11 @@ package com.gamecook.matchhack.activities
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
 
+    /**
+     *
+     * Shown when the player wins and is ready to move onto the next level.
+     *
+     */
     public class WinActivity extends LogoActivity
     {
 
@@ -44,14 +49,13 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
-
             //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
             youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
             youWin.y = fullSizeHeight - youWin.height - 50;
 
+            // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
-
 
         }
 

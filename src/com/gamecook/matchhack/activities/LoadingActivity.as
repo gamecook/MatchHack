@@ -26,6 +26,12 @@ package com.gamecook.matchhack.activities
 
     import flash.display.Bitmap;
 
+    /**
+     *
+     * This class acts as a simple way to show the use the instructions. There is actually no loading going on here,
+     * there is just a delay to go to the next activity. This activity can also be used to display hints, tips and ads.
+     *
+     */
     public class LoadingActivity extends LogoActivity
     {
 
@@ -44,19 +50,21 @@ package com.gamecook.matchhack.activities
             super(activityManager, data);
         }
 
-
         override public function onStart():void
         {
             super.onStart();
 
+            // Add instructions bitmap and lay it out
             var instructions:Bitmap = addChild(new InstructionsImage()) as Bitmap;
             instructions.x = (fullSizeWidth - instructions.width) * .5;
             instructions.y = logo.x + logo.height + 15;
 
+            // Add loading text display.
             loading = addChild(new LoadingImage()) as Bitmap
             loading.x = (fullSizeWidth - loading.width) * .5;
             loading.y = instructions.y + instructions.height + 30;
 
+            // Start a timer to go to the next activity after 3 seconds
             startNextActivityTimer(GameActivity, 3);
         }
 
@@ -65,8 +73,8 @@ package com.gamecook.matchhack.activities
         {
             super.update(elapsed);
 
+            // Handles the dealy between showing and highlights the loading bitmap.
             textCounter += elapsed;
-
 
             if (textCounter >= textDelay)
             {

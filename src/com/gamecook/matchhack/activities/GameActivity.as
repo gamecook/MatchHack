@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.factories.SpriteFactory;
@@ -36,6 +37,11 @@ package com.gamecook.matchhack.activities
 
     import uk.co.soulwire.display.PaperSprite;
 
+    /**
+     *
+     * This class represents the core logic for the game.
+     *
+     */
     public class GameActivity extends LogoActivity
     {
 
@@ -58,9 +64,12 @@ package com.gamecook.matchhack.activities
 
         override protected function onCreate():void
         {
+            // Have the soundManager play the background theme song
             soundManager.playMusic(MHSoundClasses.DungeonLooper);
+
             super.onCreate();
 
+            // Set the difficulty level from the active state object
             difficulty = activeState.difficulty;
         }
 
@@ -118,6 +127,11 @@ package com.gamecook.matchhack.activities
 
         }
 
+        /**
+         *
+         * Goes through the tileInstance array and lays them out in a grid.
+         *
+         */
         private function layoutTiles():void
         {
             tileInstances = ArrayUtil.shuffleArray(tileInstances);
@@ -148,6 +162,14 @@ package com.gamecook.matchhack.activities
             }
         }
 
+        /**
+         *
+         * Creates a new tile with a bitmap on it's back.
+         *
+         * @param tile - BitmapImage to use for back of tile.
+         * @return Instance of the created PaperSprite tile.
+         *
+         */
         private function createTile(tile:Bitmap):PaperSprite
         {
             // Create Sprite for front
@@ -158,6 +180,8 @@ package com.gamecook.matchhack.activities
 
             // Create TwoSidedPlane
             var tempPlane:PaperSprite = new PaperSprite(front, tile);
+
+            // Make PaperSprite act as a button
             tempPlane.addEventListener(MouseEvent.CLICK, onClick);
             tempPlane.mouseChildren = false;
             tempPlane.buttonMode = true;
@@ -166,27 +190,46 @@ package com.gamecook.matchhack.activities
             return tempPlane;
         }
 
+        /**
+         *
+         * Handle click event from Tile.
+         *
+         * @param event
+         */
         private function onClick(event:MouseEvent):void
         {
+            // Test to see if a tile is flipping
             if (!flipping)
             {
+                // Play flip sound
                 soundManager.play(MHSoundClasses.WallHit);
 
+                // Get instance of the currently selected PaperSprite
                 var target:PaperSprite = event.target as PaperSprite;
 
+                // If this tile is already active exit the method
                 if ((activeTiles.indexOf(target) != -1) || player.isDead())
                     return;
 
+                // push the tile into the active tile array
                 activeTiles.push(target);
+
+                // Check if the difficulty is 1, we need to do handle this different for the easy level.
                 if(difficulty > 1)
                 {
+
+                    // We are about to flip the tile. Add a complete event listener so we know when it's done.
                     target.addEventListener(Event.COMPLETE, onFlipComplete);
 
+                    // Flip the tile
                     target.flip();
+
+                    // Set the flipping flag.
                     flipping = true;
                 }
                 else
                 {
+                    // If difficulty was set to 1 (easy) there is no flip so manually call endTurn.
                     endTurn();
                 }
 
@@ -194,43 +237,57 @@ package com.gamecook.matchhack.activities
 
         }
 
+        /**
+         *
+         * Called when a tile's Flip is completed.
+         *
+         * @param event
+         *
+         */
         private function onFlipComplete(event:Event):void
         {
+            // Get the tile that recently flipped
             var target:PaperSprite = event.target as PaperSprite;
+
+            // Remove the event listener
             target.removeEventListener(Event.COMPLETE, onFlipComplete);
+
+            // Set the flipping flag to false
             flipping = false;
 
+            // End the turn.
             endTurn();
         }
 
+        /**
+         *
+         * This validates if we have reached the total number of active tiles. If so we need to check for matches and
+         * handle any related game logic.
+         *
+         */
         private function endTurn():void
         {
 
-
+            // See if we have active the maximum active tiles allowed.
             if (activeTiles.length > maxActiveTiles)
             {
-
+                // Validate any matches
                 findMatches();
+
+                // Reset any tiles that do not match
                 resetActiveTiles();
 
+                // Increment our turns counter in the activeState object
                 activeState.turns += 1;
             }
 
         }
 
-        private function testTiles():Boolean
-        {
-            for each(var tile:PaperSprite in tileInstances)
-            {
-                if (tile.visible == true)
-                    return false;
-
-            }
-
-            return true;
-
-        }
-
+        /**
+         *
+         * This method goes through all of the Active tiles and tries to identify any matches.
+         *
+         */
         private function findMatches():void
         {
             var i:int, j:int;
@@ -240,71 +297,137 @@ package com.gamecook.matchhack.activities
 
             var match:Boolean;
 
+            // Loop through active tiles and compare each item to the rest of the tiles in the array.
             for (i = 0; i < total; i++)
             {
+                // save an instance of the current tile to test with
                 currentTile = activeTiles[i];
+
+                // Reloop through all the items starting back at the beginning
                 for (j = 0; j < total; j++)
                 {
+                    // select the item to test against
                     testTile = activeTiles[j];
+
+                    // Make sure we aren't testing the same item
                     if ((currentTile != testTile) && (currentTile.name == testTile.name))
                     {
+                        // A match has been found so make sure the current tile and test tile are set to invisible.
                         currentTile.visible = false;
                         testTile.visible = false;
+
+                        // Flag that a match has been found.
                         match = true;
 
                     }
                 }
             }
 
+            // Validate match
             if (match)
                 onMatch();
             else
                 onNoMatch();
         }
 
+        /**
+         *
+         * Loops through any active tiles and flips them. This only calls flip for any difficulty level higher then 1 (easy)
+         *
+         */
         private function resetActiveTiles():void
         {
+            // Loop through all tiles
             for each (var tile:PaperSprite in activeTiles)
             {
+                // Make sure the difficulty is higher then easy
                 if(difficulty > 1)
                     tile.flip();
             }
+
+            // Clear the activeTiles array when we are done.
             activeTiles.length = 0;
         }
 
+        /**
+         *
+         * Called when no match is found.
+         *
+         */
         private function onNoMatch():void
         {
+            // Take away 1 HP from the player
             player.subtractLife(1);
+
+            // Play attack sound
             soundManager.play(MHSoundClasses.EnemyAttack);
+
+            // Test to see if the player is dead
             if (player.isDead())
                 onPlayerDead();
         }
 
+        /**
+         *
+         * Called when a match is found.
+         *
+         */
         private function onMatch():void
         {
+            // Take away 1 HP from the monster
             monster.subtractLife(1);
+
+            // Play attack sound
             soundManager.play(MHSoundClasses.PotionSound);
+
+            // Test to see if the monster is dead
             if (monster.isDead())
                 onMonsterDead();
         }
 
+        /**
+         *
+         * Called when the player is dead.
+         *
+         */
         private function onPlayerDead():void
         {
+            // Flip over the player's tile to show the blood
             player.flip();
+
+            // Kill all sounds, including the BG music.
             soundManager.destroySounds(true);
+
+            // Play death sound
             soundManager.play(MHSoundClasses.DeathTheme);
 
+            // Clear the activeState object since the game is over
             activeState.clear();
 
+            // Show the game over activity after 2 seconds
             startNextActivityTimer(LoseActivity, 2);
         }
 
+        /**
+         *
+         * Called when the monster is dead.
+         *
+         */
         private function onMonsterDead():void
         {
+            // Flip over the monster's tile to show the blood.
             monster.flip();
+
+            // Kill all sounds, including the BG music.
             soundManager.destroySounds(true);
+
+            // Play win sound
             soundManager.play(MHSoundClasses.WinBattle);
+
+            // Increment the player by 1 level
             activeState.playerLevel += 1;
+
+            // Show the game over activity after 2 seconds
             startNextActivityTimer(WinActivity, 2);
         }
 
