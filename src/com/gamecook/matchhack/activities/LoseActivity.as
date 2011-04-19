@@ -22,10 +22,13 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.factories.CharacterFactory;
+    import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
+    import flash.text.TextField;
 
     /**
      *
@@ -37,6 +40,12 @@ package com.gamecook.matchhack.activities
 
         [Embed(source="../../../../../build/assets/you_lose.png")]
         private var YouLoseImage:Class;
+
+        [Embed(source="../../../../../build/assets/click_to_continue.png")]
+        private var ContinueImage:Class;
+
+        private var bonusTF:TextField;
+        private var scoreTF:TextField;
 
         public function LoseActivity(activityManager:IActivityManager, data:*)
         {
@@ -52,9 +61,36 @@ package com.gamecook.matchhack.activities
             youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
             youLose.y = fullSizeHeight - youLose.height - 50;
 
-            // Add click handler
+            var character:Bitmap = addChild(CharacterFactory.createPlayerBitmap()) as Bitmap;
+            character.x = (fullSizeWidth - character.width) * .5;
+            character.y = youLose.y + youLose.height + 15;
+
+            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, formatBonusText(), 160)) as TextField;
+            bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
+            bonusTF.y = character.y + character.height + 10;
+
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL+TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
+            scoreTF.y = bonusTF.y + bonusTF.height + 10;
+
+            // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
 
+            var continueLabel:Bitmap = addChild(Bitmap(new ContinueImage())) as Bitmap;
+            continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
+            continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
+
+
+        }
+
+        private function formatBonusText():String
+        {
+            var message:String = "SUCCESS BONUS\n" +
+                                 "Life: +"+activeState.playerLife+"\n" +
+                                 "Turns: "+activeState.levelTurns+"\n" +
+                                 "Level: x"+activeState.playerLevel;
+
+            return message;
         }
 
         private function onClick(event:MouseEvent):void

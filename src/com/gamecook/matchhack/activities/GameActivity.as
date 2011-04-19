@@ -131,6 +131,7 @@ package com.gamecook.matchhack.activities
 
             }
 
+            activeState.levelTurns = 0;
 
             player = tileContainer.addChild(new CharacterView("player", total / difficulty)) as CharacterView;
             monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
@@ -334,7 +335,8 @@ package com.gamecook.matchhack.activities
                 resetActiveTiles();
 
                 // Increment our turns counter in the activeState object
-                activeState.turns += 1;
+                activeState.turns ++;
+                activeState.levelTurns ++;
             }
 
         }
@@ -526,6 +528,9 @@ package com.gamecook.matchhack.activities
             if (quakeEffect) {
                 removeThread(quakeEffect)
             }
+
+            //Save State
+            activeState.playerLife = player.getLife();
 
             // Update status message
             updateStatusMessage("You have defeated the monster.");

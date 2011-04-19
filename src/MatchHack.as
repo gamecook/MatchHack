@@ -23,6 +23,8 @@
 package
 {
     import com.gamecook.matchhack.activities.SplashActivity;
+    import com.gamecook.matchhack.activities.StartActivity;
+    import com.gamecook.matchhack.activities.WinActivity;
     import com.gamecook.matchhack.managers.MHActivityManager;
     import com.gamecook.matchhack.managers.SingletonManager;
     import com.gamecook.matchhack.managers.SoundManager;

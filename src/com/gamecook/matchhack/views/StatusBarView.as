@@ -29,11 +29,10 @@
  */
 package com.gamecook.matchhack.views
 {
-    import flash.display.DisplayObject;
+    import com.gamecook.matchhack.factories.TextFieldFactory;
+
     import flash.display.Sprite;
     import flash.text.TextField;
-    import flash.text.TextFieldAutoSize;
-    import flash.text.TextFormat;
 
     import flashx.textLayout.formats.TextAlign;
 
@@ -44,9 +43,7 @@ package com.gamecook.matchhack.views
         private var scoreTF:TextField;
         private var levelTF:TextField;
         private var turnsTF:TextField;
-        private const SCORE_LABEL:String = "Score\n";
-        private const LEVEL_LABEL:String = "Level\n";
-        private const TURNS_LABEL:String = "Turns\n";
+
         private var _message:TextField;
 
         public function StatusBarView()
@@ -56,57 +53,34 @@ package com.gamecook.matchhack.views
 
         private function createDisplays():void
         {
-            var textFormatLarge:TextFormat = new TextFormat("system", 16, 0xffffff);
-            textFormatLarge.align = TextAlign.CENTER;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.TURNS_LABEL+TextFieldFactory.padScore())) as TextField;
 
-            scoreTF = addChild(createTextField(textFormatLarge, SCORE_LABEL+"999999")) as TextField;
-
-            levelTF= addChild(createTextField(textFormatLarge, LEVEL_LABEL+"99")) as TextField;
+            levelTF= addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.LEVEL_LABEL+TextFieldFactory.padLevel())) as TextField;
             levelTF.x = scoreTF.x + scoreTF.width;
 
-            turnsTF= addChild(createTextField(textFormatLarge, TURNS_LABEL+"999999")) as TextField;
+            turnsTF= addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.TURNS_LABEL+TextFieldFactory.padScore())) as TextField;
             turnsTF.x = levelTF.x + levelTF.width;
 
-
-            var textFormatSmall:TextFormat = new TextFormat("system", 8, 0xffffff);
-            textFormatSmall.align = TextAlign.CENTER;
-
-            _message = addChild(createTextField(textFormatSmall, "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.", turnsTF.x + turnsTF.width)) as TextField;
+            _message = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.", turnsTF.x + turnsTF.width)) as TextField;
             _message.y = scoreTF.height;
             clear();
         }
 
-        private function createTextField(textFormat:TextFormat, defaultText:String = "", width:int = 78):TextField
-        {
-            var textField:TextField = new TextField();
-            textField.defaultTextFormat = textFormat;
-            textField.text = defaultText;
-            textField.embedFonts = true;
-            textField.selectable = false;
-            textField.autoSize = TextFieldAutoSize.LEFT;
-            textField.multiline = true;
-            textField.width = width;
-            textField.wordWrap = true;
 
-            return textField;
-        }
 
         public function setScore(value:int):void
         {
-            var defaultText:String = "000000";
-            scoreTF.htmlText = SCORE_LABEL+defaultText.slice(0, defaultText.length - value.toString().length) + value.toString();
+            scoreTF.htmlText = TextFieldFactory.SCORE_LABEL+TextFieldFactory.padScore(value.toString());
         }
 
         public function setLevel(value:int):void
         {
-            var defaultText:String = "00";
-            levelTF.htmlText = LEVEL_LABEL+defaultText.slice(0, defaultText.length - value.toString().length) + value.toString();
+            levelTF.htmlText = TextFieldFactory.LEVEL_LABEL+TextFieldFactory.padLevel(value.toString());
         }
 
         public function setTurns(value:int):void
         {
-            var defaultText:String = "000000";
-            turnsTF.htmlText = TURNS_LABEL+defaultText.slice(0, defaultText.length - value.toString().length) + value.toString();
+            turnsTF.htmlText = TextFieldFactory.TURNS_LABEL+TextFieldFactory.padScore(value.toString());
         }
 
         public function setMessage(value:String):void
@@ -116,9 +90,9 @@ package com.gamecook.matchhack.views
 
         public function clear():void
         {
-            scoreTF.htmlText = SCORE_LABEL+"000000";
-            levelTF.htmlText = LEVEL_LABEL+"00";
-            turnsTF.htmlText = TURNS_LABEL+"000000";
+            scoreTF.htmlText = TextFieldFactory.SCORE_LABEL+TextFieldFactory.padScore();
+            levelTF.htmlText = TextFieldFactory.LEVEL_LABEL+TextFieldFactory.padLevel();
+            turnsTF.htmlText = TextFieldFactory.TURNS_LABEL+TextFieldFactory.padScore();
             _message.htmlText = "";
         }
 

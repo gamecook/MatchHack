@@ -55,6 +55,16 @@ package com.gamecook.matchhack.states
             _dataObject.playerLevel = value;
         }
 
+        public function get playerLife():int
+        {
+            return _dataObject.playerLife;
+        }
+
+        public function set playerLife(value:int):void
+        {
+            _dataObject.playerLife = value;
+        }
+
         public function get mute():Boolean
         {
             return _dataObject.hasOwnProperty("mute") ? _dataObject.mute : false;
@@ -98,10 +108,22 @@ package com.gamecook.matchhack.states
             _dataObject.score = value;
         }
 
+        public function get levelTurns():int
+        {
+            return _dataObject.levelTurns;
+        }
+
+        public function set levelTurns(value:int):void
+        {
+            _dataObject.levelTurns = value;
+        }
+
         override public function clear():void
         {
 
             super.clear();
+            _dataObject.playerLife = 0;
+            _dataObject.levelTurns = 0;
             _dataObject.score = 0;
             _dataObject.turns = 0;
             _dataObject.playerLevel = 0;
