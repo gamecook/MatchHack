@@ -28,14 +28,14 @@ package com.gamecook.matchhack.effects
 
     public class Quake extends GreenThread
     {
-        private var target:DisplayObject;
+        private var _target:DisplayObject;
 
         public function Quake(target:DisplayObject, intensity:Number = 0.05, duration:Number = 0.5, updateCallback:Function = null, finishCallback:Function = null)
         {
             super(updateCallback, finishCallback);
             defaultIntensity = intensity;
             defaultTime = duration * 1000;
-            this.target = target;
+            this._target = target;
         }
 
         /**
@@ -57,6 +57,8 @@ package com.gamecook.matchhack.effects
          * The amount of Y distortion to apply to the screen.
          */
         public var y:int;
+        private var defaultX:int;
+        private var defaultY:int;
 
 
         /**
@@ -82,8 +84,8 @@ package com.gamecook.matchhack.effects
 
         private function clearValues():void
         {
-            x = 0;
-            y = 0;
+            x = defaultX;
+            y = defaultY;
             _intensity = _defaultIntensity;
             _timer = _defaultTime;
         }
@@ -97,12 +99,12 @@ package com.gamecook.matchhack.effects
                 _timer -= elapsed;
                 if (_timer <= 0) {
                     _timer = 0;
-                    target.x = 0;
-                    target.y = 0;
+                    _target.x = defaultX;
+                    _target.y = defaultY;
                 }
                 else {
-                    target.x = (Math.random() * _intensity * target.width * .5);
-                    target.y = (Math.random() * _intensity * target.height * .5);
+                    _target.x = defaultX + (Math.random() * _intensity * _target.width * .5);
+                    _target.y = defaultY + (Math.random() * _intensity * _target.height * .5);
                 }
             }
             else {
@@ -118,6 +120,18 @@ package com.gamecook.matchhack.effects
         public function set defaultTime(value:Number):void
         {
             _defaultTime = value;
+        }
+
+        public function get target():DisplayObject
+        {
+            return _target;
+        }
+
+        public function set target(value:DisplayObject):void
+        {
+            _target = value;
+            defaultX = _target.x;
+            defaultY = _target.y;
         }
     }
 }

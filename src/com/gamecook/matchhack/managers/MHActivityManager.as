@@ -20,13 +20,6 @@
  * THE SOFTWARE.
  */
 
-/**
- * Created by IntelliJ IDEA.
- * User: jessefreeman
- * Date: 3/17/11
- * Time: 8:54 PM
- * To change this template use File | Settings | File Templates.
- */
 package com.gamecook.matchhack.managers
 {
     import com.google.analytics.GATracker;

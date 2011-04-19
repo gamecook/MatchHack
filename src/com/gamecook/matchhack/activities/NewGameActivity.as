@@ -105,6 +105,8 @@ package com.gamecook.matchhack.activities
             var difficultyImage:Bitmap = addChild(new DifficultyImage()) as Bitmap;
             difficultyImage.x = (fullSizeWidth - difficultyImage.width) * .5;
             difficultyImage.y = fullSizeHeight - difficultyImage.height - 25;
+
+            enableLogo();
         }
 
         /**

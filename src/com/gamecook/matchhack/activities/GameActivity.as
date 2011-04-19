@@ -23,10 +23,13 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.effects.Quake;
+    import com.gamecook.matchhack.effects.TypeTextEffect;
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
+    import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
@@ -34,6 +37,13 @@ package com.gamecook.matchhack.activities
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
+
+    import flash.text.TextField;
+
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormat;
+
+    import flashx.textLayout.formats.TextAlign;
 
     import uk.co.soulwire.display.PaperSprite;
 
@@ -55,6 +65,12 @@ package com.gamecook.matchhack.activities
         private var player:CharacterView;
         private var monster:CharacterView;
         private var difficulty:int;
+        private var statusBar:StatusBarView;
+        private var bonus:int = 0;
+        private var quakeEffect:Quake;
+        private var textEffect:TypeTextEffect;
+        private var bonusLabel:TextField;
+        private var gameBackground:Bitmap;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -77,9 +93,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
-            trace("Player Level", activeState.playerLevel,"\nTurns", activeState.turns);
-
-            var gameBackground:Bitmap = addChild(Bitmap(new GameBoardImage())) as Bitmap;
+            gameBackground = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
             gameBackground.y = fullSizeHeight - gameBackground.height;
 
@@ -97,7 +111,9 @@ package com.gamecook.matchhack.activities
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
 
-
+            statusBar = addChild(new StatusBarView())as StatusBarView;
+            statusBar.x = (fullSizeWidth - statusBar.width) * .5;
+            statusBar.y = logo.y + logo.height;
 
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
@@ -119,12 +135,48 @@ package com.gamecook.matchhack.activities
             player = tileContainer.addChild(new CharacterView("player", total / difficulty)) as CharacterView;
             monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
 
+            quakeEffect = new Quake(null);
+            textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
+
+            createBonusLabel();
 
             layoutTiles();
 
             enableLogo();
 
+            updateStatusBar();
 
+        }
+
+        private function createBonusLabel():void
+        {
+            var textFormatLarge:TextFormat = new TextFormat("system", 16, 0xffffff);
+            textFormatLarge.align = TextAlign.CENTER;
+
+            bonusLabel = addChild(new TextField()) as TextField;
+            bonusLabel.defaultTextFormat = textFormatLarge;
+            bonusLabel.text = "Bonus x3";
+            bonusLabel.embedFonts = true;
+            bonusLabel.selectable = false;
+            bonusLabel.autoSize = TextFieldAutoSize.LEFT;
+            bonusLabel.background = true;
+            bonusLabel.backgroundColor = 0x000000;
+            bonusLabel.visible = false;
+
+            bonusLabel.x = (fullSizeWidth - bonusLabel.width) * .5;
+            bonusLabel.y = gameBackground.y + gameBackground.height - (bonusLabel.height + 2);
+        }
+
+        private function onTextEffectUpdate():void
+        {
+            //soundManager.play(MHSoundClasses.TypeSound);
+        }
+
+        private function updateStatusBar():void
+        {
+            statusBar.setScore(activeState.score);
+            statusBar.setLevel(activeState.playerLevel);
+            statusBar.setTurns(activeState.turns);
         }
 
         /**
@@ -198,6 +250,9 @@ package com.gamecook.matchhack.activities
          */
         private function onClick(event:MouseEvent):void
         {
+            // Clear status message
+            statusBar.setMessage("");
+
             // Test to see if a tile is flipping
             if (!flipping)
             {
@@ -246,6 +301,7 @@ package com.gamecook.matchhack.activities
          */
         private function onFlipComplete(event:Event):void
         {
+
             // Get the tile that recently flipped
             var target:PaperSprite = event.target as PaperSprite;
 
@@ -356,15 +412,35 @@ package com.gamecook.matchhack.activities
          */
         private function onNoMatch():void
         {
+            if (quakeEffect) {
+                quakeEffect.target = player;
+                addThread(quakeEffect);
+            }
+
+            // Reset bonus flag
+            resetBonus();
+
             // Take away 1 HP from the player
             player.subtractLife(1);
 
             // Play attack sound
             soundManager.play(MHSoundClasses.EnemyAttack);
 
+            // Update status message
+            updateStatusMessage("You did not find a match.\nYou lose 1 HP from the monster's attack.");
+
+            // Update status before testing if the player is dead
+            updateStatusBar();
+
             // Test to see if the player is dead
             if (player.isDead())
                 onPlayerDead();
+        }
+
+        private function resetBonus():void
+        {
+            bonus = 0;
+            bonusLabel.visible = false;
         }
 
         /**
@@ -374,15 +450,40 @@ package com.gamecook.matchhack.activities
          */
         private function onMatch():void
         {
+            if (quakeEffect) {
+                quakeEffect.target = monster;
+                addThread(quakeEffect);
+            }
+
+            // Increase bonus flag
+            increaseBonus();
+
             // Take away 1 HP from the monster
             monster.subtractLife(1);
 
             // Play attack sound
             soundManager.play(MHSoundClasses.PotionSound);
 
+            // Update status message
+            updateStatusMessage("You have found a match. Combo x"+bonus+".\nThe monster loses 1 HP from your attack.");
+
+            activeState.score += 1 + bonus;
+
+            // Update status before testing for monster being dead
+            updateStatusBar();
+
             // Test to see if the monster is dead
             if (monster.isDead())
                 onMonsterDead();
+
+        }
+
+        private function increaseBonus():void
+        {
+            bonus ++;
+            bonusLabel.text = "Bonus x"+bonus;
+            if(bonus > 0)
+                bonusLabel.visible = true;
         }
 
         /**
@@ -392,6 +493,13 @@ package com.gamecook.matchhack.activities
          */
         private function onPlayerDead():void
         {
+            if (quakeEffect) {
+                removeThread(quakeEffect)
+            }
+
+            // Update status message
+            updateStatusMessage("You have been defeated.");
+
             // Flip over the player's tile to show the blood
             player.flip();
 
@@ -415,6 +523,13 @@ package com.gamecook.matchhack.activities
          */
         private function onMonsterDead():void
         {
+            if (quakeEffect) {
+                removeThread(quakeEffect)
+            }
+
+            // Update status message
+            updateStatusMessage("You have defeated the monster.");
+
             // Flip over the monster's tile to show the blood.
             monster.flip();
 
@@ -424,11 +539,25 @@ package com.gamecook.matchhack.activities
             // Play win sound
             soundManager.play(MHSoundClasses.WinBattle);
 
-            // Increment the player by 1 level
-            activeState.playerLevel += 1;
-
             // Show the game over activity after 2 seconds
             startNextActivityTimer(WinActivity, 2);
+        }
+
+        public function updateStatusMessage(value:String):void
+        {
+            if (value.length > 0) {
+                if (textEffect) {
+                    textEffect.newMessage(value, 2);
+                    addThread(textEffect);
+                    value = "";
+                }
+                else {
+                    statusBar.message.text = value;
+                }
+            }
+            else {
+                statusBar.message.text = value;
+            }
         }
 
     }

@@ -56,7 +56,7 @@ package com.gamecook.matchhack.views
             {
                 characterImage = container.addChild(CharacterFactory.createMonster()) as Bitmap;
             }
-            characterImage.x -= 5;
+            characterImage.x -= 2;
             lifeBar.x += (64 - lifeBar.width);
             container.x -= 32;
             container.y -= 32;

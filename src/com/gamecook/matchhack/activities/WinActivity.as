@@ -49,6 +49,9 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            // Increment the player by 1 level
+            activeState.playerLevel += 1;
+
             //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
             youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
