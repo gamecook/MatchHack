@@ -36,7 +36,7 @@ package
     import flash.display.StageScaleMode;
     import flash.events.Event;
 
-    [SWF(width="480",height="800",backgroundColor="#000000",frameRate="60")]
+    [SWF(width="480",height="700",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
     {
 
@@ -88,7 +88,6 @@ package
         {
             soundManager.playSounds();
             super.onFlashResume(event);
-
         }
 
         /**
