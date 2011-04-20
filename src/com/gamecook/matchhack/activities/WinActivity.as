@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.CharacterFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
@@ -63,7 +64,7 @@ package com.gamecook.matchhack.activities
             youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
             youWin.y = logo.y + logo.height + 30;
 
-            var character:Bitmap = addChild(CharacterFactory.createPlayerBitmap()) as Bitmap;
+            var character:Bitmap = addChild(data.characterImage) as Bitmap;
             character.x = (fullSizeWidth - character.width) * .5;
             character.y = youWin.y + youWin.height + 15;
 
@@ -75,6 +76,8 @@ package com.gamecook.matchhack.activities
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
+            activeState.score = generateNewScore();
+
             // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
 
@@ -82,20 +85,36 @@ package com.gamecook.matchhack.activities
             continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
+            var countUpEffect:CountUpTextEffect = new CountUpTextEffect(scoreTF);
+            countUpEffect.newValue(activeState.score, scoreTF.text);
+            addThread(countUpEffect);
+
+        }
+
+        private function generateNewScore():int
+        {
+            var score:int = 0;
+
+            score += activeState.playerLife;
+            score += activeState.levelTurns;
+            score *= activeState.playerLevel;
+
+            return score + activeState.score;
         }
 
         private function formatBonusText():String
         {
             var message:String = "SUCCESS BONUS\n" +
                                  "Life: +"+activeState.playerLife+"\n" +
-                                 "Turns: "+activeState.levelTurns+"\n" +
-                                 "Level: x"+activeState.playerLevel;
+                                 "Turns: +"+activeState.levelTurns+"\n" +
+                                 "Level: x"+activeState.playerLevel+"\n";
 
             return message;
         }
 
         private function onClick(event:MouseEvent):void
         {
+            activeState.playerLevel ++;
             soundManager.destroySounds(true);
             soundManager.play(MHSoundClasses.WalkStairsSound);
             nextActivity(GameActivity);

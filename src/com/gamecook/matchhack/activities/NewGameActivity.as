@@ -145,7 +145,7 @@ package com.gamecook.matchhack.activities
             activeState.activeGame = true;
 
             // Go to next activity, GameActivity
-            nextActivity(GameActivity);
+            nextActivity(LoadingActivity);
         }
     }
 }

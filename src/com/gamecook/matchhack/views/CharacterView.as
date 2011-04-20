@@ -47,6 +47,8 @@ package com.gamecook.matchhack.views
             container = new Sprite();
 
             lifeBar = container.addChild(new LifeBarView(life)) as LifeBarView;
+            lifeBar.x = -2;
+            lifeBar.y = 2;
 
             if (name == PLAYER)
             {
@@ -93,5 +95,9 @@ package com.gamecook.matchhack.views
             return lifeBar.getTotal();
         }
 
+        public function getImage():Bitmap
+        {
+            return characterImage;
+        }
     }
 }

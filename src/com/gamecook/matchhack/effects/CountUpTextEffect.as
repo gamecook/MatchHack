@@ -26,29 +26,44 @@ package com.gamecook.matchhack.effects
 
     import flash.text.TextField;
 
-    public class TypeTextEffect extends GreenThread
+    public class CountUpTextEffect extends GreenThread
     {
         private var target:TextField;
-        private var message:String;
+        private var value:Number;
         private var speed:int;
         private var counter:int = 0;
+        private var paddedText:String;
 
-        public function TypeTextEffect(target:TextField, updateCallback:Function = null, finishCallback:Function = null)
+        public function CountUpTextEffect(target:TextField, updateCallback:Function = null, finishCallback:Function = null)
         {
             this.target = target;
             super(updateCallback, finishCallback);
         }
 
-        public function newMessage(message:String, speed:int = 1):void
+        public function newValue(value:Number, paddedText:String = ""):void
         {
-            this.speed = speed;
-            this.message = message;
+            speed = 1;
+            if(value > 100)
+            {
+                speed = 10;
+            }
+            else if(value > 500)
+            {
+                speed = 50;
+            }
+            else if(value > 1000)
+            {
+                speed = 100;
+            }
+
+            this.paddedText = paddedText;
+            this.value = value;
         }
 
 
         override public function start():void
         {
-            target.text = "";
+            target.text = paddedText;
             counter = 0;
             super.start();
         }
@@ -57,14 +72,18 @@ package com.gamecook.matchhack.effects
         {
             super.run(elapsed);
             counter += speed;
-            if (counter > message.length)
-                counter = message.length;
+            if (counter > value)
+                counter = value;
 
-            target.text = message.substr(0, counter);
+            target.text = pad(paddedText, counter.toString());
 
-
-            if (counter == message.length)
+            if (counter == value)
                 finish();
+        }
+
+        private function pad(padding:String, value:String):String
+        {
+            return padding.slice(0, padding.length - value.toString().length) + value.toString()
         }
     }
 }

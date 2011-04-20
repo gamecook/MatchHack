@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.CharacterFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.managers.IActivityManager;
@@ -59,9 +60,9 @@ package com.gamecook.matchhack.activities
             // Add you lose bitmap.
             var youLose:Bitmap = addChild(Bitmap(new YouLoseImage())) as Bitmap;
             youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
-            youLose.y = fullSizeHeight - youLose.height - 50;
+            youLose.y = logo.y + logo.height + 30;
 
-            var character:Bitmap = addChild(CharacterFactory.createPlayerBitmap()) as Bitmap;
+            var character:Bitmap = addChild(data.characterImage) as Bitmap;
             character.x = (fullSizeWidth - character.width) * .5;
             character.y = youLose.y + youLose.height + 15;
 
@@ -80,15 +81,20 @@ package com.gamecook.matchhack.activities
             continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
+            var countUpEffect:CountUpTextEffect = new CountUpTextEffect(scoreTF);
+            countUpEffect.newValue(activeState.score, scoreTF.text);
+            addThread(countUpEffect);
 
+            // Clear out the rest of the activeState values since the game is over.
+            activeState.clear();
         }
 
         private function formatBonusText():String
         {
-            var message:String = "SUCCESS BONUS\n" +
-                                 "Life: +"+activeState.playerLife+"\n" +
-                                 "Turns: "+activeState.levelTurns+"\n" +
-                                 "Level: x"+activeState.playerLevel;
+            var message:String = "GAME STATS\n" +
+                                 "Level: "+activeState.playerLevel+"\n" +
+                                 "Total Turns: "+activeState.levelTurns+"\n" +
+                                 "Best Bonus: x"+activeState.bestBonus;
 
             return message;
         }

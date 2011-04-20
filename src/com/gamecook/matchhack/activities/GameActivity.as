@@ -57,6 +57,10 @@ package com.gamecook.matchhack.activities
 
         [Embed(source="../../../../../build/assets/game_board.png")]
         private var GameBoardImage:Class;
+
+        [Embed(source="../../../../../build/assets/tile_highlight.png")]
+        private var TileHighlightImage:Class;
+
         private var flipping:Boolean;
         private var activeTiles:Array = [];
         private var maxActiveTiles:int = 1;
@@ -71,7 +75,7 @@ package com.gamecook.matchhack.activities
         private var textEffect:TypeTextEffect;
         private var bonusLabel:TextField;
         private var gameBackground:Bitmap;
-
+        private var highlightInstances:Array = [];
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
@@ -133,7 +137,8 @@ package com.gamecook.matchhack.activities
 
             activeState.levelTurns = 0;
 
-            player = tileContainer.addChild(new CharacterView("player", total / difficulty)) as CharacterView;
+            var life:int = total / ((difficulty == 1) ? difficulty : (difficulty-1));
+            player = tileContainer.addChild(new CharacterView("player", life)) as CharacterView;
             monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
 
             quakeEffect = new Quake(null);
@@ -141,12 +146,30 @@ package com.gamecook.matchhack.activities
 
             createBonusLabel();
 
+            createHighlights();
+
             layoutTiles();
 
             enableLogo();
 
             updateStatusBar();
 
+            // Update status message
+            updateStatusMessage("You have entered level "+activeState.playerLevel+" of the dungeon.");
+
+        }
+
+        private function createHighlights():void
+        {
+            var i:int;
+            var tmpHighlight:Bitmap;
+            var total:int = maxActiveTiles + 1;
+            for(i = 0; i < total; i++)
+            {
+                tmpHighlight = tileContainer.addChild(new TileHighlightImage()) as Bitmap;
+                tmpHighlight.visible = false;
+                highlightInstances.push(tmpHighlight);
+            }
         }
 
         private function createBonusLabel():void
@@ -270,6 +293,11 @@ package com.gamecook.matchhack.activities
                 // push the tile into the active tile array
                 activeTiles.push(target);
 
+                var highlight:Bitmap = highlightInstances[activeTiles.length-1];
+                highlight.visible = true;
+                highlight.x = target.x - (target.width * .5) + 1;
+                highlight.y = target.y - (target.height * .5) + 1;
+
                 // Check if the difficulty is 1, we need to do handle this different for the easy level.
                 if(difficulty > 1)
                 {
@@ -379,6 +407,9 @@ package com.gamecook.matchhack.activities
 
                     }
                 }
+
+                if(highlightInstances[i])
+                    highlightInstances[i].visible = false;
             }
 
             // Validate match
@@ -467,7 +498,7 @@ package com.gamecook.matchhack.activities
             soundManager.play(MHSoundClasses.PotionSound);
 
             // Update status message
-            updateStatusMessage("You have found a match. Combo x"+bonus+".\nThe monster loses 1 HP from your attack.");
+            updateStatusMessage("You have found a match!\nThe monster loses 1 HP from your attack.");
 
             activeState.score += 1 + bonus;
 
@@ -483,6 +514,8 @@ package com.gamecook.matchhack.activities
         private function increaseBonus():void
         {
             bonus ++;
+            activeState.bestBonus= bonus;
+
             bonusLabel.text = "Bonus x"+bonus;
             if(bonus > 0)
                 bonusLabel.visible = true;
@@ -500,7 +533,7 @@ package com.gamecook.matchhack.activities
             }
 
             // Update status message
-            updateStatusMessage("You have been defeated.");
+            updateStatusMessage("You have been defeated!");
 
             // Flip over the player's tile to show the blood
             player.flip();
@@ -511,11 +544,11 @@ package com.gamecook.matchhack.activities
             // Play death sound
             soundManager.play(MHSoundClasses.DeathTheme);
 
-            // Clear the activeState object since the game is over
-            activeState.clear();
+            // Clear the activeGame so player can't exit and try again.
+            activeState.activeGame = false;
 
             // Show the game over activity after 2 seconds
-            startNextActivityTimer(LoseActivity, 2);
+            startNextActivityTimer(LoseActivity, 2, {characterImage: monster.getImage()});
         }
 
         /**
@@ -545,7 +578,7 @@ package com.gamecook.matchhack.activities
             soundManager.play(MHSoundClasses.WinBattle);
 
             // Show the game over activity after 2 seconds
-            startNextActivityTimer(WinActivity, 2);
+            startNextActivityTimer(WinActivity, 2, {characterImage: player.getImage()});
         }
 
         public function updateStatusMessage(value:String):void

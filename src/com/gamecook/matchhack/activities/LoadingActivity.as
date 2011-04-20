@@ -25,6 +25,7 @@ package com.gamecook.matchhack.activities
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
+    import flash.events.MouseEvent;
 
     /**
      *
@@ -38,12 +39,8 @@ package com.gamecook.matchhack.activities
         [Embed(source="../../../../../build/assets/instructions.png")]
         private var InstructionsImage:Class;
 
-        [Embed(source="../../../../../build/assets/loading.png")]
-        private var LoadingImage:Class;
-
-        private var textCounter:int = 0;
-        private var textDelay:int = 300;
-        private var loading:Bitmap;
+        [Embed(source="../../../../../build/assets/click_to_continue.png")]
+        private var ContinueImage:Class;
 
         public function LoadingActivity(activityManager:IActivityManager, data:*)
         {
@@ -59,28 +56,19 @@ package com.gamecook.matchhack.activities
             instructions.x = (fullSizeWidth - instructions.width) * .5;
             instructions.y = logo.x + logo.height + 15;
 
-            // Add loading text display.
-            loading = addChild(new LoadingImage()) as Bitmap
-            loading.x = (fullSizeWidth - loading.width) * .5;
-            loading.y = instructions.y + instructions.height + 30;
+            var continueLabel:Bitmap = addChild(Bitmap(new ContinueImage())) as Bitmap;
+            continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
+            continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
-            // Start a timer to go to the next activity after 3 seconds
-            startNextActivityTimer(GameActivity, 3);
+            // Add event listener to activity for click.
+            addEventListener(MouseEvent.CLICK, onClick);
         }
 
-
-        override public function update(elapsed:Number = 0):void
+        private function onClick(event:MouseEvent):void
         {
-            super.update(elapsed);
-
-            // Handles the dealy between showing and highlights the loading bitmap.
-            textCounter += elapsed;
-
-            if (textCounter >= textDelay)
-            {
-                textCounter = 0;
-                loading.visible = !loading.visible;
-            }
+            // Return to start activity
+            nextActivity(GameActivity);
         }
+
     }
 }

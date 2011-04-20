@@ -51,7 +51,7 @@ package com.gamecook.matchhack.activities
             enableLogo();
 
             // create a time delay to show the StartActivity
-            startNextActivityTimer(StartActivity, 5);
+            startNextActivityTimer(StartActivity, 10);
 
             // Add click handler to skip the timer and go to start
             addEventListener(MouseEvent.CLICK, onClick)

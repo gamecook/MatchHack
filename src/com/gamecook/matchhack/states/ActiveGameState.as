@@ -122,6 +122,7 @@ package com.gamecook.matchhack.states
         {
 
             super.clear();
+            _dataObject.bestBonus = 0;
             _dataObject.playerLife = 0;
             _dataObject.levelTurns = 0;
             _dataObject.score = 0;
@@ -129,6 +130,17 @@ package com.gamecook.matchhack.states
             _dataObject.playerLevel = 0;
             _dataObject.activeGame = false;
             _dataObject.mute = soundManager.mute;
+        }
+
+        public function set bestBonus(value:int):void
+        {
+            if(value > _dataObject.bestBonus)
+                _dataObject.bestBonus = value;
+        }
+
+        public function get bestBonus():int
+        {
+            return _dataObject.bestBonus;
         }
     }
 }
