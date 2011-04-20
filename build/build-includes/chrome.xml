@@ -13,7 +13,7 @@
 </target>
 
 <target name="package-chrome-app" depends="setup-manifest">
-    <zip destfile="chrome/${project.name}.zip" basedir="${bin.loc}" excludes="*.cache" />
+    <zip destfile="${chrome.loc}/${project.name.versioned}.zip" basedir="${bin.loc}" excludes="*.cache" />
 </target>
 
 </project>
