@@ -29,8 +29,6 @@ package com.gamecook.matchhack.activities
     import flash.display.SimpleButton;
     import flash.events.MouseEvent;
 
-    import org.osmf.elements.f4mClasses.Media;
-
     /**
      *
      * This handles creating a new game, setting the difficulty level and resetting the ActiveGameState object
@@ -120,21 +118,18 @@ package com.gamecook.matchhack.activities
             var difficulty:int;
 
             // Set up difficulty mode based on currently click on target's name.
-            switch(event.target.name)
+            switch (event.target.name)
             {
                 case EASY:
                     difficulty = 1;
-                break;
+                    break;
                 case MEDIUM:
                     difficulty = 2;
-                break;
+                    break;
                 case HARD:
                     difficulty = 3;
-                break;
+                    break;
             }
-
-            // Play walking sound for player entering the new game
-            soundManager.play(MHSoundClasses.WalkStairsSound);
 
             // Clear the active state for a new game
             activeState.clear();

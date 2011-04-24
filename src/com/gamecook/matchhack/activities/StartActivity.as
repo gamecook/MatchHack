@@ -92,7 +92,7 @@ package com.gamecook.matchhack.activities
             var creditsBTN:SimpleButton = addChild(new SimpleButton(new ContinueUp(), new ContinueOver(), new ContinueOver(), new ContinueUp())) as SimpleButton;
 
             // Check to see if an activeGame exists
-            if(activeState.activeGame)
+            if (activeState.activeGame)
             {
                 creditsBTN.upState = new ContinueUp();
                 creditsBTN.overState = new ContinueOver();

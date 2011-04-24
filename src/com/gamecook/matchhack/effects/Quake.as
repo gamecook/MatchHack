@@ -95,19 +95,23 @@ package com.gamecook.matchhack.effects
          */
         override public function run(elapsed:Number = 0):void
         {
-            if (_timer > 0) {
+            if (_timer > 0)
+            {
                 _timer -= elapsed;
-                if (_timer <= 0) {
+                if (_timer <= 0)
+                {
                     _timer = 0;
                     _target.x = defaultX;
                     _target.y = defaultY;
                 }
-                else {
+                else
+                {
                     _target.x = defaultX + (Math.random() * _intensity * _target.width * .5);
                     _target.y = defaultY + (Math.random() * _intensity * _target.height * .5);
                 }
             }
-            else {
+            else
+            {
                 finish();
             }
         }

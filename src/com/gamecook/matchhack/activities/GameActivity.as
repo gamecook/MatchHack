@@ -32,14 +32,14 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
+    import com.jessefreeman.factivity.utils.DeviceUtil;
+
     import flash.display.Bitmap;
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
-
     import flash.text.TextField;
-
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
 
@@ -76,6 +76,7 @@ package com.gamecook.matchhack.activities
         private var bonusLabel:TextField;
         private var gameBackground:Bitmap;
         private var highlightInstances:Array = [];
+
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
@@ -115,7 +116,7 @@ package com.gamecook.matchhack.activities
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
 
-            statusBar = addChild(new StatusBarView())as StatusBarView;
+            statusBar = addChild(new StatusBarView()) as StatusBarView;
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
             statusBar.y = logo.y + logo.height;
 
@@ -130,18 +131,19 @@ package com.gamecook.matchhack.activities
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
                 tile.name = "type" + typeIndex;
-                if(difficulty == 1)
+                if (difficulty == 1)
                     tile.flip();
 
             }
 
             activeState.levelTurns = 0;
 
-            var life:int = total / ((difficulty == 1) ? difficulty : (difficulty-1));
+            var life:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
             player = tileContainer.addChild(new CharacterView("player", life)) as CharacterView;
             monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
 
-            quakeEffect = new Quake(null);
+            if(DeviceUtil.os != DeviceUtil.IOS)
+                quakeEffect = new Quake(null);
             textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
 
             createBonusLabel();
@@ -155,7 +157,7 @@ package com.gamecook.matchhack.activities
             updateStatusBar();
 
             // Update status message
-            updateStatusMessage("You have entered level "+activeState.playerLevel+" of the dungeon.");
+            updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 
         }
 
@@ -164,7 +166,7 @@ package com.gamecook.matchhack.activities
             var i:int;
             var tmpHighlight:Bitmap;
             var total:int = maxActiveTiles + 1;
-            for(i = 0; i < total; i++)
+            for (i = 0; i < total; i++)
             {
                 tmpHighlight = tileContainer.addChild(new TileHighlightImage()) as Bitmap;
                 tmpHighlight.visible = false;
@@ -293,13 +295,13 @@ package com.gamecook.matchhack.activities
                 // push the tile into the active tile array
                 activeTiles.push(target);
 
-                var highlight:Bitmap = highlightInstances[activeTiles.length-1];
+                var highlight:Bitmap = highlightInstances[activeTiles.length - 1];
                 highlight.visible = true;
                 highlight.x = target.x - (target.width * .5) + 1;
                 highlight.y = target.y - (target.height * .5) + 1;
 
                 // Check if the difficulty is 1, we need to do handle this different for the easy level.
-                if(difficulty > 1)
+                if (difficulty > 1)
                 {
 
                     // We are about to flip the tile. Add a complete event listener so we know when it's done.
@@ -408,7 +410,7 @@ package com.gamecook.matchhack.activities
                     }
                 }
 
-                if(highlightInstances[i])
+                if (highlightInstances[i])
                     highlightInstances[i].visible = false;
             }
 
@@ -430,7 +432,7 @@ package com.gamecook.matchhack.activities
             for each (var tile:PaperSprite in activeTiles)
             {
                 // Make sure the difficulty is higher then easy
-                if(difficulty > 1)
+                if (difficulty > 1)
                     tile.flip();
             }
 
@@ -445,7 +447,8 @@ package com.gamecook.matchhack.activities
          */
         private function onNoMatch():void
         {
-            if (quakeEffect) {
+            if (quakeEffect)
+            {
                 quakeEffect.target = player;
                 addThread(quakeEffect);
             }
@@ -483,7 +486,8 @@ package com.gamecook.matchhack.activities
          */
         private function onMatch():void
         {
-            if (quakeEffect) {
+            if (quakeEffect)
+            {
                 quakeEffect.target = monster;
                 addThread(quakeEffect);
             }
@@ -514,10 +518,10 @@ package com.gamecook.matchhack.activities
         private function increaseBonus():void
         {
             bonus ++;
-            activeState.bestBonus= bonus;
+            activeState.bestBonus = bonus;
 
-            bonusLabel.text = "Bonus x"+bonus;
-            if(bonus > 0)
+            bonusLabel.text = "Bonus x" + bonus;
+            if (bonus > 0)
                 bonusLabel.visible = true;
         }
 
@@ -528,7 +532,8 @@ package com.gamecook.matchhack.activities
          */
         private function onPlayerDead():void
         {
-            if (quakeEffect) {
+            if (quakeEffect)
+            {
                 removeThread(quakeEffect)
             }
 
@@ -558,7 +563,8 @@ package com.gamecook.matchhack.activities
          */
         private function onMonsterDead():void
         {
-            if (quakeEffect) {
+            if (quakeEffect)
+            {
                 removeThread(quakeEffect)
             }
 
@@ -583,17 +589,21 @@ package com.gamecook.matchhack.activities
 
         public function updateStatusMessage(value:String):void
         {
-            if (value.length > 0) {
-                if (textEffect) {
+            if (value.length > 0)
+            {
+                if (textEffect)
+                {
                     textEffect.newMessage(value, 2);
                     addThread(textEffect);
                     value = "";
                 }
-                else {
+                else
+                {
                     statusBar.message.text = value;
                 }
             }
-            else {
+            else
+            {
                 statusBar.message.text = value;
             }
         }

@@ -23,7 +23,6 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.effects.CountUpTextEffect;
-    import com.gamecook.matchhack.factories.CharacterFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.managers.IActivityManager;
@@ -72,7 +71,7 @@ package com.gamecook.matchhack.activities
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = character.y + character.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL+TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -105,9 +104,9 @@ package com.gamecook.matchhack.activities
         private function formatBonusText():String
         {
             var message:String = "SUCCESS BONUS\n" +
-                                 "Life: +"+activeState.playerLife+"\n" +
-                                 "Turns: +"+activeState.levelTurns+"\n" +
-                                 "Level: x"+activeState.playerLevel+"\n";
+                    "Life: +" + activeState.playerLife + "\n" +
+                    "Turns: +" + activeState.levelTurns + "\n" +
+                    "Level: x" + activeState.playerLevel + "\n";
 
             return message;
         }

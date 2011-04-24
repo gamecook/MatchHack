@@ -43,15 +43,15 @@ package com.gamecook.matchhack.effects
         public function newValue(value:Number, paddedText:String = ""):void
         {
             speed = 1;
-            if(value > 100)
+            if (value > 100)
             {
                 speed = 10;
             }
-            else if(value > 500)
+            else if (value > 500)
             {
                 speed = 50;
             }
-            else if(value > 1000)
+            else if (value > 1000)
             {
                 speed = 100;
             }

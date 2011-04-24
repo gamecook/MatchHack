@@ -23,31 +23,27 @@
 package
 {
     import com.gamecook.matchhack.activities.SplashActivity;
-    import com.gamecook.matchhack.activities.StartActivity;
-    import com.gamecook.matchhack.activities.WinActivity;
-    import com.gamecook.matchhack.managers.MHActivityManager;
-    import com.gamecook.matchhack.managers.SingletonManager;
-    import com.gamecook.matchhack.managers.SoundManager;
-    import com.google.analytics.GATracker;
+    import com.gamecook.matchhack.analytics.GoogleTracker;
     import com.jessefreeman.factivity.AbstractApplication;
     import com.jessefreeman.factivity.activities.BaseActivity;
+    import com.jessefreeman.factivity.analytics.ITrack;
+    import com.jessefreeman.factivity.managers.ActivityManager;
+    import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
-    import flash.events.Event;
 
     [SWF(width="480",height="700",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
     {
 
-        protected var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
-        private var tracker:GATracker;
+        private var tracker:ITrack;
         private var scale:Number = 1;
 
         /*
-            You will need to create a class called analytics.as with the following in it:
+         You will need to create a class called analytics.as with the following in it:
 
-            private var key:String = "UA-xxxxxxxx-x";
+         private var key:String = "UA-xxxxxxxx-x";
 
          */
         include "analytics.as";
@@ -55,16 +51,16 @@ package
         public function MatchHack()
         {
             // Automatically figures out the scale based on stage's height. Used to scale up on each device.
-            scale = stage.stageHeight / 400;
+            scale = DeviceUtil.getScreenHeight(stage) / 400;
 
             // Google Analytics Tracker
-            tracker = new GATracker(this, key, "AS3", false);
+            tracker = new GoogleTracker(this, key, "AS3", false);
 
             // Configures the stage
             configureStage();
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
-            super(new MHActivityManager(tracker), SplashActivity, 0, 0, scale)
+            super(new ActivityManager(tracker), SplashActivity, 0, 0, scale)
         }
 
         private function configureStage():void
@@ -74,32 +70,9 @@ package
             stage.scaleMode = StageScaleMode.NO_SCALE;
 
             // Set up the screen size for BaseActivity
-            BaseActivity.fullSizeWidth = stage.stageWidth / scale;
-            BaseActivity.fullSizeHeight = stage.stageHeight / scale;
+            BaseActivity.fullSizeWidth = DeviceUtil.getScreenWidth(stage) / scale;
+            BaseActivity.fullSizeHeight = DeviceUtil.getScreenHeight(stage) / scale;
         }
 
-        /**
-         *
-         * Called when the game get's focus. All sounds should resume.
-         *
-         * @param event
-         */
-        override protected function onFlashResume (event:Event):void
-        {
-            soundManager.playSounds();
-            super.onFlashResume(event);
-        }
-
-        /**
-         *
-         * Called when the game loses focus. All sounds are killed.
-         *
-         * @param event
-         */
-        override protected function onFlashDeactivate (event:Event):void
-        {
-            soundManager.pauseSounds();
-            super.onFlashDeactivate(event);
-        }
     }
 }

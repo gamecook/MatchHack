@@ -20,14 +20,33 @@
  * THE SOFTWARE.
  */
 
-package com.gamecook.matchhack.states
+/**
+ * Created by IntelliJ IDEA.
+ * User: jessefreeman
+ * Date: 4/24/11
+ * Time: 10:30 AM
+ * To change this template use File | Settings | File Templates.
+ */
+package com.gamecook.matchhack.analytics
 {
-    public interface IStateObject
+    import com.google.analytics.GATracker;
+    import com.google.analytics.debug.DebugConfiguration;
+    import com.google.analytics.v4.Configuration;
+    import com.jessefreeman.factivity.analytics.ITrack;
+
+    import flash.display.DisplayObject;
+
+    public class GoogleTracker extends GATracker implements ITrack
     {
-        function load():void;
 
-        function save():String;
+        public function GoogleTracker(a:DisplayObject, a2:String, a3:String = "AS3", a4:Boolean = false, a5:Configuration = null, a6:DebugConfiguration = null)
+        {
+            super(a, a2, a3, a4, a5, a6);
+        }
 
-        function clear():void;
+        override public function trackPageview(a:String = ""):void
+        {
+            super.trackPageview(a);
+        }
     }
 }

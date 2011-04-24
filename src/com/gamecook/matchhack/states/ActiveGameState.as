@@ -22,8 +22,9 @@
 
 package com.gamecook.matchhack.states
 {
-    import com.gamecook.matchhack.managers.SingletonManager;
-    import com.gamecook.matchhack.managers.SoundManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.managers.SoundManager;
+    import com.jessefreeman.factivity.state.AbstractStateObject;
 
     public class ActiveGameState extends AbstractStateObject
     {
@@ -134,7 +135,7 @@ package com.gamecook.matchhack.states
 
         public function set bestBonus(value:int):void
         {
-            if(value > _dataObject.bestBonus)
+            if (value > _dataObject.bestBonus)
                 _dataObject.bestBonus = value;
         }
 

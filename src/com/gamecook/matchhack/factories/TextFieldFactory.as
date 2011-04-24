@@ -41,8 +41,8 @@ package com.gamecook.matchhack.factories
         private static const DEFAULT_SCORE_PADDING:String = "000000";
         private static const DEFAULT_LEVEL_PADDING:String = "00";
 
-        public static const textFormatLarge:TextFormat = new TextFormat("system", 16, 0xffffff,null,null,null,null,null,"center");
-        public static const textFormatSmall:TextFormat = new TextFormat("system", 8, 0xffffff,null,null,null,null,null,"left");
+        public static const textFormatLarge:TextFormat = new TextFormat("system", 16, 0xffffff, null, null, null, null, null, "center");
+        public static const textFormatSmall:TextFormat = new TextFormat("system", 8, 0xffffff, null, null, null, null, null, "left");
 
         public static function createTextField(textFormat:TextFormat, defaultText:String = "", width:int = 78):TextField
         {
@@ -63,6 +63,7 @@ package com.gamecook.matchhack.factories
         {
             return pad(DEFAULT_SCORE_PADDING, value);
         }
+
         public static function padLevel(value:String = ""):String
         {
             return pad(DEFAULT_LEVEL_PADDING, value);

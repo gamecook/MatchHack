@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.managers.IActivityManager;
 
     import flash.display.Bitmap;
@@ -66,6 +67,9 @@ package com.gamecook.matchhack.activities
 
         private function onClick(event:MouseEvent):void
         {
+
+            // Play walking sound for player entering the new game
+            soundManager.play(MHSoundClasses.WalkStairsSound);
             // Return to start activity
             nextActivity(GameActivity);
         }

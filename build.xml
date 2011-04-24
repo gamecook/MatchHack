@@ -10,31 +10,17 @@
     <!-- Add the ant-contrib tasks -->
     <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${lib.loc}/ant-contrib.jar" />
 
-    <import file="${includes.loc}/logging.xml" />
+
     <import file="${includes.loc}/misc.xml" />
-    <import file="${includes.loc}/test.xml" />
-    <import file="${includes.loc}/asdoc.xml" />
     <import file="${includes.loc}/package-air.xml" />
     <import file="${includes.loc}/compile-swf.xml" />
-    <import file="${includes.loc}/compile-swc.xml" />
     <import file="${includes.loc}/android.xml" />
     <import file="${includes.loc}/chrome.xml" />
-    <!--<import file="${includes.loc}/apparat.xml" />-->
 
-    <target name="startlog" depends="logging.start"/>
 
     <target name="usage" depends="misc.usage" description="Prints usage message" />
 
-    <target name="test" depends="startlog" description="Runs unit tests and displays the report">
-        <log>start target test</log>
-        <runtarget target="test.run"/>
-        <log>end target test</log>
-    </target>
-
-    <target name="asdoc" depends="asdoc.gen" description="generates ASDoc"/>
-
-    <target name="compile" depends="startlog" description="Compiles the project as a swf">
-        <log>start target compile</log>
+    <target name="compile" description="Compiles the project as a swf">
         <!--check for compiler flag: normal compile vs apparat compile-->
         <if>
             <equals arg1="air" arg2="${compile.platform}" casesensitive="false" />
@@ -45,17 +31,15 @@
             </then>
             <else>
             	<echo>[compile] Compiling SWF</echo>
-            	<log message="Compile Build: Compiling SWF"/>
+
             	<runtarget target="compile-swf.compile" />
             </else>
         </if>
-        <log>end target compile</log>
     </target>
 
     <target name="run" description="Runs app">
         <if>
             <equals arg1="air" arg2="${compile.platform}" casesensitive="false" />
-            <then><!--<runtarget target="compile-air.local-run" />--></then>
             <else><runtarget target="compile-swf.local-run" /></else>
         </if>
     </target>
@@ -64,19 +48,10 @@
     	<if>
     		<istrue value="${run.test}"/>
             <then>
-    			<log message="Full Build: Running Unit Tests"/>
-            	<runtarget target="test" />
+    			<runtarget target="test" />
             </then>
         </if>
-    	
-    	<if>
-			<istrue value="${run.asdoc}"/>
-	        <then>
-	        	<log message="Full Build: Generating ASDocs"/>
-	        	<runtarget target="asdoc" />
-	        </then>
-	    </if>
-    	
+
     	<if>
 			<istrue value="${mobile}"/>
 	        <then>
@@ -92,10 +67,6 @@
             <then><runtarget target="run"/></then>
         </if>
     </target>
-
-    <target name="compile-swc" description="Compiles project as swc" depends="compile-swc.compile" />
-
-    <target name="deploy-lib" description="Prepares swf lib and moves it to deploy directory" depends="compile-swc.deploy"/>
 
     <target name="package-apk" description="Packages up project for deployment to android">
         <var name="mobile" value="true" />
