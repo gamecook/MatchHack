@@ -29,5 +29,4 @@ Thumbs.db
 *.iml
 build.properties
 log.txt
-.codesigningCert.p12
 analytics.as
