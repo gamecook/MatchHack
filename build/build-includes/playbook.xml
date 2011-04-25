@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project name="playbook" basedir=".">
+
+    <target name="prep-folders">
+        <if>
+            <not>
+                <available type="dir" file="${playbook.loc}"/>
+            </not>
+            <then>
+                <mkdir dir="${playbook.loc}"/>
+            </then>
+        </if>
+        <mkdir dir="${tmp.loc}" /> 
+
+        <copy todir="${tmp.loc}">
+            <fileset dir="${bin.loc}">
+                <exclude name="swf"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${tmp.loc}/swfs"/>
+        <copy file="${bin.loc}/swfs/${project.name.versioned}.swf" todir="${tmp.loc}/swfs"/>
+        <copy file="${basedir}/build/playbook-resources/template-air-app.xml"
+            tofile="${tmp.loc}/${project.name}-air-app.xml"/>
+
+
+        <replace file="${tmp.loc}/${project.name}-air-app.xml">
+            <replacefilter token="@project@" value="${project.name}"/>
+            <replacefilter token="@package@" value="${app.package}"/>
+            <replacefilter token="@version@" value="${ver.num}"/>
+            <replacefilter token="@projectversion@" value="${project.name.versioned}"/>
+        </replace>
+
+    </target>
+
+
+    <target name="package-bar">
+		<exec executable="${BLACKBERRY_PACKAGER}" failonerror="true">
+			<arg line="-package ${playbook.loc}/${project.name.versioned}.bar ${tmp.loc}/${project.name}-air-app.xml ${tmp.loc}/${project.name.versioned}.swf ${tmp.loc}/blackberry-tablet.xml ${tmp.loc}/icon72.png ${tmp.loc}/renaun_com_splash.png"/><!--${BUILD_DIR}/blackberry-tablet.xml ${BUILD_DIR}/icon72.png ${BUILD_DIR}/splash_screen.png -publisher ${CERT_ORG_NAME}"/>-->
+		</exec>
+
+        <!--<delete dir="${tmp.loc}" />-->
+	</target>
+
+    <target name="deploy-bar" depends="package-bar">
+    <exec executable="${BLACKBERRY_DEPLOY}" failonerror="true">
+        <arg line="-installApp -launchApp -password ${BLACKBERRY_PASSWORD} -device ${BLACKBERRY_IP_ADDRESS} -package ${playbook.loc}/${project.name.versioned}.bar"/>
+    </exec>
+    </target>
+
+    <target name="uninstall-bar">
+    <exec executable="${BLACKBERRY_DEPLOY}" failonerror="true">
+        <arg line="-uninstallApp -password ${BLACKBERRY_PASSWORD} -device ${BLACKBERRY_IP_ADDRESS} -package ${playbook.loc}/${project.name.versioned}.bar"/>
+    </exec>
+    </target>
+
+</project>
+
+

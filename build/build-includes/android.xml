@@ -74,7 +74,7 @@
             <arg value="."/>
         </java>
 
-        <!--<delete dir="${tmp.loc}" />-->
+        <delete dir="${tmp.loc}" />
     </target>
 
     <target name="deploy-to-device" depends="package-apk">
