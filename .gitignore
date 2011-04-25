@@ -23,7 +23,7 @@
 Icon
 Thumbs.db
 .DS_Store
-
+/bar/*
 *.swp
 *~
 *.iml

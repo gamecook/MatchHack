@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<qnx>
+   <icon>
+      <image>icon-72x72.png</image>
+   </icon>
+
+   <author>Jesse Freeman</author>
+   <authorId>gYAAgLsHEomMibpniOjN3qG9_NE</authorId>
+   <category>core.games</category>
+   <splashscreen>MatchHackLoadScreen.jpg</splashscreen>
+   <action>play_audio</action>
+   <platformVersion>1.0.0.0</platformVersion>
+</qnx>
