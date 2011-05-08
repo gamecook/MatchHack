@@ -32,6 +32,8 @@ package
 
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
+    import flash.events.KeyboardEvent;
+    import flash.ui.Keyboard;
 
     [SWF(width="480",height="700",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
@@ -60,7 +62,9 @@ package
             configureStage();
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
-            super(new ActivityManager(tracker), SplashActivity, 0, 0, scale)
+            super(new ActivityManager(tracker), SplashActivity, 0, 0, scale);
+
+            stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
         }
 
         private function configureStage():void
@@ -72,6 +76,15 @@ package
             // Set up the screen size for BaseActivity
             BaseActivity.fullSizeWidth = DeviceUtil.getScreenWidth(stage) / scale;
             BaseActivity.fullSizeHeight = DeviceUtil.getScreenHeight(stage) / scale;
+        }
+
+        private function onKeyDown(event:KeyboardEvent):void
+        {
+            if(event.keyCode == Keyboard.BACK)
+            {
+                event.preventDefault();
+                activityManager.back();
+            }
         }
 
     }

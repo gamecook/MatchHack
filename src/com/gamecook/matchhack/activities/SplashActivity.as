@@ -36,7 +36,6 @@ package com.gamecook.matchhack.activities
     {
 
         [Embed(source="../../../../../build/assets/gamecook_presents.png")]
-
         private var SplashImage:Class;
 
         public function SplashActivity(activityManager:IActivityManager, data:*)

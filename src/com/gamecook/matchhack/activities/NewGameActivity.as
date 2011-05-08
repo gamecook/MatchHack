@@ -142,5 +142,11 @@ package com.gamecook.matchhack.activities
             // Go to next activity, GameActivity
             nextActivity(LoadingActivity);
         }
+
+        override public function onBack():void
+        {
+            super.onBack();
+            nextActivity(StartActivity);
+        }
     }
 }

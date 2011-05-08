@@ -608,5 +608,11 @@ package com.gamecook.matchhack.activities
             }
         }
 
+
+        override public function onBack():void
+        {
+            super.onBack();
+            nextActivity(StartActivity);
+        }
     }
 }
