@@ -23,7 +23,7 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.sounds.MHSoundClasses;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
     import flash.display.SimpleButton;

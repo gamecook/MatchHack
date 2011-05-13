@@ -22,11 +22,11 @@
 
 package com.gamecook.matchhack.effects
 {
-    import com.jessefreeman.factivity.threads.GreenThread;
+    import com.jessefreeman.factivity.threads.Thread;
 
     import flash.text.TextField;
 
-    public class CountUpTextEffect extends GreenThread
+    public class CountUpTextEffect extends Thread
     {
         private var target:TextField;
         private var value:Number;

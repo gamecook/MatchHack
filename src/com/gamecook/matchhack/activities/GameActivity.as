@@ -30,7 +30,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.StatusBarView;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import com.jessefreeman.factivity.utils.DeviceUtil;
 

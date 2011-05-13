@@ -24,7 +24,7 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.TextFieldFactory;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;

@@ -22,14 +22,15 @@
 
 package com.gamecook.matchhack.states
 {
+    import com.jessefreeman.factivity.sounds.ISoundManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
-    import com.jessefreeman.factivity.managers.SoundManager;
+    import com.jessefreeman.factivity.sounds.SoundManager;
     import com.jessefreeman.factivity.state.AbstractStateObject;
 
     public class ActiveGameState extends AbstractStateObject
     {
         private const MATCH_HACK:String = "matchhack";
-        private var soundManager:SoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
+        private var soundManager:ISoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
 
         public function ActiveGameState()
         {
