@@ -22,7 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.effects.CountUpTextEffect;
+    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.activities.IActivityManager;
 

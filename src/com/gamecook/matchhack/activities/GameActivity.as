@@ -23,15 +23,20 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.effects.Quake;
-    import com.gamecook.matchhack.effects.TypeTextEffect;
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.frogue.tiles.MonsterTile;
+    import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.matchhack.factories.SpriteFactory;
+    import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.activities.IActivityManager;
 
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.threads.effects.Quake;
+    import com.jessefreeman.factivity.threads.effects.TypeTextEffect;
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.Bitmap;
@@ -76,6 +81,8 @@ package com.gamecook.matchhack.activities
         private var bonusLabel:TextField;
         private var gameBackground:Bitmap;
         private var highlightInstances:Array = [];
+        private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -98,6 +105,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+
             gameBackground = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
             gameBackground.y = fullSizeHeight - gameBackground.height;
@@ -119,6 +127,7 @@ package com.gamecook.matchhack.activities
             statusBar = addChild(new StatusBarView()) as StatusBarView;
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
             statusBar.y = logo.y + logo.height;
+            var spriteName:String;
 
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
@@ -126,8 +135,8 @@ package com.gamecook.matchhack.activities
                 if (i % typeCount == 0)
                     typeIndex ++;
 
-                tileBitmap = new sprites[typeIndex]() as Bitmap;
-
+                spriteName = sprites[typeIndex]
+                tileBitmap = new Bitmap(spriteSheet.getSprite(spriteName));
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
                 tile.name = "type" + typeIndex;
@@ -139,8 +148,18 @@ package com.gamecook.matchhack.activities
             activeState.levelTurns = 0;
 
             var life:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
-            player = tileContainer.addChild(new CharacterView("player", life)) as CharacterView;
-            monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
+
+
+            var playerModel:MonsterTile = new MonsterTile();
+            playerModel.parseObject( {name:"player", maxLife: life});
+
+            player = tileContainer.addChild(new CharacterView(playerModel)) as CharacterView;
+
+            var monsterModel:MonsterTile = new MonsterTile();
+            monsterModel.parseObject( {name:"monster", maxLife: total / 2});
+
+            monster = tileContainer.addChild(new CharacterView(monsterModel)) as CharacterView;
+            monster.generateRandomEquipment();
 
             if(DeviceUtil.os != DeviceUtil.IOS)
                 quakeEffect = new Quake(null);
@@ -289,7 +308,7 @@ package com.gamecook.matchhack.activities
                 var target:PaperSprite = event.target as PaperSprite;
 
                 // If this tile is already active exit the method
-                if ((activeTiles.indexOf(target) != -1) || player.isDead())
+                if ((activeTiles.indexOf(target) != -1) || player.isDead)
                     return;
 
                 // push the tile into the active tile array
@@ -469,7 +488,7 @@ package com.gamecook.matchhack.activities
             updateStatusBar();
 
             // Test to see if the player is dead
-            if (player.isDead())
+            if (player.isDead)
                 onPlayerDead();
         }
 
@@ -510,7 +529,7 @@ package com.gamecook.matchhack.activities
             updateStatusBar();
 
             // Test to see if the monster is dead
-            if (monster.isDead())
+            if (monster.isDead)
                 onMonsterDead();
 
         }

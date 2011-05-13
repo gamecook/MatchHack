@@ -82,7 +82,7 @@ package com.gamecook.matchhack.states
 
         public function get difficulty():int
         {
-            return _dataObject.difficulty;
+            return _dataObject.difficulty ? _dataObject.difficulty : 0;
         }
 
         public function set difficulty(value:int):void

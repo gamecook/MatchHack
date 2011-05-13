@@ -22,44 +22,50 @@
 
 package com.gamecook.matchhack.views
 {
+    import com.gamecook.frogue.combat.ICombatant;
+    import com.gamecook.frogue.enum.SlotsEnum;
+    import com.gamecook.frogue.equipment.IEquipable;
+    import com.gamecook.frogue.factories.EquipmentFactory;
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.frogue.tiles.IMonster;
+    import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.matchhack.factories.CharacterFactory;
 
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.utils.ArrayUtil;
+
     import flash.display.Bitmap;
+    import flash.display.BitmapData;
     import flash.display.Sprite;
 
     import uk.co.soulwire.display.PaperSprite;
 
-    public class CharacterView extends PaperSprite
+    public class CharacterView extends PaperSprite implements IMonster
     {
 
         [Embed(source="../../../../../build/assets/sprites/blood_01.png")]
         private static var BloodImage:Class;
-
+        private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var lifeBar:LifeBarView;
         private const PLAYER:String = "player";
         private var characterImage:Bitmap;
         private var container:Sprite;
         private var bloodImage:Bitmap;
+        private var model:MonsterTile;
+        private var baseSpriteID:String;
 
-        public function CharacterView(name:String, life:int)
+        public function CharacterView(model:MonsterTile)
         {
-            this.name = name;
+            this.model = model;
+            this.name = model.getName();
+
             container = new Sprite();
 
-            lifeBar = container.addChild(new LifeBarView(life)) as LifeBarView;
+            lifeBar = container.addChild(new LifeBarView(model.getLife())) as LifeBarView;
             lifeBar.x = -2;
             lifeBar.y = 2;
 
-            if (name == PLAYER)
-            {
-                characterImage = container.addChild(CharacterFactory.createPlayerBitmap()) as Bitmap;
-            }
-            else
-            {
-                characterImage = container.addChild(CharacterFactory.createMonster()) as Bitmap;
-            }
-            characterImage.x -= 2;
-            lifeBar.x += (64 - lifeBar.width);
+            //lifeBar.x += (64 - lifeBar.width);
             container.x -= 32;
             container.y -= 32;
 
@@ -70,34 +76,249 @@ package com.gamecook.matchhack.views
             super(container, bloodImage);
         }
 
+        public function generateRandomEquipment():void
+        {
+            var weaponGenerator:EquipmentFactory = new EquipmentFactory();
+            var equipmentTypes:Array = [SlotsEnum.WEAPON, SlotsEnum.ARMOR, SlotsEnum.HELMET, SlotsEnum.SHIELD, SlotsEnum.SHOES];
+
+            var total:int = Math.random() * equipmentTypes.length;
+            var i:int = 0;
+            var tmpEquipment:IEquipable;
+
+            for (i = 0; i < total; i++)
+            {
+                tmpEquipment = weaponGenerator.createEquipment(1, equipmentTypes[i]);
+                if (tmpEquipment)
+                    IMonster(model).equip(tmpEquipment);
+            }
+
+            createImage();
+        }
+
         private function createImage():void
         {
+            if (name == PLAYER)
+            {
+                baseSpriteID = "sprite8";
+            }
+            else
+            {
+                var monsters:Array = ["sprite9", "sprite10", "sprite11", "sprite12", "sprite13", "sprite14", "sprite15", "sprite16", "sprite17"];
+                baseSpriteID = ArrayUtil.pickRandomArrayElement(monsters)
+            }
 
-        }
+            if(model.getSpriteID() != "")
+                baseSpriteID = baseSpriteID.concat(","+model.getSpriteID());
 
-        public function subtractLife(value:int):void
-        {
-            lifeBar.subtractTotal(value)
-        }
-
-        public function addLife(value:int):void
-        {
-            lifeBar.addTotal(value)
-        }
-
-        public function isDead():Boolean
-        {
-            return (lifeBar.getTotal() <= 0);
-        }
-
-        public function getLife():int
-        {
-            return lifeBar.getTotal();
+            trace("SpriteID", baseSpriteID);
+            var bitmapData:BitmapData = spriteSheet.getSprite.apply(this, baseSpriteID.split(","));
+            characterImage = container.addChild(new Bitmap(bitmapData)) as Bitmap;
+            characterImage.x -= 2;
         }
 
         public function getImage():Bitmap
         {
             return characterImage;
         }
+
+        public function getHitValue():int
+        {
+            return model.getHitValue();
+        }
+
+        public function getDefenseValue():int
+        {
+            return model.getDefenseValue();
+        }
+
+        public function getMaxLife():int
+        {
+            return model.getMaxLife();
+        }
+
+        public function addMaxLife(value:int):void
+        {
+            model.addMaxLife(value);
+        }
+
+        public function attack(monster:ICombatant, useChance:Boolean):void
+        {
+            model.attack(monster, useChance);
+        }
+
+        public function defend(monster:ICombatant):void
+        {
+            model.defend(monster);
+        }
+
+        public function get isDead():Boolean
+        {
+            return model.isDead;
+        }
+
+        public function getName():String
+        {
+            return model.getName();
+        }
+
+        public function get id():String
+        {
+            return model.id;
+        }
+
+        public function get type():String
+        {
+            return model.type;
+        }
+
+        public function setWeaponSlot(value:IEquipable):void
+        {
+            model.setWeaponSlot(value);
+        }
+
+        public function getWeaponSlot():IEquipable
+        {
+            return getWeaponSlot();
+        }
+
+        public function setHelmetSlot(value:IEquipable):void
+        {
+            model.setHelmetSlot(value);
+        }
+
+        public function getHelmetSlot():IEquipable
+        {
+            return model.getHelmetSlot();
+        }
+
+        public function setArmorSlot(value:IEquipable):void
+        {
+            model.setArmorSlot(value);
+        }
+
+        public function getArmorSlot():IEquipable
+        {
+            return model.getArmorSlot();
+        }
+
+        public function setShieldSlot(value:IEquipable):void
+        {
+            model.setShieldSlot(value);
+        }
+
+        public function getShieldSlot():IEquipable
+        {
+            return model.getShieldSlot();
+        }
+
+        public function setShoeSlot(value:IEquipable):void
+        {
+            model.setShoeSlot(value);
+        }
+
+        public function getShoeSlot():IEquipable
+        {
+            return model.getShoeSlot();
+        }
+
+        public function equip(item:IEquipable):IEquipable
+        {
+            return model.equip(item);
+        }
+
+        public function canEquip(item:IEquipable):Boolean
+        {
+            return model.canEquip(item);
+        }
+
+        public function getLife():int
+        {
+            return model.getLife();
+        }
+
+        public function subtractLife(value:int):void
+        {
+            model.subtractLife(value);
+            lifeBar.setTotal(model.getLife());
+        }
+
+        public function addLife(value:int):void
+        {
+            model.addLife(value);
+            lifeBar.setTotal(model.getLife());
+        }
+
+        /* Not used */
+        public function setAttackRolls(value:int):void
+        {
+        }
+
+        public function setDefenseRolls(value:int):void
+        {
+        }
+
+
+        public function addAttackRoll(i:int):void
+        {
+        }
+
+        public function addDefenseRoll(i:int):void
+        {
+        }
+
+        public function getCharacterPoints():int
+        {
+            return 0;
+        }
+
+        public function setCharacterPoints(value:int):void
+        {
+        }
+
+        public function getAttackRolls():int
+        {
+            return 0;
+        }
+
+        public function getDefenseRolls():int
+        {
+            return 0;
+        }
+
+
+        public function getCharacterPointPercent():Number
+        {
+            return 0;
+        }
+
+        public function set onDie(value:Function):void
+        {
+        }
+
+        public function get onDie():Function
+        {
+            return null;
+        }
+
+        public function get onAttack():Function
+        {
+            return null;
+        }
+
+        public function set onAttack(value:Function):void
+        {
+        }
+
+        public function get onDefend():Function
+        {
+            return null;
+        }
+
+        public function set onDefend(value:Function):void
+        {
+        }
+
+
+
     }
 }

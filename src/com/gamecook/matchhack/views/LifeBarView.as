@@ -54,15 +54,9 @@ package com.gamecook.matchhack.views
             updateLifeBar();
         }
 
-        public function subtractTotal(value:int):void
+        public function setTotal(value:int):void
         {
-            total -= value;
-            updateLifeBar();
-        }
-
-        public function addTotal(value:int):void
-        {
-            total += value;
+            total = value;
             updateLifeBar();
         }
 

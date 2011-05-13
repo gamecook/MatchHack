@@ -22,6 +22,8 @@
 
 package
 {
+    import com.gamecook.matchhack.activities.GameActivity;
+    import com.gamecook.matchhack.activities.LoadingActivity;
     import com.gamecook.matchhack.activities.SplashActivity;
     import com.gamecook.matchhack.analytics.GoogleTracker;
     import com.jessefreeman.factivity.AbstractApplication;
@@ -63,6 +65,7 @@ package
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
             super(new ActivityManager(tracker), SplashActivity, 0, 0, scale);
+            //super(new ActivityManager(tracker), LoadingActivity, 0, 0, scale);
 
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
         }
