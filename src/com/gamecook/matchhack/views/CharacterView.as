@@ -78,7 +78,7 @@ package com.gamecook.matchhack.views
 
         public function generateRandomEquipment():void
         {
-            var weaponGenerator:EquipmentFactory = new EquipmentFactory();
+            var weaponGenerator:EquipmentFactory = new EquipmentFactory(spriteSheet);
             var equipmentTypes:Array = [SlotsEnum.WEAPON, SlotsEnum.ARMOR, SlotsEnum.HELMET, SlotsEnum.SHIELD, SlotsEnum.SHOES];
 
             var total:int = Math.random() * equipmentTypes.length;

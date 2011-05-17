@@ -23,6 +23,7 @@
 package
 {
     import com.gamecook.matchhack.activities.GameActivity;
+    import com.gamecook.matchhack.activities.InventoryActivity;
     import com.gamecook.matchhack.activities.LoadingActivity;
     import com.gamecook.matchhack.activities.SplashActivity;
     import com.gamecook.matchhack.analytics.GoogleTracker;
@@ -64,6 +65,7 @@ package
             configureStage();
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
+            //super(new ActivityManager(tracker), InventoryActivity, 0, 0, scale);
             super(new ActivityManager(tracker), SplashActivity, 0, 0, scale);
             //super(new ActivityManager(tracker), LoadingActivity, 0, 0, scale);
 
