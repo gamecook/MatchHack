@@ -29,6 +29,7 @@ package com.gamecook.matchhack.views
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.IMonster;
     import com.gamecook.frogue.tiles.MonsterTile;
+    import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.CharacterFactory;
 
     import com.jessefreeman.factivity.managers.SingletonManager;
@@ -53,10 +54,12 @@ package com.gamecook.matchhack.views
         private var bloodImage:Bitmap;
         private var model:MonsterTile;
         private var baseSpriteID:String;
+        private var overrideSprites:Array;
 
-        public function CharacterView(model:MonsterTile)
+        public function CharacterView(model:MonsterTile, overrideSprites:Array = null)
         {
             this.model = model;
+            this.overrideSprites = overrideSprites;
             this.name = model.getName();
 
             container = new Sprite();
@@ -79,7 +82,7 @@ package com.gamecook.matchhack.views
         public function generateRandomEquipment():void
         {
             var weaponGenerator:EquipmentFactory = new EquipmentFactory(spriteSheet);
-            var equipmentTypes:Array = [SlotsEnum.WEAPON, SlotsEnum.ARMOR, SlotsEnum.HELMET, SlotsEnum.SHIELD, SlotsEnum.SHOES];
+            var equipmentTypes:Array = [SlotsEnum.WEAPON, SlotsEnum.ARMOR, SlotsEnum.HELMET, SlotsEnum.SHIELD, SlotsEnum.BOOTS];
 
             var total:int = Math.random() * equipmentTypes.length;
             var i:int = 0;
@@ -99,19 +102,21 @@ package com.gamecook.matchhack.views
         {
             if (name == PLAYER)
             {
-                baseSpriteID = "sprite8";
+                baseSpriteID = "@";
             }
             else
             {
-                var monsters:Array = ["sprite9", "sprite10", "sprite11", "sprite12", "sprite13", "sprite14", "sprite15", "sprite16", "sprite17"];
+                var monsters:Array = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"];
                 baseSpriteID = ArrayUtil.pickRandomArrayElement(monsters)
             }
+
+            //Cleanup sprite name
+            baseSpriteID = TileTypes.getTileSprite(baseSpriteID);
 
             if(model.getSpriteID() != "")
                 baseSpriteID = baseSpriteID.concat(","+model.getSpriteID());
 
-            trace("SpriteID", baseSpriteID);
-            var bitmapData:BitmapData = spriteSheet.getSprite.apply(this, baseSpriteID.split(","));
+            var bitmapData:BitmapData = spriteSheet.getSprite.apply(this, overrideSprites ? overrideSprites : baseSpriteID.split(","));
             characterImage = container.addChild(new Bitmap(bitmapData)) as Bitmap;
             characterImage.x -= 2;
         }
@@ -178,7 +183,7 @@ package com.gamecook.matchhack.views
 
         public function getWeaponSlot():IEquipable
         {
-            return getWeaponSlot();
+            return model.getWeaponSlot();
         }
 
         public function setHelmetSlot(value:IEquipable):void

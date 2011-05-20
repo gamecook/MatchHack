@@ -109,8 +109,15 @@ package com.gamecook.matchhack.activities
          */
         override public function onStop():void
         {
-            activeState.save();
+            saveState();
             super.onStop();
+        }
+
+        override public function saveState():void
+        {
+            activeState.mute = soundManager.mute;
+            activeState.save();
+            super.saveState();
         }
     }
 }

@@ -47,6 +47,12 @@ package com.gamecook.matchhack.activities
         [Embed(source="../../../../../build/assets/buttons/continue_dissabled.png")]
         private var ContinueDisabled:Class;
 
+        [Embed(source="../../../../../build/assets/buttons/inventory_up.png")]
+        private var InventoryUp:Class;
+
+        [Embed(source="../../../../../build/assets/buttons/inventory_over.png")]
+        private var InventoryOver:Class;
+
         [Embed(source="../../../../../build/assets/buttons/sound_on.png")]
         private var SoundOn:Class;
 
@@ -86,7 +92,7 @@ package com.gamecook.matchhack.activities
 
             var newGameBTN:SimpleButton = addChild(new SimpleButton(new NewGameUp(), new NewGameOver(), new NewGameOver(), new NewGameUp())) as SimpleButton;
             newGameBTN.x = (fullSizeWidth - newGameBTN.width) * .5;
-            newGameBTN.y = welcomeImage.y + welcomeImage.height + 20;
+            newGameBTN.y = welcomeImage.y + welcomeImage.height + 10;
             newGameBTN.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var creditsBTN:SimpleButton = addChild(new SimpleButton(new ContinueUp(), new ContinueOver(), new ContinueOver(), new ContinueUp())) as SimpleButton;
@@ -111,11 +117,16 @@ package com.gamecook.matchhack.activities
             creditsBTN.x = (fullSizeWidth - creditsBTN.width) * .5;
             creditsBTN.y = newGameBTN.y + newGameBTN.height + 4;
 
+            var inventoryBTN:SimpleButton = addChild(new SimpleButton(new InventoryUp(), new InventoryOver(), new InventoryOver(), new InventoryUp())) as SimpleButton;
+            inventoryBTN.x = (fullSizeWidth - inventoryBTN.width) * .5;
+            inventoryBTN.y = creditsBTN.y + creditsBTN.height + 4;
+            inventoryBTN.addEventListener(MouseEvent.MOUSE_UP, onInventory);
+
 
             soundBTN = addChild(new SimpleButton(new SoundOn(), null, null, new SoundOn())) as SimpleButton;
 
             soundBTN.x = (fullSizeWidth - soundBTN.width) * .5;
-            soundBTN.y = creditsBTN.y + creditsBTN.height + 4;
+            soundBTN.y = inventoryBTN.y + inventoryBTN.height + 4;
             soundBTN.addEventListener(MouseEvent.MOUSE_UP, onSoundToggle);
             updateMuteButtonState();
 
@@ -126,6 +137,11 @@ package com.gamecook.matchhack.activities
             startNextActivityTimer(CreditsActivity, 5);
 
             addEventListener(MouseEvent.CLICK, onClick)
+        }
+
+        private function onInventory(event:MouseEvent):void
+        {
+            nextActivity(InventoryActivity);
         }
 
         /**
@@ -162,6 +178,12 @@ package com.gamecook.matchhack.activities
                 soundBTN.upState = new SoundOff();
                 soundBTN.overState = new SoundOff();
                 soundBTN.downState = new SoundOff();
+            }
+
+            if(activeState.mute != soundManager.mute)
+            {
+                activeState.mute = soundManager.mute;
+                saveState();
             }
         }
 

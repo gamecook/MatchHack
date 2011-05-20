@@ -23,9 +23,13 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.frogue.enum.SlotsEnum;
+    import com.gamecook.frogue.equipment.IEquip;
+    import com.gamecook.frogue.equipment.IEquipable;
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.PlayerTile;
+    import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
@@ -135,7 +139,7 @@ package com.gamecook.matchhack.activities
                 if (i % typeCount == 0)
                     typeIndex ++;
 
-                spriteName = sprites[typeIndex]
+                spriteName = TileTypes.getEquipmentPreview(sprites[typeIndex]) ? TileTypes.getEquipmentPreview(sprites[typeIndex]) : TileTypes.getTileSprite(sprites[typeIndex]);
                 tileBitmap = new Bitmap(spriteSheet.getSprite(spriteName));
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
@@ -149,11 +153,28 @@ package com.gamecook.matchhack.activities
 
             var life:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
 
-
             var playerModel:MonsterTile = new MonsterTile();
             playerModel.parseObject( {name:"player", maxLife: life});
 
-            player = tileContainer.addChild(new CharacterView(playerModel)) as CharacterView;
+            var sprites:Array = [TileTypes.getTileSprite("@")];
+
+            if (activeState.equippedInventory[SlotsEnum.ARMOR])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.ARMOR]));
+
+            if (activeState.equippedInventory[SlotsEnum.HELMET])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.HELMET]));
+
+            if (activeState.equippedInventory[SlotsEnum.BOOTS])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.BOOTS]));
+
+            if (activeState.equippedInventory[SlotsEnum.SHIELD])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.SHIELD]));
+
+            if (activeState.equippedInventory[SlotsEnum.WEAPON])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.WEAPON]));
+
+            player = tileContainer.addChild(new CharacterView(playerModel, sprites)) as CharacterView;
+
 
             var monsterModel:MonsterTile = new MonsterTile();
             monsterModel.parseObject( {name:"monster", maxLife: total / 2});
@@ -602,8 +623,32 @@ package com.gamecook.matchhack.activities
             // Play win sound
             soundManager.play(MHSoundClasses.WinBattle);
 
+            var equipment:IEquipable;
+            var rand:int = Math.random() * 6;
+
+            var droppedEquipment:IEquipable
+
+            switch (rand)
+            {
+                case SlotsEnum.ARMOR:
+                    droppedEquipment = monster.getArmorSlot();
+                    break;
+                case SlotsEnum.WEAPON:
+                    droppedEquipment = monster.getWeaponSlot();
+                    break;
+                case SlotsEnum.SHIELD:
+                    droppedEquipment = monster.getShieldSlot();
+                    break;
+                case SlotsEnum.HELMET:
+                    droppedEquipment = monster.getHelmetSlot();
+                    break;
+                case SlotsEnum.BOOTS:
+                    droppedEquipment = monster.getHelmetSlot();
+                    break;
+            }
+
             // Show the game over activity after 2 seconds
-            startNextActivityTimer(WinActivity, 2, {characterImage: player.getImage()});
+            startNextActivityTimer(WinActivity, 2, {characterImage: player.getImage(), droppedEquipment: droppedEquipment});
         }
 
         public function updateStatusMessage(value:String):void

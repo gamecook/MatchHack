@@ -43,6 +43,7 @@ package com.gamecook.matchhack.factories
 
         public static const textFormatLarge:TextFormat = new TextFormat("system", 16, 0xffffff, null, null, null, null, null, "center");
         public static const textFormatSmall:TextFormat = new TextFormat("system", 8, 0xffffff, null, null, null, null, null, "left");
+        public static const textFormatSmallCenter:TextFormat = new TextFormat("system", 8, 0xffffff, null, null, null, null, null, "center");
 
         public static function createTextField(textFormat:TextFormat, defaultText:String = "", width:int = 78):TextField
         {

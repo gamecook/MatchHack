@@ -131,8 +131,9 @@ package com.gamecook.matchhack.activities
                     break;
             }
 
+            var muteValue:Boolean = soundManager.getMuteValue();
             // Clear the active state for a new game
-            activeState.clear();
+            activeState.reset();
 
             // Reset active state values
             activeState.difficulty = difficulty;
@@ -145,7 +146,6 @@ package com.gamecook.matchhack.activities
 
         override public function onBack():void
         {
-            super.onBack();
             nextActivity(StartActivity);
         }
     }

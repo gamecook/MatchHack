@@ -85,7 +85,7 @@ package com.gamecook.matchhack.activities
             addThread(countUpEffect);
 
             // Clear out the rest of the activeState values since the game is over.
-            activeState.clear();
+            activeState.reset();
         }
 
         private function formatBonusText():String

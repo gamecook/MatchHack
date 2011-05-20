@@ -30,7 +30,6 @@ package com.gamecook.matchhack.states
     public class ActiveGameState extends AbstractStateObject
     {
         private const MATCH_HACK:String = "matchhack";
-        private var soundManager:ISoundManager = SingletonManager.getClassReference(SoundManager) as SoundManager;
 
         public function ActiveGameState()
         {
@@ -70,14 +69,6 @@ package com.gamecook.matchhack.states
         public function get mute():Boolean
         {
             return _dataObject.hasOwnProperty("mute") ? _dataObject.mute : false;
-        }
-
-        override public function save():String
-        {
-            // Get global values
-            _dataObject.mute = soundManager.mute;
-
-            return super.save();
         }
 
         public function get difficulty():int
@@ -120,20 +111,6 @@ package com.gamecook.matchhack.states
             _dataObject.levelTurns = value;
         }
 
-        override public function clear():void
-        {
-
-            super.clear();
-            _dataObject.bestBonus = 0;
-            _dataObject.playerLife = 0;
-            _dataObject.levelTurns = 0;
-            _dataObject.score = 0;
-            _dataObject.turns = 0;
-            _dataObject.playerLevel = 0;
-            _dataObject.activeGame = false;
-            _dataObject.mute = soundManager.mute;
-        }
-
         public function set bestBonus(value:int):void
         {
             if (value > _dataObject.bestBonus)
@@ -143,6 +120,73 @@ package com.gamecook.matchhack.states
         public function get bestBonus():int
         {
             return _dataObject.bestBonus;
+        }
+
+        public function unlockEquipment(tileID:String):void
+        {
+            if(!_dataObject.unlockedEquipment)
+                _dataObject.unlockedEquipment = [tileID];
+            else
+            {
+                if(_dataObject.unlockedEquipment.indexOf(tileID) == -1)
+                {
+                    _dataObject.unlockedEquipment.push(tileID);
+                }
+            }
+        }
+
+        public function getUnlockedEquipment():Array
+        {
+            if(!_dataObject.unlockedEquipment)
+                _dataObject.unlockedEquipment = [];
+
+            return _dataObject.unlockedEquipment;
+        }
+
+        public function addCoin(coinID:String):void
+        {
+            if(!_dataObject.coins)
+            {
+                _dataObject.coins = [];
+            }
+
+            if(!_dataObject.coins[coinID])
+                _dataObject.coins[coinID] = 1;
+            else
+                _dataObject.coins[coinID] ++;
+        }
+
+        public function getCoins():Array
+        {
+            if(!_dataObject.coins)
+                _dataObject.coins = [];
+
+            return _dataObject.coins;
+        }
+
+        public function set mute(muteValue:Boolean):void
+        {
+            _dataObject.mute = muteValue;
+        }
+
+        public function reset():void
+        {
+            // Restore default values
+            _dataObject.bestBonus = 0;
+            _dataObject.playerLife = 0;
+            _dataObject.levelTurns = 0;
+            _dataObject.score = 0;
+            _dataObject.turns = 0;
+            _dataObject.playerLevel = 0;
+            _dataObject.activeGame = false;
+        }
+
+        public function get equippedInventory():Array
+        {
+            if(!_dataObject.equippedInventory)
+                _dataObject.equippedInventory = [];
+
+            return _dataObject.equippedInventory;
         }
     }
 }
