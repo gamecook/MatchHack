@@ -51,12 +51,12 @@ package com.gamecook.matchhack.views
 
         private function createDisplays():void
         {
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.TURNS_LABEL + TextFieldFactory.padScore())) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.TURNS_LABEL + TextFieldFactory.padScore())) as TextField;
 
-            levelTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.LEVEL_LABEL + TextFieldFactory.padLevel())) as TextField;
+            levelTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.LEVEL_LABEL + TextFieldFactory.padLevel())) as TextField;
             levelTF.x = scoreTF.x + scoreTF.width;
 
-            turnsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.TURNS_LABEL + TextFieldFactory.padScore())) as TextField;
+            turnsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.TURNS_LABEL + TextFieldFactory.padScore())) as TextField;
             turnsTF.x = levelTF.x + levelTF.width;
 
             _message = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.", turnsTF.x + turnsTF.width)) as TextField;

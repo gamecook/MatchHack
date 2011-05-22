@@ -64,13 +64,25 @@ package com.gamecook.matchhack.views
 
             container = new Sprite();
 
-            lifeBar = container.addChild(new LifeBarView(model.getLife())) as LifeBarView;
+            lifeBar = container.addChild(new LifeBarView(model.getLife(), model.getMaxLife())) as LifeBarView;
             lifeBar.x = -2;
             lifeBar.y = 2;
 
-            //lifeBar.x += (64 - lifeBar.width);
+            lifeBar.x += (64 - lifeBar.width);
             container.x -= 32;
             container.y -= 32;
+
+            if (name == PLAYER)
+            {
+                baseSpriteID = "@";
+            }
+            else
+            {
+                var monsters:Array = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"];
+                baseSpriteID = ArrayUtil.pickRandomArrayElement(monsters)
+            }
+            //Cleanup sprite name
+            baseSpriteID = TileTypes.getTileSprite(baseSpriteID);
 
             createImage();
 
@@ -100,18 +112,6 @@ package com.gamecook.matchhack.views
 
         private function createImage():void
         {
-            if (name == PLAYER)
-            {
-                baseSpriteID = "@";
-            }
-            else
-            {
-                var monsters:Array = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"];
-                baseSpriteID = ArrayUtil.pickRandomArrayElement(monsters)
-            }
-
-            //Cleanup sprite name
-            baseSpriteID = TileTypes.getTileSprite(baseSpriteID);
 
             if(model.getSpriteID() != "")
                 baseSpriteID = baseSpriteID.concat(","+model.getSpriteID());

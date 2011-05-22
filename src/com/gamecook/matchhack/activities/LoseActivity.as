@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.activities.IActivityManager;
@@ -65,11 +66,11 @@ package com.gamecook.matchhack.activities
             character.x = (fullSizeWidth - character.width) * .5;
             character.y = youLose.y + youLose.height + 15;
 
-            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, formatBonusText(), 160)) as TextField;
+            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, formatBonusText(), 160)) as TextField;
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = character.y + character.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -91,6 +92,7 @@ package com.gamecook.matchhack.activities
         private function formatBonusText():String
         {
             var message:String = "GAME STATS\n" +
+                    "Difficulty: " + DifficultyLevels.getLabel(activeState.playerLevel) + "\n" +
                     "Level: " + activeState.playerLevel + "\n" +
                     "Total Turns: " + activeState.levelTurns + "\n" +
                     "Best Bonus: x" + activeState.bestBonus;

@@ -28,10 +28,10 @@ package com.gamecook.matchhack.factories
     {
 
         
-        private static var sprites:Array = [
-                                            'T',
+        public static var equipment:Array = [
+                                            /*'T',
                                             '$',
-                                            'P',
+                                            'P',*/
                                             'W1',
                                             'W2',
                                             'W3',
@@ -94,7 +94,7 @@ package com.gamecook.matchhack.factories
         public static function createSprites(number:int):Array
         {
             //TODO need to add in logic to make sure there is a potion or gold in at least one round
-            return ArrayUtil.shuffleArray(sprites).slice(0, number);
+            return ArrayUtil.shuffleArray(equipment).slice(0, number);
         }
 
     }

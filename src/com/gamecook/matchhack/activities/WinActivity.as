@@ -114,11 +114,11 @@ package com.gamecook.matchhack.activities
             treasureTF.x = (fullSizeWidth - treasureTF.width) * .5;
             treasureTF.y = treasureChest.y + treasureChest.height - 20;
 
-            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, formatBonusText(), 160)) as TextField;
+            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, formatBonusText(), 160)) as TextField;
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = treasureTF.y + treasureTF.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 

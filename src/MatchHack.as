@@ -33,6 +33,7 @@ package
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.StageAlign;
+    import flash.display.StageQuality;
     import flash.display.StageScaleMode;
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
@@ -76,7 +77,7 @@ package
             // Setup stage align and scale mode.
             stage.align = StageAlign.TOP_LEFT;
             stage.scaleMode = StageScaleMode.NO_SCALE;
-
+            stage.quality = StageQuality.LOW;
             // Set up the screen size for BaseActivity
             BaseActivity.fullSizeWidth = DeviceUtil.getScreenWidth(stage) / scale;
             BaseActivity.fullSizeHeight = DeviceUtil.getScreenHeight(stage) / scale;

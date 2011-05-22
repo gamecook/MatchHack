@@ -13,6 +13,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.enum.SlotsEnum;
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.activities.IActivityManager;
@@ -32,6 +33,10 @@ package com.gamecook.matchhack.activities
 
     public class InventoryActivity extends LogoActivity
     {
+
+        [Embed(source="../../../../../build/assets/inventory_text.png")]
+        private var InventoryText:Class;
+
         var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var bitmapScroller:BitmapScroller;
         private var slider:Slider;
@@ -43,6 +48,9 @@ package com.gamecook.matchhack.activities
         private var bitmapData:BitmapData;
         private var coinContainer:Bitmap;
         private var playerSprite:Bitmap;
+        private var offset:int = 190;
+        private var unlockedPercent:Number = 0;
+        private var statsTF:TextField;
 
         public function InventoryActivity(activityManager:IActivityManager, data:*)
         {
@@ -54,6 +62,12 @@ package com.gamecook.matchhack.activities
         {
 
             super.onCreate();
+
+
+            var inventoryText:Bitmap = addChild(new InventoryText()) as Bitmap;
+            inventoryText.x = (fullSizeWidth - inventoryText.width) * .5;
+            inventoryText.y = 43;
+
 
             textFieldStamp = new TextField();
             textFieldStamp.autoSize = TextFieldAutoSize.LEFT;
@@ -67,15 +81,19 @@ package com.gamecook.matchhack.activities
             // DEBUG Code
             SpriteSheetFactory.parseSpriteSheet(spriteSheet);
             // Remove
-            var offset:int = 120;
+
 
             createCoinDisplay();
 
             //TODO need to add support for equipment logic
             playerSprite = addChild(new Bitmap()) as Bitmap;
             playerSprite.x = 10;
-            playerSprite.y = 45;
+            playerSprite.y = 95;
             updatePlayerDisplay();
+
+            statsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, formatStatsText(), 160)) as TextField;
+            statsTF.x = playerSprite.x + playerSprite.width + 7
+            statsTF.y = playerSprite.y;
 
             scrollerContainer = addChild(new Sprite()) as Sprite;
 
@@ -88,6 +106,10 @@ package com.gamecook.matchhack.activities
             bitmapData = generateBitmapSheets();
             bitmapScroller.bitmapDataCollection = [bitmapData];
 
+            var unlockedLabel:TextField = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Items Unlocked "+unlockedPercent+"%", fullSizeWidth)) as TextField;
+            unlockedLabel.x = 10;
+            unlockedLabel.y = 165;
+
             createEaseScrollBehavior();
 
             scrollerContainer.rotation = 90;
@@ -95,6 +117,15 @@ package com.gamecook.matchhack.activities
             scrollerContainer.y = offset;
 
             addEventListener(MouseEvent.CLICK, onClick)
+        }
+
+        private function formatStatsText():String
+        {
+            var message:String =
+                    "Wins:\n999,999,999\n"+// + activeState.playerLife + "\n" +
+                    "Losses:\n999,999,999\n"+// + activeState.playerLife + "\n" +
+                    "Turns:\n999,999,999";// + activeState.playerLife + "\n" +
+            return message;
         }
 
         private function updatePlayerDisplay():void
@@ -148,7 +179,7 @@ package com.gamecook.matchhack.activities
                 totalMoney += total * (i + 1);
             }
             coinContainer.x = fullSizeWidth - coinContainer.width - 10;
-            coinContainer.y = 45;
+            coinContainer.y = 100;
 
             textFieldStamp.text = "COINS: $" + totalMoney;
             bmd.draw(textFieldStamp);
@@ -225,64 +256,7 @@ package com.gamecook.matchhack.activities
 
         private function generateBitmapSheets():BitmapData
         {
-            var sprites:Array = [
-                'W1',
-                'W2',
-                'W3',
-                'W4',
-                'W5',
-                'W6',
-                'W7',
-                'W8',
-                'W9',
-                'W10',
-                'W11',
-                'W12',
-                'W13',
-                'W14',
-                'W15',
-                'W16',
-                'W17',
-                'W18',
-                'W19',
-                'W20',
-                'W21',
-                'W22',
-                'W23',
-                'W24',
-                'W25',
-                'W26',
-                'W27',
-                'S1',
-                'S2',
-                'S3',
-                'S4',
-                'S5',
-                'S6',
-                'S7',
-                'H1',
-                'H2',
-                'H3',
-                'H4',
-                'H5',
-                'H6',
-                'H7',
-                'H8',
-                'H9',
-                'H10',
-                'A1',
-                'A2',
-                'A3',
-                'A4',
-                'A5',
-                'A6',
-                'A7',
-                'A8',
-                'A9',
-                'A10',
-                'B1',
-                'B2',
-                'B3'];
+            var sprites:Array = SpriteFactory.equipment.slice();
 
 
             var columns:int = Math.floor(fullSizeWidth / tileSize) - 1;
@@ -290,12 +264,12 @@ package com.gamecook.matchhack.activities
             var i:int = 0;
             var total = sprites.length;
             //TODO something is wrong here, not sure why I need to add all the extra padding to the height
-            var currentPage:BitmapData = new BitmapData(fullSizeWidth, tileSize * rows + 1200, true, 0);
+            var currentPage:BitmapData = new BitmapData(fullSizeWidth, (tileSize * rows) + 1160, true, 0);
             var currentColumn:int = 0;
             var currentRow:int = 0;
             var foundColorMatrix:ColorTransform = new ColorTransform();
 
-
+            var unlocked:int = 0;
             var unlockedEquipment:Array = activeState.getUnlockedEquipment();
             var newX:int;
             var newY:int;
@@ -315,9 +289,14 @@ package com.gamecook.matchhack.activities
 
                 //TODO test if item is found
                 if (unlockedEquipment.indexOf(sprites[i]) == -1)
+                {
                     foundColorMatrix.alphaMultiplier = .2;
+                }
                 else
+                {
                     foundColorMatrix.alphaMultiplier = 1;
+                    unlocked ++;
+                }
 
                 currentPage.draw(spriteSheet.getSprite(TileTypes.getEquipmentPreview(sprites[i])), matrix, foundColorMatrix);
 
@@ -331,6 +310,8 @@ package com.gamecook.matchhack.activities
                 }
 
             }
+
+            unlockedPercent = Math.round(unlocked/total * 100);
 
             // Rotate the bitmap for the scroller
 
@@ -356,7 +337,7 @@ package com.gamecook.matchhack.activities
 
         private function createScrubber():void
         {
-            var sWidth:int = fullSizeHeight - 100;
+            var sWidth:int = fullSizeHeight - offset;
             var sHeight:int = 20;
             var dWidth:int = 60;
             var corners:int = 0;

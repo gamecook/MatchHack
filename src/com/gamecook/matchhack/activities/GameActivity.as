@@ -23,6 +23,8 @@
 
 package com.gamecook.matchhack.activities
 {
+    import avmplus.typeXml;
+
     import com.gamecook.frogue.enum.SlotsEnum;
     import com.gamecook.frogue.equipment.IEquip;
     import com.gamecook.frogue.equipment.IEquipable;
@@ -30,6 +32,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
@@ -51,8 +54,14 @@ package com.gamecook.matchhack.activities
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
+    import flash.text.engine.Kerning;
+    import flash.text.engine.Kerning;
+    import flash.text.engine.Kerning;
+    import flash.text.engine.Kerning;
 
     import flashx.textLayout.formats.TextAlign;
+
+    import org.osmf.net.SwitchingRuleBase;
 
     import uk.co.soulwire.display.PaperSprite;
 
@@ -86,7 +95,7 @@ package com.gamecook.matchhack.activities
         private var gameBackground:Bitmap;
         private var highlightInstances:Array = [];
         private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
-
+        private var debug:Boolean = false;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -124,6 +133,18 @@ package com.gamecook.matchhack.activities
 
             var sprites:Array = SpriteFactory.createSprites(6);
 
+            // Add Potions
+            if(int(Math.random() * (difficulty)) == 0)
+                sprites.splice(0,1,"P");
+
+            // Add Gold
+            if(int(Math.random() * (difficulty + 2)) == 0)
+                sprites.splice(1,1,"$");
+
+            // Add Treasure
+            if(int(Math.random() * (difficulty + 4)) == 0)
+                sprites.splice(2,1,"T");
+
             var typeIndex:int = -1;
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
@@ -143,38 +164,16 @@ package com.gamecook.matchhack.activities
                 tileBitmap = new Bitmap(spriteSheet.getSprite(spriteName));
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
-                tile.name = "type" + typeIndex;
-                if (difficulty == 1)
+                tile.name = sprites[typeIndex];
+
+                if (debug)
                     tile.flip();
 
             }
 
             activeState.levelTurns = 0;
 
-            var life:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
-
-            var playerModel:MonsterTile = new MonsterTile();
-            playerModel.parseObject( {name:"player", maxLife: life});
-
-            var sprites:Array = [TileTypes.getTileSprite("@")];
-
-            if (activeState.equippedInventory[SlotsEnum.ARMOR])
-                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.ARMOR]));
-
-            if (activeState.equippedInventory[SlotsEnum.HELMET])
-                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.HELMET]));
-
-            if (activeState.equippedInventory[SlotsEnum.BOOTS])
-                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.BOOTS]));
-
-            if (activeState.equippedInventory[SlotsEnum.SHIELD])
-                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.SHIELD]));
-
-            if (activeState.equippedInventory[SlotsEnum.WEAPON])
-                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.WEAPON]));
-
-            player = tileContainer.addChild(new CharacterView(playerModel, sprites)) as CharacterView;
-
+            createPlayer(total);
 
             var monsterModel:MonsterTile = new MonsterTile();
             monsterModel.parseObject( {name:"monster", maxLife: total / 2});
@@ -199,6 +198,34 @@ package com.gamecook.matchhack.activities
             // Update status message
             updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 
+        }
+
+        private function createPlayer(total:int):void
+        {
+            var maxLife:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
+
+            var playerModel:MonsterTile = new MonsterTile();
+
+            playerModel.parseObject({name:"player", maxLife: maxLife, life:activeState.playerLife > 0 ? activeState.playerLife : maxLife});
+
+            var sprites:Array = [TileTypes.getTileSprite("@")];
+
+            if (activeState.equippedInventory[SlotsEnum.ARMOR])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.ARMOR]));
+
+            if (activeState.equippedInventory[SlotsEnum.HELMET])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.HELMET]));
+
+            if (activeState.equippedInventory[SlotsEnum.BOOTS])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.BOOTS]));
+
+            if (activeState.equippedInventory[SlotsEnum.SHIELD])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.SHIELD]));
+
+            if (activeState.equippedInventory[SlotsEnum.WEAPON])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.WEAPON]));
+
+            player = tileContainer.addChild(new CharacterView(playerModel, sprites)) as CharacterView;
         }
 
         private function createHighlights():void
@@ -340,8 +367,8 @@ package com.gamecook.matchhack.activities
                 highlight.x = target.x - (target.width * .5) + 1;
                 highlight.y = target.y - (target.height * .5) + 1;
 
-                // Check if the difficulty is 1, we need to do handle this different for the easy level.
-                if (difficulty > 1)
+                // Check if the debug mode is on, we need to do handle this differently.
+                if (!debug)
                 {
 
                     // We are about to flip the tile. Add a complete event listener so we know when it's done.
@@ -422,7 +449,7 @@ package com.gamecook.matchhack.activities
             var total:int = activeTiles.length;
             var currentTile:PaperSprite;
             var testTile:PaperSprite;
-
+            var tileName:String;
             var match:Boolean;
 
             // Loop through active tiles and compare each item to the rest of the tiles in the array.
@@ -430,13 +457,12 @@ package com.gamecook.matchhack.activities
             {
                 // save an instance of the current tile to test with
                 currentTile = activeTiles[i];
-
+                tileName = currentTile.name;
                 // Reloop through all the items starting back at the beginning
                 for (j = 0; j < total; j++)
                 {
                     // select the item to test against
                     testTile = activeTiles[j];
-
                     // Make sure we aren't testing the same item
                     if ((currentTile != testTile) && (currentTile.name == testTile.name))
                     {
@@ -456,7 +482,7 @@ package com.gamecook.matchhack.activities
 
             // Validate match
             if (match)
-                onMatch();
+                onMatch(tileName);
             else
                 onNoMatch();
         }
@@ -472,7 +498,7 @@ package com.gamecook.matchhack.activities
             for each (var tile:PaperSprite in activeTiles)
             {
                 // Make sure the difficulty is higher then easy
-                if (difficulty > 1)
+                if (!debug)
                     tile.flip();
             }
 
@@ -524,7 +550,49 @@ package com.gamecook.matchhack.activities
          * Called when a match is found.
          *
          */
-        private function onMatch():void
+        private function onMatch(type:String):void
+        {
+            trace("Matched", type, type.substr(0,1));
+
+            switch(type.substr(0,1))
+            {
+                case "P":
+                    updateStatusMessage("Player drinks potion and restores "+(player.getMaxLife() - player.getLife()));
+                    trace("Found Potion");
+                    player.addLife(player.getMaxLife());
+                    increaseBonus();
+                break
+
+                case "W":
+                    trace("Found Weapon");
+                    //playerAttack();
+                break;
+
+                case "S": case "H": case "A": case "B":
+                    trace("Found Armor");
+                    //playerAttack();
+                break;
+
+                case "$":
+                    trace("Found Money");
+
+                    increaseBonus();
+                break;
+
+                case "T":
+                    trace("Found Treasure");
+                    increaseBonus();
+                break;
+
+
+            }
+
+            playerAttack();
+
+
+        }
+
+        private function playerAttack():void
         {
             if (quakeEffect)
             {
@@ -552,7 +620,15 @@ package com.gamecook.matchhack.activities
             // Test to see if the monster is dead
             if (monster.isDead)
                 onMonsterDead();
+        }
 
+        private function displayBonusMessage(value:String):void
+        {
+            bonusLabel.text = value;
+            bonusLabel.x = (fullSizeWidth - bonusLabel.width) * .5;
+
+            if (bonus > 0)
+                bonusLabel.visible = true;
         }
 
         private function increaseBonus():void
@@ -560,9 +636,8 @@ package com.gamecook.matchhack.activities
             bonus ++;
             activeState.bestBonus = bonus;
 
-            bonusLabel.text = "Bonus x" + bonus;
             if (bonus > 0)
-                bonusLabel.visible = true;
+            displayBonusMessage("Bonus x" + bonus);
         }
 
         /**
