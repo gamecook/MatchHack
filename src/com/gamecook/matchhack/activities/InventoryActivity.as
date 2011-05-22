@@ -92,7 +92,7 @@ package com.gamecook.matchhack.activities
             updatePlayerDisplay();
 
             statsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, formatStatsText(), 160)) as TextField;
-            statsTF.x = playerSprite.x + playerSprite.width + 7
+            statsTF.x = playerSprite.x + playerSprite.width;
             statsTF.y = playerSprite.y;
 
             scrollerContainer = addChild(new Sprite()) as Sprite;
@@ -122,9 +122,9 @@ package com.gamecook.matchhack.activities
         private function formatStatsText():String
         {
             var message:String =
-                    "Wins:\n999,999,999\n"+// + activeState.playerLife + "\n" +
-                    "Losses:\n999,999,999\n"+// + activeState.playerLife + "\n" +
-                    "Turns:\n999,999,999";// + activeState.playerLife + "\n" +
+                    "Wins:\n"+ activeState.totalWins+ "\n" +
+                    "Losses:\n"+ activeState.totalLosses+ "\n" +
+                    "Turns:\n"+ activeState.totalTurns+ "\n";
             return message;
         }
 
@@ -258,17 +258,21 @@ package com.gamecook.matchhack.activities
         {
             var sprites:Array = SpriteFactory.equipment.slice();
 
-
-            var columns:int = Math.floor(fullSizeWidth / tileSize) - 1;
-            var rows:int = Math.ceil(fullSizeHeight / tileSize);
             var i:int = 0;
             var total = sprites.length;
-            //TODO something is wrong here, not sure why I need to add all the extra padding to the height
-            var currentPage:BitmapData = new BitmapData(fullSizeWidth, (tileSize * rows) + 1160, true, 0);
+            var padding:int = 20;
+            var inventoryWidth:int = fullSizeWidth - 20;
+            var columns:int = 2;//Math.ceil(inventoryWidth / tileSize) - 1;
+            var rows:int = Math.ceil(total/columns);
+
+            // calculate left/right margin for each item
+            var leftMargin:int = 0;
+            var rightMargin:int = 30;//Math.round((inventoryWidth - 10 - ((tileSize + padding) * columns))/columns);
+            trace("rightMargin", rightMargin/columns);
+            var currentPage:BitmapData = new BitmapData(inventoryWidth, ((tileSize+padding) * rows)+10, true, 0);
             var currentColumn:int = 0;
             var currentRow:int = 0;
             var foundColorMatrix:ColorTransform = new ColorTransform();
-
             var unlocked:int = 0;
             var unlockedEquipment:Array = activeState.getUnlockedEquipment();
             var newX:int;
@@ -280,8 +284,8 @@ package com.gamecook.matchhack.activities
 
                 var matrix:Matrix = new Matrix();
 
-                newX = (currentColumn * (tileSize + 20)) + 10;
-                newY = (currentRow * (tileSize + 20)) + 5;
+                newX = (currentColumn * (tileSize + padding + rightMargin) + leftMargin);
+                newY = (currentRow * (tileSize + padding)) + 5;
 
                 matrix.translate(newX, newY);
 
@@ -315,8 +319,6 @@ package com.gamecook.matchhack.activities
 
             // Rotate the bitmap for the scroller
 
-            /*tmpBM.rotation = -90;
-             tmpBM.y = tmpBM.height;*/
             var rotatedBMD:BitmapData = new BitmapData(currentPage.height, currentPage.width, true, 0);
             var rotatedMatrix:Matrix = new Matrix();
             rotatedMatrix.rotate(Math.PI * 2 * (-90 / 360));
@@ -378,10 +380,5 @@ package com.gamecook.matchhack.activities
             super.update(elapsed);
         }
 
-
-        override public function onBack():void
-        {
-            nextActivity(StartActivity);
-        }
     }
 }

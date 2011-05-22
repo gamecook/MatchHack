@@ -57,6 +57,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            activeState.increaseTotalLosses();
             // Add you lose bitmap.
             var youLose:Bitmap = addChild(Bitmap(new YouLoseImage())) as Bitmap;
             youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
@@ -92,7 +93,7 @@ package com.gamecook.matchhack.activities
         private function formatBonusText():String
         {
             var message:String = "GAME STATS\n" +
-                    "Difficulty: " + DifficultyLevels.getLabel(activeState.playerLevel) + "\n" +
+                    "Difficulty: " + DifficultyLevels.getLabel(activeState.difficulty) + "\n" +
                     "Level: " + activeState.playerLevel + "\n" +
                     "Total Turns: " + activeState.levelTurns + "\n" +
                     "Best Bonus: x" + activeState.bestBonus;

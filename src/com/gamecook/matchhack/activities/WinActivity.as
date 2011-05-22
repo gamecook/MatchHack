@@ -69,7 +69,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
-
+            activeState.increaseTotalWins();
 
             //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
@@ -193,6 +193,14 @@ package com.gamecook.matchhack.activities
                 soundManager.play(MHSoundClasses.WalkStairsSound);
                 nextActivity(GameActivity);
             }
+        }
+
+        /**
+         * We are loading, there is nothing to go back to.
+         */
+        override public function onBack():void
+        {
+
         }
     }
 }

@@ -38,8 +38,8 @@ package com.gamecook.matchhack.factories
                                             'W4',
                                             'W5',
                                             'W6',
-                                            'W7',
-                                            'W8',
+                                            /*'W7',
+                                            'W8',*/
                                             'W9',
                                             'W10',
                                             'W11',
@@ -68,8 +68,8 @@ package com.gamecook.matchhack.factories
                                             'S7',
                                             'H1',
                                             'H2',
-                                            'H3',
-                                            'H4',
+                                            /*'H3',
+                                            'H4',*/
                                             'H5',
                                             'H6',
                                             'H7',

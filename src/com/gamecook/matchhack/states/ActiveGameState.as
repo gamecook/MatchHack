@@ -73,14 +73,14 @@ package com.gamecook.matchhack.states
 
         public function get difficulty():int
         {
-            return _dataObject.difficulty ? _dataObject.difficulty : 0;
+            return _dataObject.difficulty ? _dataObject.difficulty : 1;
         }
 
         public function set difficulty(value:int):void
         {
             _dataObject.difficulty = value;
         }
-
+/*
         public function get turns():int
         {
             return _dataObject.turns;
@@ -89,7 +89,7 @@ package com.gamecook.matchhack.states
         public function set turns(value:int):void
         {
             _dataObject.turns = value;
-        }
+        }*/
 
         public function get score():int
         {
@@ -187,6 +187,51 @@ package com.gamecook.matchhack.states
                 _dataObject.equippedInventory = [];
 
             return _dataObject.equippedInventory;
+        }
+
+        public function get totalWins():String
+        {
+            if(!_dataObject.totalWins)
+                _dataObject.totalWins = 0;
+
+            return _dataObject.totalWins;
+        }
+
+        public function increaseTotalWins():String
+        {
+            if(!_dataObject.totalWins)
+                _dataObject.totalWins = 0;
+            return _dataObject.totalWins ++;
+        }
+
+        public function get totalLosses():String
+        {
+            if(!_dataObject.totalLosses)
+                _dataObject.totalLosses = 0;
+
+            return _dataObject.totalLosses;
+        }
+
+        public function increaseTotalLosses():String
+        {
+            if(!_dataObject.totalLosses)
+                _dataObject.totalLosses = 0;
+            return _dataObject.totalLosses ++;
+        }
+
+        public function get totalTurns():String
+        {
+            if(!_dataObject.totalTurns)
+                _dataObject.totalTurns = 0;
+
+            return _dataObject.totalTurns;
+        }
+
+        public function increaseTotalTurns():String
+        {
+            if(!_dataObject.totalTurns)
+                _dataObject.totalTurns = 0;
+            return _dataObject.totalTurns ++;
         }
     }
 }

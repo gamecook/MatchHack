@@ -269,7 +269,7 @@ package com.gamecook.matchhack.activities
         {
             statusBar.setScore(activeState.score);
             statusBar.setLevel(activeState.playerLevel);
-            statusBar.setTurns(activeState.turns);
+            statusBar.setTurns(activeState.levelTurns);
         }
 
         /**
@@ -432,8 +432,8 @@ package com.gamecook.matchhack.activities
                 resetActiveTiles();
 
                 // Increment our turns counter in the activeState object
-                activeState.turns ++;
                 activeState.levelTurns ++;
+                activeState.increaseTotalTurns();
             }
 
         }

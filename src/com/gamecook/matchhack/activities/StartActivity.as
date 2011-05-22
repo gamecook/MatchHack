@@ -223,5 +223,11 @@ package com.gamecook.matchhack.activities
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onContinue);
             nextActivity(GameActivity);
         }
+
+
+        override public function onBack():void
+        {
+            super.onBack();
+        }
     }
 }

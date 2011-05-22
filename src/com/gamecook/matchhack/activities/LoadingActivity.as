@@ -84,5 +84,12 @@ package com.gamecook.matchhack.activities
             nextActivity(GameActivity);
         }
 
+        /**
+         * We are loading, there is nothing to go back to.
+         */
+        override public function onBack():void
+        {
+
+        }
     }
 }

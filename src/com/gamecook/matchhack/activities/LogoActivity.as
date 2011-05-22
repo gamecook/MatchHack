@@ -110,6 +110,10 @@ package com.gamecook.matchhack.activities
         override public function onStop():void
         {
             saveState();
+
+            if(logoContainer.hasEventListener(MouseEvent.CLICK))
+                logoContainer.removeEventListener(MouseEvent.CLICK, onHome);
+
             super.onStop();
         }
 
@@ -118,6 +122,12 @@ package com.gamecook.matchhack.activities
             activeState.mute = soundManager.mute;
             activeState.save();
             super.saveState();
+        }
+
+        override public function onBack():void
+        {
+            super.onBack();
+            nextActivity(StartActivity);
         }
     }
 }
