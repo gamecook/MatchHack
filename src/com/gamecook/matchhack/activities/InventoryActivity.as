@@ -37,7 +37,7 @@ package com.gamecook.matchhack.activities
         [Embed(source="../../../../../build/assets/inventory_text.png")]
         private var InventoryText:Class;
 
-        var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+        private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var bitmapScroller:BitmapScroller;
         private var slider:Slider;
         private var easeScrollBehavior:EaseScrollBehavior;
@@ -106,7 +106,7 @@ package com.gamecook.matchhack.activities
             bitmapData = generateBitmapSheets();
             bitmapScroller.bitmapDataCollection = [bitmapData];
 
-            var unlockedLabel:TextField = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Items Unlocked "+unlockedPercent+"%", fullSizeWidth)) as TextField;
+            var unlockedLabel:TextField = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Items Unlocked " + unlockedPercent + "%", fullSizeWidth)) as TextField;
             unlockedLabel.x = 10;
             unlockedLabel.y = 165;
 
@@ -122,9 +122,9 @@ package com.gamecook.matchhack.activities
         private function formatStatsText():String
         {
             var message:String =
-                    "Wins:\n"+ activeState.totalWins+ "\n" +
-                    "Losses:\n"+ activeState.totalLosses+ "\n" +
-                    "Turns:\n"+ activeState.totalTurns+ "\n";
+                    "Wins:\n" + activeState.totalWins + "\n" +
+                            "Losses:\n" + activeState.totalLosses + "\n" +
+                            "Turns:\n" + activeState.totalTurns + "\n";
             return message;
         }
 
@@ -171,7 +171,7 @@ package com.gamecook.matchhack.activities
                 coinContainer.bitmapData.draw(spriteSheet.getSprite(TileTypes.getTileSprite(sprites[i])), matrix);
 
                 var total:int = activeState.getCoins()[sprites[i]];
-                textFieldStamp.text = total == NaN ? "0" : total.toString();
+                textFieldStamp.text = total == 0 ? "0" : total.toString();
                 matrix = new Matrix();
                 matrix.translate(40 * i + ((32 - textFieldStamp.width) * .5), textFieldStamp.height + 34);
                 bmd.draw(textFieldStamp, matrix);
@@ -259,17 +259,17 @@ package com.gamecook.matchhack.activities
             var sprites:Array = SpriteFactory.equipment.slice();
 
             var i:int = 0;
-            var total = sprites.length;
+            var total:int = sprites.length;
             var padding:int = 20;
             var inventoryWidth:int = fullSizeWidth - 20;
             var columns:int = 2;//Math.ceil(inventoryWidth / tileSize) - 1;
-            var rows:int = Math.ceil(total/columns);
+            var rows:int = Math.ceil(total / columns);
 
             // calculate left/right margin for each item
             var leftMargin:int = 0;
             var rightMargin:int = 30;//Math.round((inventoryWidth - 10 - ((tileSize + padding) * columns))/columns);
-            trace("rightMargin", rightMargin/columns);
-            var currentPage:BitmapData = new BitmapData(inventoryWidth, ((tileSize+padding) * rows)+10, true, 0);
+            trace("rightMargin", rightMargin / columns);
+            var currentPage:BitmapData = new BitmapData(inventoryWidth, ((tileSize + padding) * rows) + 10, true, 0);
             var currentColumn:int = 0;
             var currentRow:int = 0;
             var foundColorMatrix:ColorTransform = new ColorTransform();
@@ -315,7 +315,7 @@ package com.gamecook.matchhack.activities
 
             }
 
-            unlockedPercent = Math.round(unlocked/total * 100);
+            unlockedPercent = Math.round(unlocked / total * 100);
 
             // Rotate the bitmap for the scroller
 

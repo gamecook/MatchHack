@@ -21,9 +21,9 @@
         <if>
             <istrue value="${mobile}" />
             <then>
-                <copy file="${basedir}/build/android-resources/template-air-app.xml"
+                <copy file="${basedir}/build/android-template/template-air-app.xml"
                     tofile="${tmp.loc}/${project.name}-air-app.xml"/>
-                <copy file="${basedir}/build/android-resources/air.properties"
+                <copy file="${basedir}/build/android-template/air.properties"
                     tofile="${tmp.loc}/air.properties"/>
             </then>
             <else>

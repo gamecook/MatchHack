@@ -23,8 +23,6 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.enums.DifficultyLevels;
-    import com.gamecook.matchhack.enums.DifficultyLevels;
-    import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
@@ -74,14 +72,14 @@ package com.gamecook.matchhack.activities
 
             var newGameLabel:Bitmap = addChild(new NewGame()) as Bitmap;
             newGameLabel.x = (fullSizeWidth - newGameLabel.width) * .5;
-            newGameLabel.y = logo.y + logo.height + 50;
+            newGameLabel.y = logo.y + logo.height + 10;
 
             // Adding and setting up difficulty level buttons.
 
             var easyButton:SimpleButton = addChild(new SimpleButton(new EasyUp(), new EasyOver(), new EasyOver(), new EasyUp())) as SimpleButton;
             easyButton.name = DifficultyLevels.EASY;
             easyButton.x = (fullSizeWidth - easyButton.width) * .5;
-            easyButton.y = newGameLabel.y + newGameLabel.height + 20;
+            easyButton.y = newGameLabel.y + newGameLabel.height + 10;
             easyButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var mediumButton:SimpleButton = addChild(new SimpleButton(new MediumUp(), new MediumOver(), new MediumOver(), new MediumUp())) as SimpleButton;
@@ -99,7 +97,7 @@ package com.gamecook.matchhack.activities
             // Sets up teh difficulty description image
             var difficultyImage:Bitmap = addChild(new DifficultyImage()) as Bitmap;
             difficultyImage.x = (fullSizeWidth - difficultyImage.width) * .5;
-            difficultyImage.y = fullSizeHeight - difficultyImage.height - 25;
+            difficultyImage.y = hardButton.y + hardButton.height + 10;
 
             enableLogo();
         }
@@ -128,7 +126,6 @@ package com.gamecook.matchhack.activities
                     break;
             }
 
-            var muteValue:Boolean = soundManager.getMuteValue();
             // Clear the active state for a new game
             activeState.reset();
 

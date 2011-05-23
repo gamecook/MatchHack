@@ -30,8 +30,6 @@ package com.gamecook.matchhack.views
     import com.gamecook.frogue.tiles.IMonster;
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.TileTypes;
-    import com.gamecook.matchhack.factories.CharacterFactory;
-
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.utils.ArrayUtil;
 
@@ -43,9 +41,7 @@ package com.gamecook.matchhack.views
 
     public class CharacterView extends PaperSprite implements IMonster
     {
-
-        [Embed(source="../../../../../build/assets/sprites/blood_01.png")]
-        private static var BloodImage:Class;
+        include "types.as"
         private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var lifeBar:LifeBarView;
         private const PLAYER:String = "player";
@@ -86,14 +82,14 @@ package com.gamecook.matchhack.views
 
             createImage();
 
-            bloodImage = new BloodImage() as Bitmap;
+            bloodImage = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(ArrayUtil.pickRandomArrayElement(["X1", "X2", "X3"]))));
 
             super(container, bloodImage);
         }
 
         public function generateRandomEquipment():void
         {
-            var weaponGenerator:EquipmentFactory = new EquipmentFactory(spriteSheet);
+            var weaponGenerator:EquipmentFactory = new EquipmentFactory(spriteSheet, types);
             var equipmentTypes:Array = [SlotsEnum.WEAPON, SlotsEnum.ARMOR, SlotsEnum.HELMET, SlotsEnum.SHIELD, SlotsEnum.BOOTS];
 
             var total:int = Math.random() * equipmentTypes.length;
@@ -113,8 +109,8 @@ package com.gamecook.matchhack.views
         private function createImage():void
         {
 
-            if(model.getSpriteID() != "")
-                baseSpriteID = baseSpriteID.concat(","+model.getSpriteID());
+            if (model.getSpriteID() != "")
+                baseSpriteID = baseSpriteID.concat("," + model.getSpriteID());
 
             var bitmapData:BitmapData = spriteSheet.getSprite.apply(this, overrideSprites ? overrideSprites : baseSpriteID.split(","));
             characterImage = container.addChild(new Bitmap(bitmapData)) as Bitmap;
@@ -322,7 +318,6 @@ package com.gamecook.matchhack.views
         public function set onDefend(value:Function):void
         {
         }
-
 
 
     }

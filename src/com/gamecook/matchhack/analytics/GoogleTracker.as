@@ -49,7 +49,7 @@ package com.gamecook.matchhack.analytics
             super.trackPageview(a);
         }
 
-        public function track(type:String, ... arguments)
+        public function track(type:String, ... arguments):void
         {
         }
     }

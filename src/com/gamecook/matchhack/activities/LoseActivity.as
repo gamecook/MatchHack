@@ -23,9 +23,9 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.enums.DifficultyLevels;
-    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
@@ -83,7 +83,7 @@ package com.gamecook.matchhack.activities
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
             var countUpEffect:CountUpTextEffect = new CountUpTextEffect(scoreTF);
-            countUpEffect.newValue(activeState.score, scoreTF.text);
+            countUpEffect.resetValues(activeState.score, activeState.initialScore, 1, scoreTF.text);
             addThread(countUpEffect);
 
             // Clear out the rest of the activeState values since the game is over.

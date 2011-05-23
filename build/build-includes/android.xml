@@ -41,7 +41,7 @@
         </copy>
         <mkdir dir="${tmp.loc}/swfs"/>
         <copy file="${bin.loc}/swfs/${project.name.versioned}.swf" todir="${tmp.loc}/swfs"/>
-        <copy file="${basedir}/build/android-resources/template-air-app.xml"
+        <copy file="${basedir}/build/android-template/template-air-app.xml"
             tofile="${tmp.loc}/${project.name}-air-app.xml"/>
 
 
@@ -64,7 +64,7 @@
             <arg value="-storetype"/>
             <arg value="pkcs12"/>
             <arg value="-keystore"/>
-            <arg value="${basedir}/build/android-resources/${certificate.filename}"/>
+            <arg value="${basedir}/build/android-template/${certificate.filename}"/>
             <arg value="-storepass"/>
             <arg value="${certificate.password}"/>
             <arg value="${apks.loc}/${project.name.versioned}.apk"/>
@@ -118,7 +118,7 @@
 
         <if>
             <not>
-                <available type="file" file="${basedir}/build/android-resources/${certificate.filename}"/>
+                <available type="file" file="${basedir}/build/android-template/${certificate.filename}"/>
             </not>
             <then>
                 <exec executable="${adt}">
@@ -132,7 +132,7 @@
                     <arg value="-validityPeriod"/>
                     <arg value="25"/>
                     <arg value="2048-RSA"/>
-                    <arg value="${basedir}/build/android-resources/${certificate.filename}"/>
+                    <arg value="${basedir}/build/android-template/${certificate.filename}"/>
                     <arg value="${certificate.password}"/>
                 </exec>
             </then>

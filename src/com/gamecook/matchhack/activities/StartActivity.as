@@ -180,7 +180,7 @@ package com.gamecook.matchhack.activities
                 soundBTN.downState = new SoundOff();
             }
 
-            if(activeState.mute != soundManager.mute)
+            if (activeState.mute != soundManager.mute)
             {
                 activeState.mute = soundManager.mute;
                 saveState();
@@ -221,7 +221,7 @@ package com.gamecook.matchhack.activities
         {
             soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onContinue);
-            nextActivity(GameActivity);
+            nextActivity(LoadingActivity);
         }
 
 

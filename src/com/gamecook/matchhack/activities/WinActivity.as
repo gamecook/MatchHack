@@ -24,11 +24,11 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.TileTypes;
-    import com.jessefreeman.factivity.managers.SingletonManager;
-    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
@@ -56,7 +56,7 @@ package com.gamecook.matchhack.activities
         private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var treasureTF:TextField;
         private var equipmentMessage:String;
-        private var countUpEffect   :CountUpTextEffect;
+        private var countUpEffect:CountUpTextEffect;
         private var continueLabel:Bitmap;
 
         public function WinActivity(activityManager:IActivityManager, data:*)
@@ -79,29 +79,29 @@ package com.gamecook.matchhack.activities
             //TODO need to be able to show player or tresaure chest based on the difficulty level.
 
             /*var character:Bitmap = addChild(data.characterImage) as Bitmap;
-            character.x = (fullSizeWidth - character.width) * .5;
-            character.y = youWin.y + youWin.height + 15;*/
+             character.x = (fullSizeWidth - character.width) * .5;
+             character.y = youWin.y + youWin.height + 15;*/
 
             treasureChest = addChild(new PaperSprite()) as PaperSprite;
             treasureChest.x = (fullSizeWidth - treasureChest.width) * .5;
             treasureChest.y = youWin.y + youWin.height + 50;
             treasureChest.front = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite("T")));
 
-            if(data.droppedEquipment)
+            if (data.droppedEquipment)
             {
                 var tileID:String = data.droppedEquipment.tileID;
                 treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getEquipmentPreview(tileID)));
-                equipmentMessage = "You found "+data.droppedEquipment.description;
+                equipmentMessage = "You found a " + data.droppedEquipment.description;
 
                 activeState.unlockEquipment(tileID);
             }
             else
             {
                 var coinID:String = getCoin();
-                if(coinID)
+                if (coinID)
                 {
                     treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(coinID)));
-                    equipmentMessage = "You got a "+TileTypes.getTileName(coinID);
+                    equipmentMessage = "You got a " + TileTypes.getTileName(coinID);
                     activeState.addCoin(coinID);
                 }
                 else
@@ -133,18 +133,18 @@ package com.gamecook.matchhack.activities
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
             countUpEffect = new CountUpTextEffect(scoreTF, null, onCountUpComplete);
-            countUpEffect.newValue(activeState.score, scoreTF.text);
+            countUpEffect.resetValues(activeState.score, activeState.initialScore, 1, scoreTF.text);
             addThread(countUpEffect);
 
         }
 
         private function getCoin():String
         {
-            if(activeState.levelTurns == 5)
+            if (activeState.levelTurns == 5)
                 return "C3"
-            else if(activeState.levelTurns == 6)
+            else if (activeState.levelTurns == 6)
                 return "C2"
-            else if(activeState.levelTurns == 7)
+            else if (activeState.levelTurns == 7)
                 return "C1";
 
             return "";
@@ -180,7 +180,7 @@ package com.gamecook.matchhack.activities
 
         private function onClick(event:MouseEvent):void
         {
-            if(countUpEffect.isRunning())
+            if (countUpEffect.isRunning())
             {
                 threadManager.removeThread(countUpEffect);
                 countUpEffect.forceStop();

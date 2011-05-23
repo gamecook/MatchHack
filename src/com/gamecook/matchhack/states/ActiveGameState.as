@@ -22,9 +22,6 @@
 
 package com.gamecook.matchhack.states
 {
-    import com.jessefreeman.factivity.sounds.ISoundManager;
-    import com.jessefreeman.factivity.managers.SingletonManager;
-    import com.jessefreeman.factivity.sounds.SoundManager;
     import com.jessefreeman.factivity.state.AbstractStateObject;
 
     public class ActiveGameState extends AbstractStateObject
@@ -80,16 +77,17 @@ package com.gamecook.matchhack.states
         {
             _dataObject.difficulty = value;
         }
-/*
-        public function get turns():int
-        {
-            return _dataObject.turns;
-        }
 
-        public function set turns(value:int):void
-        {
-            _dataObject.turns = value;
-        }*/
+        /*
+         public function get turns():int
+         {
+         return _dataObject.turns;
+         }
+
+         public function set turns(value:int):void
+         {
+         _dataObject.turns = value;
+         }*/
 
         public function get score():int
         {
@@ -124,11 +122,11 @@ package com.gamecook.matchhack.states
 
         public function unlockEquipment(tileID:String):void
         {
-            if(!_dataObject.unlockedEquipment)
+            if (!_dataObject.unlockedEquipment)
                 _dataObject.unlockedEquipment = [tileID];
             else
             {
-                if(_dataObject.unlockedEquipment.indexOf(tileID) == -1)
+                if (_dataObject.unlockedEquipment.indexOf(tileID) == -1)
                 {
                     _dataObject.unlockedEquipment.push(tileID);
                 }
@@ -137,7 +135,7 @@ package com.gamecook.matchhack.states
 
         public function getUnlockedEquipment():Array
         {
-            if(!_dataObject.unlockedEquipment)
+            if (!_dataObject.unlockedEquipment)
                 _dataObject.unlockedEquipment = [];
 
             return _dataObject.unlockedEquipment;
@@ -145,12 +143,12 @@ package com.gamecook.matchhack.states
 
         public function addCoin(coinID:String):void
         {
-            if(!_dataObject.coins)
+            if (!_dataObject.coins)
             {
                 _dataObject.coins = [];
             }
 
-            if(!_dataObject.coins[coinID])
+            if (!_dataObject.coins[coinID])
                 _dataObject.coins[coinID] = 1;
             else
                 _dataObject.coins[coinID] ++;
@@ -158,7 +156,7 @@ package com.gamecook.matchhack.states
 
         public function getCoins():Array
         {
-            if(!_dataObject.coins)
+            if (!_dataObject.coins)
                 _dataObject.coins = [];
 
             return _dataObject.coins;
@@ -183,7 +181,7 @@ package com.gamecook.matchhack.states
 
         public function get equippedInventory():Array
         {
-            if(!_dataObject.equippedInventory)
+            if (!_dataObject.equippedInventory)
                 _dataObject.equippedInventory = [];
 
             return _dataObject.equippedInventory;
@@ -191,7 +189,7 @@ package com.gamecook.matchhack.states
 
         public function get totalWins():String
         {
-            if(!_dataObject.totalWins)
+            if (!_dataObject.totalWins)
                 _dataObject.totalWins = 0;
 
             return _dataObject.totalWins;
@@ -199,14 +197,14 @@ package com.gamecook.matchhack.states
 
         public function increaseTotalWins():String
         {
-            if(!_dataObject.totalWins)
+            if (!_dataObject.totalWins)
                 _dataObject.totalWins = 0;
             return _dataObject.totalWins ++;
         }
 
         public function get totalLosses():String
         {
-            if(!_dataObject.totalLosses)
+            if (!_dataObject.totalLosses)
                 _dataObject.totalLosses = 0;
 
             return _dataObject.totalLosses;
@@ -214,14 +212,14 @@ package com.gamecook.matchhack.states
 
         public function increaseTotalLosses():String
         {
-            if(!_dataObject.totalLosses)
+            if (!_dataObject.totalLosses)
                 _dataObject.totalLosses = 0;
             return _dataObject.totalLosses ++;
         }
 
         public function get totalTurns():String
         {
-            if(!_dataObject.totalTurns)
+            if (!_dataObject.totalTurns)
                 _dataObject.totalTurns = 0;
 
             return _dataObject.totalTurns;
@@ -229,9 +227,19 @@ package com.gamecook.matchhack.states
 
         public function increaseTotalTurns():String
         {
-            if(!_dataObject.totalTurns)
+            if (!_dataObject.totalTurns)
                 _dataObject.totalTurns = 0;
             return _dataObject.totalTurns ++;
+        }
+
+        public function set initialScore(value:int):void
+        {
+            _dataObject.initialScore = value;
+        }
+
+        public function get initialScore():int
+        {
+            return _dataObject.initialScore;
         }
     }
 }

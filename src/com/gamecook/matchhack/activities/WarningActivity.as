@@ -22,73 +22,52 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.frogue.sprites.SpriteSheet;
-    import com.gamecook.matchhack.factories.SpriteSheetFactory;
-    import com.gamecook.matchhack.sounds.MHSoundClasses;
+    import com.jessefreeman.factivity.activities.BaseActivity;
     import com.jessefreeman.factivity.activities.IActivityManager;
-    import com.jessefreeman.factivity.managers.SingletonManager;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
 
     /**
      *
-     * This class acts as a simple way to show the use the instructions. There is actually no loading going on here,
-     * there is just a delay to go to the next activity. This activity can also be used to display hints, tips and ads.
+     * This is displayed when the game loads up.
      *
      */
-    public class LoadingActivity extends LogoActivity
+    public class WarningActivity extends BaseActivity
     {
 
-        [Embed(source="../../../../../build/assets/instructions.png")]
-        private var InstructionsImage:Class;
+        [Embed(source="../../../../../build/assets/warning.png")]
+        private var WarningImage:Class;
 
         [Embed(source="../../../../../build/assets/click_to_continue.png")]
         private var ContinueImage:Class;
 
-        public function LoadingActivity(activityManager:IActivityManager, data:*)
+        public function WarningActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
         }
+
 
         override public function onStart():void
         {
             super.onStart();
 
-            // Add instructions bitmap and lay it out
-            var instructions:Bitmap = addChild(new InstructionsImage()) as Bitmap;
-            instructions.x = (fullSizeWidth - instructions.width) * .5;
-            instructions.y = logo.x + logo.height + 15;
+            // Setup the splash image and align it
+            var img:Bitmap = addChild(Bitmap(new WarningImage())) as Bitmap;
+            img.x = ((fullSizeWidth - img.width) * .5);
+            img.y = ((fullSizeHeight - img.height) * .5) - 10;
 
             var continueLabel:Bitmap = addChild(Bitmap(new ContinueImage())) as Bitmap;
             continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
-            // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
-
-            var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
-            spriteSheet.clear();
-
-            SpriteSheetFactory.parseSpriteSheet(spriteSheet);
 
         }
 
         private function onClick(event:MouseEvent):void
         {
-
-            // Play walking sound for player entering the new game
-            soundManager.play(MHSoundClasses.WalkStairsSound);
-            // Return to start activity
-            nextActivity(GameActivity);
-        }
-
-        /**
-         * We are loading, there is nothing to go back to.
-         */
-        override public function onBack():void
-        {
-
+            nextActivity(StartActivity);
         }
     }
 }

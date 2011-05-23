@@ -55,7 +55,7 @@ package com.gamecook.matchhack.activities
 
 
             // Go to the main activity after 3 seconds
-            startNextActivityTimer(StartActivity, 3);
+            startNextActivityTimer(WarningActivity, 3);
         }
     }
 }

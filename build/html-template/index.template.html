@@ -31,7 +31,8 @@
     </style>
     <script type="text/javascript" src="js/swfobject.js"></script>
     <script type="text/javascript">
-        swfobject.embedSWF("swfs/@example@.swf", "flashContent", "@width@", "@height@", "@version_major@.@version_minor@.@version_revision@", "#ff0000");
+        var flashvars = {version: @version@};
+        swfobject.embedSWF("swfs/@example@.swf", "flashContent", "@width@", "@height@", "@version_major@.@version_minor@.@version_revision@", "expressInstall.swf", flashvars);
     </script>
 
 </head>

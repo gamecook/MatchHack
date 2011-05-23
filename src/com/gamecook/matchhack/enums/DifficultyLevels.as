@@ -15,7 +15,7 @@ package com.gamecook.matchhack.enums
 
         public static function getLabel(playerLevel:int):String
         {
-            switch(playerLevel)
+            switch (playerLevel)
             {
                 case 1:
                     return EASY;

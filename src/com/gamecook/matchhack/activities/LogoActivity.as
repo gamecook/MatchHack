@@ -111,7 +111,7 @@ package com.gamecook.matchhack.activities
         {
             saveState();
 
-            if(logoContainer.hasEventListener(MouseEvent.CLICK))
+            if (logoContainer.hasEventListener(MouseEvent.CLICK))
                 logoContainer.removeEventListener(MouseEvent.CLICK, onHome);
 
             super.onStop();

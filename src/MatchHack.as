@@ -23,7 +23,6 @@
 package
 {
     import com.gamecook.frogue.tiles.TileTypes;
-    import com.gamecook.matchhack.activities.InventoryActivity;
     import com.gamecook.matchhack.activities.SplashActivity;
     import com.gamecook.matchhack.analytics.GoogleTracker;
     import com.jessefreeman.factivity.AbstractApplication;
@@ -38,12 +37,13 @@ package
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
 
-    [SWF(width="480",height="700",backgroundColor="#000000",frameRate="60")]
+    [SWF(width="480",height="800",backgroundColor="#000000",frameRate="60")]
     public class MatchHack extends AbstractApplication
     {
 
         private var tracker:ITrack;
         private var scale:Number = 1;
+        private var version:String = "1";
 
         /*
          You will need to create a class called analytics.as with the following in it:
@@ -55,6 +55,26 @@ package
 
         public function MatchHack()
         {
+            /*if(CONFIG::mobile)
+             {
+             var descriptor:XML = NativeApplication.nativeApplication.applicationDescriptor;
+             var ns:Namespace = descriptor.namespaceDeclarations()[0];
+             var version:Number = descriptor.ns::version;
+             }
+             else
+             {
+             var paramObj:Object = LoaderInfo(this.root.loaderInfo).parameters;
+             if(paramObj.hasOwnProperty("version"))
+             version = paramObj.version;
+             }
+
+             trace("MatchHack Version", version);
+
+             addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Ver: "+version));
+             */
+
+            //TODO need to add in logic to track versions
+
             // Automatically figures out the scale based on stage's height. Used to scale up on each device.
             scale = DeviceUtil.getScreenHeight(stage) / 400;
 
@@ -129,7 +149,7 @@ package
             TileTypes.registerTile('W5', { name: 'Bow', sprite: "sprite37", preview:"sprite38"});
             TileTypes.registerTile('W6', { name: 'Wide Sword', sprite: "sprite39", preview:"sprite40"});
             /*TileTypes.registerTile('W7', { name: 'Crop', sprite: "sprite41", preview:"sprite42"});
-            TileTypes.registerTile('W8', { name: 'Flogger', sprite: "sprite43", preview:"sprite44"});*/
+             TileTypes.registerTile('W8', { name: 'Flogger', sprite: "sprite43", preview:"sprite44"});*/
             TileTypes.registerTile('W9', { name: 'Small Knife', sprite: "sprite45", preview:"sprite46"});
             TileTypes.registerTile('W10', { name: 'Throwing Axe', sprite: "sprite47", preview:"sprite48"});
             TileTypes.registerTile('W11', { name: 'Hammer', sprite: "sprite49", preview:"sprite50"});
@@ -161,7 +181,7 @@ package
             TileTypes.registerTile('H1', { name: 'Baseball Hat', sprite: "sprite97", preview:"sprite98"});
             TileTypes.registerTile('H2', { name: 'Secret Mask', sprite: "sprite99", preview:"sprite100"});
             /*TileTypes.registerTile('H3', { name: 'Storm Trooper Helmet', sprite: "sprite101", preview:"sprite102"});
-            TileTypes.registerTile('H4', { name: 'Gimp Mask', sprite: "sprite103", preview:"sprite104"});*/
+             TileTypes.registerTile('H4', { name: 'Gimp Mask', sprite: "sprite103", preview:"sprite104"});*/
             TileTypes.registerTile('H5', { name: 'Bucket Helmet', sprite: "sprite105", preview:"sprite106"});
             TileTypes.registerTile('H6', { name: 'Open Helmet', sprite: "sprite107", preview:"sprite108"});
             TileTypes.registerTile('H7', { name: 'Fuller', sprite: "sprite109", preview:"sprite110"});
@@ -183,7 +203,6 @@ package
             TileTypes.registerTile('B1', { name: 'Pointy Boots', sprite: "sprite137", preview:"sprite138"});
             TileTypes.registerTile('B2', { name: 'Square Boots', sprite: "sprite139", preview:"sprite140"});
             TileTypes.registerTile('B3', { name: 'Simple Boots', sprite: "sprite141", preview:"sprite142"});
-
 
 
             super.init();

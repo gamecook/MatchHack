@@ -23,24 +23,18 @@
 
 package com.gamecook.matchhack.activities
 {
-    import avmplus.typeXml;
-
     import com.gamecook.frogue.enum.SlotsEnum;
-    import com.gamecook.frogue.equipment.IEquip;
     import com.gamecook.frogue.equipment.IEquipable;
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.MonsterTile;
-    import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.frogue.tiles.TileTypes;
-    import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.gamecook.matchhack.factories.SpriteFactory;
-    import com.gamecook.matchhack.factories.SpriteSheetFactory;
+    import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.activities.IActivityManager;
-
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.threads.effects.Quake;
     import com.jessefreeman.factivity.threads.effects.TypeTextEffect;
@@ -51,17 +45,13 @@ package com.gamecook.matchhack.activities
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
+    import flash.filters.BitmapFilterQuality;
+    import flash.filters.GlowFilter;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
-    import flash.text.engine.Kerning;
-    import flash.text.engine.Kerning;
-    import flash.text.engine.Kerning;
-    import flash.text.engine.Kerning;
 
     import flashx.textLayout.formats.TextAlign;
-
-    import org.osmf.net.SwitchingRuleBase;
 
     import uk.co.soulwire.display.PaperSprite;
 
@@ -96,6 +86,9 @@ package com.gamecook.matchhack.activities
         private var highlightInstances:Array = [];
         private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var debug:Boolean = false;
+        private var monsterCounter:int = 0;
+        private var monsterAttackDelay:int = 15000;
+        private var attackWarningLabel:TextField;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -105,6 +98,7 @@ package com.gamecook.matchhack.activities
 
         override protected function onCreate():void
         {
+
             // Have the soundManager play the background theme song
             soundManager.playMusic(MHSoundClasses.DungeonLooper);
 
@@ -118,6 +112,8 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+
+            activeState.initialScore = activeState.score;
 
             gameBackground = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
@@ -134,16 +130,16 @@ package com.gamecook.matchhack.activities
             var sprites:Array = SpriteFactory.createSprites(6);
 
             // Add Potions
-            if(int(Math.random() * (difficulty)) == 0)
-                sprites.splice(0,1,"P");
+            if (int(Math.random() * (difficulty)) == 0)
+                sprites.splice(0, 1, "P");
 
             // Add Gold
-            if(int(Math.random() * (difficulty + 2)) == 0)
-                sprites.splice(1,1,"$");
+            if (int(Math.random() * (difficulty + 2)) == 0)
+                sprites.splice(1, 1, "$");
 
             // Add Treasure
-            if(int(Math.random() * (difficulty + 4)) == 0)
-                sprites.splice(2,1,"T");
+            if (int(Math.random() * (difficulty + 4)) == 0)
+                sprites.splice(2, 1, "T");
 
             var typeIndex:int = -1;
             var typeCount:int = 2;
@@ -176,12 +172,27 @@ package com.gamecook.matchhack.activities
             createPlayer(total);
 
             var monsterModel:MonsterTile = new MonsterTile();
-            monsterModel.parseObject( {name:"monster", maxLife: total / 2});
+            monsterModel.parseObject({name:"monster", maxLife: total / 2});
 
             monster = tileContainer.addChild(new CharacterView(monsterModel)) as CharacterView;
+
             monster.generateRandomEquipment();
 
-            if(DeviceUtil.os != DeviceUtil.IOS)
+            attackWarningLabel = monster.addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "", 20)) as TextField;
+            attackWarningLabel.x = -32;
+            attackWarningLabel.y = 10;
+
+            var outline:GlowFilter = new GlowFilter();
+            outline.blurX = outline.blurY = 2;
+            outline.color = 0x000000;
+            outline.quality = BitmapFilterQuality.HIGH;
+            outline.strength = 100;
+
+            var filterArray:Array = new Array();
+            filterArray.push(outline);
+            attackWarningLabel.filters = filterArray;
+
+            if (DeviceUtil.os != DeviceUtil.IOS)
                 quakeEffect = new Quake(null);
             textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
 
@@ -198,11 +209,38 @@ package com.gamecook.matchhack.activities
             // Update status message
             updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 
+            // Setup monter timer
+            if (difficulty == 1)
+            {
+                monsterAttackDelay = -1
+            }
+            else if (difficulty == 2)
+            {
+                monsterCounter = monsterAttackDelay;
+            }
+            else
+            {
+                monsterAttackDelay = monsterAttackDelay * .5;
+
+                if (Math.random() * 1 < .5 && player.getLife() > 1)
+                {
+                    monsterCounter = monsterAttackDelay;
+                }
+                else
+                {
+                    updateStatusMessage("As you enter level " + activeState.playerLevel + " a monster is waiting and attacks you!");
+                }
+
+                monsterCounter
+            }
+
         }
 
         private function createPlayer(total:int):void
         {
-            var maxLife:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
+            var maxLife:int = (total / difficulty) + 5;
+
+            trace("maxLife", maxLife);
 
             var playerModel:MonsterTile = new MonsterTile();
 
@@ -445,6 +483,7 @@ package com.gamecook.matchhack.activities
          */
         private function findMatches():void
         {
+
             var i:int, j:int;
             var total:int = activeTiles.length;
             var currentTile:PaperSprite;
@@ -482,9 +521,16 @@ package com.gamecook.matchhack.activities
 
             // Validate match
             if (match)
+            {
                 onMatch(tileName);
+            }
             else
+            {
+                // Update status message
+                updateStatusMessage("You did not find a match.\nYou lose 1 HP from the monster's attack.");
                 onNoMatch();
+            }
+
         }
 
         /**
@@ -528,11 +574,11 @@ package com.gamecook.matchhack.activities
             // Play attack sound
             soundManager.play(MHSoundClasses.EnemyAttack);
 
-            // Update status message
-            updateStatusMessage("You did not find a match.\nYou lose 1 HP from the monster's attack.");
-
             // Update status before testing if the player is dead
             updateStatusBar();
+
+            // Reset monster attack counter
+            monsterCounter = monsterAttackDelay;
 
             // Test to see if the player is dead
             if (player.isDead)
@@ -552,44 +598,48 @@ package com.gamecook.matchhack.activities
          */
         private function onMatch(type:String):void
         {
-            trace("Matched", type, type.substr(0,1));
+            trace("Matched", type, type.substr(0, 1));
 
-            switch(type.substr(0,1))
+            switch (type.substr(0, 1))
             {
                 case "P":
-                    updateStatusMessage("Player drinks potion and restores "+(player.getMaxLife() - player.getLife()));
+                    updateStatusMessage("Player drinks potion and restores " + (player.getMaxLife() - player.getLife()));
                     trace("Found Potion");
                     player.addLife(player.getMaxLife());
                     increaseBonus();
-                break
+                    break
 
                 case "W":
                     trace("Found Weapon");
                     //playerAttack();
-                break;
+                    break;
 
-                case "S": case "H": case "A": case "B":
+                case "S":
+                case "H":
+                case "A":
+                case "B":
                     trace("Found Armor");
                     //playerAttack();
-                break;
+                    break;
 
                 case "$":
                     trace("Found Money");
 
                     increaseBonus();
-                break;
+                    break;
 
                 case "T":
                     trace("Found Treasure");
                     increaseBonus();
-                break;
+                    break;
 
 
             }
 
             playerAttack();
 
-
+            // Reset monster attack counter
+            monsterCounter = monsterAttackDelay;
         }
 
         private function playerAttack():void
@@ -637,7 +687,7 @@ package com.gamecook.matchhack.activities
             activeState.bestBonus = bonus;
 
             if (bonus > 0)
-            displayBonusMessage("Bonus x" + bonus);
+                displayBonusMessage("Bonus x" + bonus);
         }
 
         /**
@@ -753,5 +803,41 @@ package com.gamecook.matchhack.activities
             super.onBack();
             nextActivity(StartActivity);
         }
+
+        override public function update(elapsed:Number = 0):void
+        {
+
+            super.update(elapsed);
+
+            if (monsterAttackDelay != -1)
+            {
+                if (monsterCounter <= 0)
+                    onNoMatch();
+                else
+                {
+                    monsterCounter -= elapsed;
+                    if (monsterCounter <= 5500)
+                    {
+                        var timeLeft:int = Math.round(monsterCounter / 1000)
+
+                        if (timeLeft < 4)
+                        {
+                            attackWarningLabel.textColor = 0xff0000;
+                        }
+                        else
+                        {
+                            attackWarningLabel.textColor = 0xffffff;
+                        }
+
+                        attackWarningLabel.text = timeLeft == 0 ? "!!" : timeLeft.toString();
+                    }
+                    else
+                    {
+                        attackWarningLabel.text = "";
+                    }
+                }
+            }
+        }
+
     }
 }
