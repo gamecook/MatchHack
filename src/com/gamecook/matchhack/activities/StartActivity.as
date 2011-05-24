@@ -221,7 +221,7 @@ package com.gamecook.matchhack.activities
         {
             soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onContinue);
-            nextActivity(LoadingActivity);
+            nextActivity(GameActivity);
         }
 
 

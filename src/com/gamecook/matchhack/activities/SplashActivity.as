@@ -22,8 +22,11 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.jessefreeman.factivity.activities.BaseActivity;
     import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
 
     import flash.display.Bitmap;
 
@@ -44,6 +47,15 @@ package com.gamecook.matchhack.activities
         }
 
 
+        override protected function onCreate():void
+        {
+            var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+            spriteSheet.clear();
+            SpriteSheetFactory.parseSpriteSheet(spriteSheet);
+
+            super.onCreate();
+        }
+
         override public function onStart():void
         {
             super.onStart();
@@ -55,7 +67,7 @@ package com.gamecook.matchhack.activities
 
 
             // Go to the main activity after 3 seconds
-            startNextActivityTimer(WarningActivity, 3);
+            startNextActivityTimer(StartActivity, 3);
         }
     }
 }

@@ -28,7 +28,9 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.gamecook.matchhack.factories.SpriteFactory;
+    import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
@@ -220,7 +222,8 @@ package com.gamecook.matchhack.activities
             }
             else
             {
-                monsterAttackDelay = monsterAttackDelay * .5;
+                monsterCounter = monsterAttackDelay
+                /*monsterAttackDelay = monsterAttackDelay * .5;
 
                 if (Math.random() * 1 < .5 && player.getLife() > 1)
                 {
@@ -230,7 +233,7 @@ package com.gamecook.matchhack.activities
                 {
                     updateStatusMessage("As you enter level " + activeState.playerLevel + " a monster is waiting and attacks you!");
                 }
-
+*/
                 monsterCounter
             }
 
@@ -306,7 +309,7 @@ package com.gamecook.matchhack.activities
         private function updateStatusBar():void
         {
             statusBar.setScore(activeState.score);
-            statusBar.setLevel(activeState.playerLevel);
+            statusBar.setLevel(activeState.playerLevel, "<span class='lightGray'>-"+DifficultyLevels.getLabel(difficulty).substr(0,1).toUpperCase())+"</span>";
             statusBar.setTurns(activeState.levelTurns);
         }
 
@@ -778,6 +781,8 @@ package com.gamecook.matchhack.activities
 
         public function updateStatusMessage(value:String):void
         {
+            value = "<span class='orange'>"+value+"</span>";
+
             if (value.length > 0)
             {
                 if (textEffect)

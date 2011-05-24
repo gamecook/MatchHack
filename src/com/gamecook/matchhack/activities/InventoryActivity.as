@@ -122,9 +122,9 @@ package com.gamecook.matchhack.activities
         private function formatStatsText():String
         {
             var message:String =
-                    "Wins:\n" + activeState.totalWins + "\n" +
-                            "Losses:\n" + activeState.totalLosses + "\n" +
-                            "Turns:\n" + activeState.totalTurns + "\n";
+                    "<span class='lightGrey'>Wins:</span>\n<span class='green'>" + activeState.totalWins + "</span>\n" +
+                    "<span class='lightGrey'>Losses:</span>\n<span class='red'>" + activeState.totalLosses + "</span>\n" +
+                    "<span class='lightGrey'>Turns:</span>\n<span class='orange'>" + activeState.totalTurns + "</span>";
             return message;
         }
 
@@ -181,6 +181,7 @@ package com.gamecook.matchhack.activities
             coinContainer.x = fullSizeWidth - coinContainer.width - 10;
             coinContainer.y = 100;
 
+            textFieldStamp.textColor = 0xf1f102;
             textFieldStamp.text = "COINS: $" + totalMoney;
             bmd.draw(textFieldStamp);
         }
@@ -277,7 +278,7 @@ package com.gamecook.matchhack.activities
             var unlockedEquipment:Array = activeState.getUnlockedEquipment();
             var newX:int;
             var newY:int;
-
+            textFieldStamp.textColor = 0xffffff;
             for (i = 0; i < total; i++)
             {
                 currentColumn = i % columns;

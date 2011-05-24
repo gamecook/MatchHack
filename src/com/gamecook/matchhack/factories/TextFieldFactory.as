@@ -29,15 +29,17 @@
  */
 package com.gamecook.matchhack.factories
 {
+    import flash.text.StyleSheet;
+    import flash.text.StyleSheet;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
 
     public class TextFieldFactory
     {
-        public static const SCORE_LABEL:String = "SCORE\n";
-        public static const LEVEL_LABEL:String = "LEVEL\n";
-        public static const TURNS_LABEL:String = "TURNS\n";
+        public static const SCORE_LABEL:String = "<span class='grey'>SCORE</span>\n";
+        public static const LEVEL_LABEL:String = "<span class='grey'>LEVEL</span>\n";
+        public static const TURNS_LABEL:String = "<span class='grey'>TURNS</span>\n";
         private static const DEFAULT_SCORE_PADDING:String = "000000";
         private static const DEFAULT_LEVEL_PADDING:String = "00";
 
@@ -46,17 +48,49 @@ package com.gamecook.matchhack.factories
         public static const textFormatSmall:TextFormat = new TextFormat("system", 8, 0xffffff, null, null, null, null, null, "left");
         public static const textFormatSmallCenter:TextFormat = new TextFormat("system", 8, 0xffffff, null, null, null, null, null, "center");
 
+        private static var css:XML = <css><![CDATA[
+                                    .orange
+                                    {
+                                        color:#ff9900;
+                                    }
+                                    .green
+                                    {
+                                        color:#33ff00;
+                                    }
+                                    .grey
+                                    {
+                                        color:#999999;
+                                    }
+                                    .lightGrey
+                                    {
+                                        color:#c4c4c4;
+                                    }
+                                    .red
+                                    {
+                                        color:#ff2400;
+                                    }
+                                    .yellow
+                                    {
+                                        color:#f1f102;
+                                    }
+                                  ]]></css>;
+
         public static function createTextField(textFormat:TextFormat, defaultText:String = "", width:int = 78):TextField
         {
             var textField:TextField = new TextField();
             textField.defaultTextFormat = textFormat;
-            textField.text = defaultText;
             textField.embedFonts = true;
             textField.selectable = false;
             textField.autoSize = TextFieldAutoSize.LEFT;
             textField.multiline = true;
             textField.width = width;
             textField.wordWrap = true;
+
+            var styleSheet:StyleSheet = new StyleSheet();
+            styleSheet.parseCSS(css.toString());
+            textField.styleSheet = styleSheet;
+
+            textField.htmlText = defaultText;
 
             return textField;
         }

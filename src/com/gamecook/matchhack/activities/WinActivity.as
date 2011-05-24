@@ -91,7 +91,7 @@ package com.gamecook.matchhack.activities
             {
                 var tileID:String = data.droppedEquipment.tileID;
                 treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getEquipmentPreview(tileID)));
-                equipmentMessage = "You found a " + data.droppedEquipment.description;
+                equipmentMessage = "<span class='green'>You found a " + data.droppedEquipment.description+"</span";
 
                 activeState.unlockEquipment(tileID);
             }
@@ -101,12 +101,12 @@ package com.gamecook.matchhack.activities
                 if (coinID)
                 {
                     treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(coinID)));
-                    equipmentMessage = "You got a " + TileTypes.getTileName(coinID);
+                    equipmentMessage = "<span class='yellow'>You got a " + TileTypes.getTileName(coinID)+"</span>";
                     activeState.addCoin(coinID);
                 }
                 else
                 {
-                    equipmentMessage = "The treasure chest was empty.";
+                    equipmentMessage = "<span class='grey'>The treasure chest was empty.</span>";
                 }
             }
 
@@ -118,7 +118,8 @@ package com.gamecook.matchhack.activities
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = treasureTF.y + treasureTF.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "<span class='grey'>SCORE</span>\n" +TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF.textColor = 0x33ff00;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -153,7 +154,7 @@ package com.gamecook.matchhack.activities
         private function onCountUpComplete():void
         {
             treasureChest.flip();
-            treasureTF.text = equipmentMessage;
+            treasureTF.htmlText = equipmentMessage;
             continueLabel.visible = true;
         }
 
@@ -170,10 +171,10 @@ package com.gamecook.matchhack.activities
 
         private function formatBonusText():String
         {
-            var message:String = "SUCCESS BONUS\n" +
-                    "Life: +" + activeState.playerLife + "\n" +
-                    "Turns: +" + activeState.levelTurns + "\n" +
-                    "Level: x" + activeState.playerLevel + "\n";
+            var message:String = "<span class='lightGrey'>SUCCESS BONUS</span>\n" +
+                    "<span class='lightGrey'>Life:</span> <span class='orange'>+" + activeState.playerLife + "</span>\n" +
+                    "<span class='lightGrey'>Turns:</span> <span class='orange'>+" + activeState.levelTurns + "</span>\n" +
+                    "<span class='lightGrey'>Level:</span> <span class='orange'>x" + activeState.playerLevel + "</span>";
 
             return message;
         }
