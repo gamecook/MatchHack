@@ -23,15 +23,21 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.effects.Quake;
-    import com.gamecook.matchhack.effects.TypeTextEffect;
+    import com.gamecook.frogue.enum.SlotsEnum;
+    import com.gamecook.frogue.equipment.IEquipable;
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.frogue.tiles.MonsterTile;
+    import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.SpriteFactory;
+    import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.StatusBarView;
-    import com.jessefreeman.factivity.managers.IActivityManager;
-
+    import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.threads.effects.Quake;
+    import com.jessefreeman.factivity.threads.effects.TypeTextEffect;
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.Bitmap;
@@ -39,6 +45,8 @@ package com.gamecook.matchhack.activities
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
+    import flash.filters.BitmapFilterQuality;
+    import flash.filters.GlowFilter;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
@@ -76,6 +84,11 @@ package com.gamecook.matchhack.activities
         private var bonusLabel:TextField;
         private var gameBackground:Bitmap;
         private var highlightInstances:Array = [];
+        private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+        private var debug:Boolean = false;
+        private var monsterCounter:int = 0;
+        private var monsterAttackDelay:int = 15000;
+        private var attackWarningLabel:TextField;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -85,6 +98,7 @@ package com.gamecook.matchhack.activities
 
         override protected function onCreate():void
         {
+
             // Have the soundManager play the background theme song
             soundManager.playMusic(MHSoundClasses.DungeonLooper);
 
@@ -97,6 +111,9 @@ package com.gamecook.matchhack.activities
         override public function onStart():void
         {
             super.onStart();
+
+
+            activeState.initialScore = activeState.score;
 
             gameBackground = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
@@ -112,6 +129,18 @@ package com.gamecook.matchhack.activities
 
             var sprites:Array = SpriteFactory.createSprites(6);
 
+            // Add Potions
+            if (int(Math.random() * (difficulty)) == 0)
+                sprites.splice(0, 1, "P");
+
+            // Add Gold
+            if (int(Math.random() * (difficulty + 2)) == 0)
+                sprites.splice(1, 1, "$");
+
+            // Add Treasure
+            if (int(Math.random() * (difficulty + 4)) == 0)
+                sprites.splice(2, 1, "T");
+
             var typeIndex:int = -1;
             var typeCount:int = 2;
             var tileBitmap:Bitmap;
@@ -119,6 +148,7 @@ package com.gamecook.matchhack.activities
             statusBar = addChild(new StatusBarView()) as StatusBarView;
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
             statusBar.y = logo.y + logo.height;
+            var spriteName:String;
 
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
@@ -126,23 +156,43 @@ package com.gamecook.matchhack.activities
                 if (i % typeCount == 0)
                     typeIndex ++;
 
-                tileBitmap = new sprites[typeIndex]() as Bitmap;
-
+                spriteName = TileTypes.getEquipmentPreview(sprites[typeIndex]) ? TileTypes.getEquipmentPreview(sprites[typeIndex]) : TileTypes.getTileSprite(sprites[typeIndex]);
+                tileBitmap = new Bitmap(spriteSheet.getSprite(spriteName));
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
-                tile.name = "type" + typeIndex;
-                if (difficulty == 1)
+                tile.name = sprites[typeIndex];
+
+                if (debug)
                     tile.flip();
 
             }
 
             activeState.levelTurns = 0;
 
-            var life:int = total / ((difficulty == 1) ? difficulty : (difficulty - 1));
-            player = tileContainer.addChild(new CharacterView("player", life)) as CharacterView;
-            monster = tileContainer.addChild(new CharacterView("monster", total / 2)) as CharacterView;
+            createPlayer(total);
 
-            if(DeviceUtil.os != DeviceUtil.IOS)
+            var monsterModel:MonsterTile = new MonsterTile();
+            monsterModel.parseObject({name:"monster", maxLife: total / 2});
+
+            monster = tileContainer.addChild(new CharacterView(monsterModel)) as CharacterView;
+
+            monster.generateRandomEquipment();
+
+            attackWarningLabel = monster.addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "", 20)) as TextField;
+            attackWarningLabel.x = -32;
+            attackWarningLabel.y = 10;
+
+            var outline:GlowFilter = new GlowFilter();
+            outline.blurX = outline.blurY = 2;
+            outline.color = 0x000000;
+            outline.quality = BitmapFilterQuality.HIGH;
+            outline.strength = 100;
+
+            var filterArray:Array = new Array();
+            filterArray.push(outline);
+            attackWarningLabel.filters = filterArray;
+
+            if (DeviceUtil.os != DeviceUtil.IOS)
                 quakeEffect = new Quake(null);
             textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
 
@@ -159,6 +209,61 @@ package com.gamecook.matchhack.activities
             // Update status message
             updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 
+            // Setup monter timer
+            if (difficulty == 1)
+            {
+                monsterAttackDelay = -1
+            }
+            else if (difficulty == 2)
+            {
+                monsterCounter = monsterAttackDelay;
+            }
+            else
+            {
+                monsterAttackDelay = monsterAttackDelay * .5;
+
+                if (Math.random() * 1 < .5 && player.getLife() > 1)
+                {
+                    monsterCounter = monsterAttackDelay;
+                }
+                else
+                {
+                    updateStatusMessage("As you enter level " + activeState.playerLevel + " a monster is waiting and attacks you!");
+                }
+
+                monsterCounter
+            }
+
+        }
+
+        private function createPlayer(total:int):void
+        {
+            var maxLife:int = (total / difficulty) + 5;
+
+            trace("maxLife", maxLife);
+
+            var playerModel:MonsterTile = new MonsterTile();
+
+            playerModel.parseObject({name:"player", maxLife: maxLife, life:activeState.playerLife > 0 ? activeState.playerLife : maxLife});
+
+            var sprites:Array = [TileTypes.getTileSprite("@")];
+
+            if (activeState.equippedInventory[SlotsEnum.ARMOR])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.ARMOR]));
+
+            if (activeState.equippedInventory[SlotsEnum.HELMET])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.HELMET]));
+
+            if (activeState.equippedInventory[SlotsEnum.BOOTS])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.BOOTS]));
+
+            if (activeState.equippedInventory[SlotsEnum.SHIELD])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.SHIELD]));
+
+            if (activeState.equippedInventory[SlotsEnum.WEAPON])
+                sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.WEAPON]));
+
+            player = tileContainer.addChild(new CharacterView(playerModel, sprites)) as CharacterView;
         }
 
         private function createHighlights():void
@@ -202,7 +307,7 @@ package com.gamecook.matchhack.activities
         {
             statusBar.setScore(activeState.score);
             statusBar.setLevel(activeState.playerLevel);
-            statusBar.setTurns(activeState.turns);
+            statusBar.setTurns(activeState.levelTurns);
         }
 
         /**
@@ -289,7 +394,7 @@ package com.gamecook.matchhack.activities
                 var target:PaperSprite = event.target as PaperSprite;
 
                 // If this tile is already active exit the method
-                if ((activeTiles.indexOf(target) != -1) || player.isDead())
+                if ((activeTiles.indexOf(target) != -1) || player.isDead)
                     return;
 
                 // push the tile into the active tile array
@@ -300,8 +405,8 @@ package com.gamecook.matchhack.activities
                 highlight.x = target.x - (target.width * .5) + 1;
                 highlight.y = target.y - (target.height * .5) + 1;
 
-                // Check if the difficulty is 1, we need to do handle this different for the easy level.
-                if (difficulty > 1)
+                // Check if the debug mode is on, we need to do handle this differently.
+                if (!debug)
                 {
 
                     // We are about to flip the tile. Add a complete event listener so we know when it's done.
@@ -365,8 +470,8 @@ package com.gamecook.matchhack.activities
                 resetActiveTiles();
 
                 // Increment our turns counter in the activeState object
-                activeState.turns ++;
                 activeState.levelTurns ++;
+                activeState.increaseTotalTurns();
             }
 
         }
@@ -378,11 +483,12 @@ package com.gamecook.matchhack.activities
          */
         private function findMatches():void
         {
+
             var i:int, j:int;
             var total:int = activeTiles.length;
             var currentTile:PaperSprite;
             var testTile:PaperSprite;
-
+            var tileName:String;
             var match:Boolean;
 
             // Loop through active tiles and compare each item to the rest of the tiles in the array.
@@ -390,13 +496,12 @@ package com.gamecook.matchhack.activities
             {
                 // save an instance of the current tile to test with
                 currentTile = activeTiles[i];
-
+                tileName = currentTile.name;
                 // Reloop through all the items starting back at the beginning
                 for (j = 0; j < total; j++)
                 {
                     // select the item to test against
                     testTile = activeTiles[j];
-
                     // Make sure we aren't testing the same item
                     if ((currentTile != testTile) && (currentTile.name == testTile.name))
                     {
@@ -416,9 +521,16 @@ package com.gamecook.matchhack.activities
 
             // Validate match
             if (match)
-                onMatch();
+            {
+                onMatch(tileName);
+            }
             else
+            {
+                // Update status message
+                updateStatusMessage("You did not find a match.\nYou lose 1 HP from the monster's attack.");
                 onNoMatch();
+            }
+
         }
 
         /**
@@ -432,7 +544,7 @@ package com.gamecook.matchhack.activities
             for each (var tile:PaperSprite in activeTiles)
             {
                 // Make sure the difficulty is higher then easy
-                if (difficulty > 1)
+                if (!debug)
                     tile.flip();
             }
 
@@ -462,14 +574,14 @@ package com.gamecook.matchhack.activities
             // Play attack sound
             soundManager.play(MHSoundClasses.EnemyAttack);
 
-            // Update status message
-            updateStatusMessage("You did not find a match.\nYou lose 1 HP from the monster's attack.");
-
             // Update status before testing if the player is dead
             updateStatusBar();
 
+            // Reset monster attack counter
+            monsterCounter = monsterAttackDelay;
+
             // Test to see if the player is dead
-            if (player.isDead())
+            if (player.isDead)
                 onPlayerDead();
         }
 
@@ -484,7 +596,53 @@ package com.gamecook.matchhack.activities
          * Called when a match is found.
          *
          */
-        private function onMatch():void
+        private function onMatch(type:String):void
+        {
+            trace("Matched", type, type.substr(0, 1));
+
+            switch (type.substr(0, 1))
+            {
+                case "P":
+                    updateStatusMessage("Player drinks potion and restores " + (player.getMaxLife() - player.getLife()));
+                    trace("Found Potion");
+                    player.addLife(player.getMaxLife());
+                    increaseBonus();
+                    break
+
+                case "W":
+                    trace("Found Weapon");
+                    //playerAttack();
+                    break;
+
+                case "S":
+                case "H":
+                case "A":
+                case "B":
+                    trace("Found Armor");
+                    //playerAttack();
+                    break;
+
+                case "$":
+                    trace("Found Money");
+
+                    increaseBonus();
+                    break;
+
+                case "T":
+                    trace("Found Treasure");
+                    increaseBonus();
+                    break;
+
+
+            }
+
+            playerAttack();
+
+            // Reset monster attack counter
+            monsterCounter = monsterAttackDelay;
+        }
+
+        private function playerAttack():void
         {
             if (quakeEffect)
             {
@@ -510,9 +668,17 @@ package com.gamecook.matchhack.activities
             updateStatusBar();
 
             // Test to see if the monster is dead
-            if (monster.isDead())
+            if (monster.isDead)
                 onMonsterDead();
+        }
 
+        private function displayBonusMessage(value:String):void
+        {
+            bonusLabel.text = value;
+            bonusLabel.x = (fullSizeWidth - bonusLabel.width) * .5;
+
+            if (bonus > 0)
+                bonusLabel.visible = true;
         }
 
         private function increaseBonus():void
@@ -520,9 +686,8 @@ package com.gamecook.matchhack.activities
             bonus ++;
             activeState.bestBonus = bonus;
 
-            bonusLabel.text = "Bonus x" + bonus;
             if (bonus > 0)
-                bonusLabel.visible = true;
+                displayBonusMessage("Bonus x" + bonus);
         }
 
         /**
@@ -583,8 +748,32 @@ package com.gamecook.matchhack.activities
             // Play win sound
             soundManager.play(MHSoundClasses.WinBattle);
 
+            var equipment:IEquipable;
+            var rand:int = Math.random() * 6;
+
+            var droppedEquipment:IEquipable
+
+            switch (rand)
+            {
+                case SlotsEnum.ARMOR:
+                    droppedEquipment = monster.getArmorSlot();
+                    break;
+                case SlotsEnum.WEAPON:
+                    droppedEquipment = monster.getWeaponSlot();
+                    break;
+                case SlotsEnum.SHIELD:
+                    droppedEquipment = monster.getShieldSlot();
+                    break;
+                case SlotsEnum.HELMET:
+                    droppedEquipment = monster.getHelmetSlot();
+                    break;
+                case SlotsEnum.BOOTS:
+                    droppedEquipment = monster.getHelmetSlot();
+                    break;
+            }
+
             // Show the game over activity after 2 seconds
-            startNextActivityTimer(WinActivity, 2, {characterImage: player.getImage()});
+            startNextActivityTimer(WinActivity, 2, {characterImage: player.getImage(), droppedEquipment: droppedEquipment});
         }
 
         public function updateStatusMessage(value:String):void
@@ -605,6 +794,48 @@ package com.gamecook.matchhack.activities
             else
             {
                 statusBar.message.text = value;
+            }
+        }
+
+
+        override public function onBack():void
+        {
+            super.onBack();
+            nextActivity(StartActivity);
+        }
+
+        override public function update(elapsed:Number = 0):void
+        {
+
+            super.update(elapsed);
+
+            if (monsterAttackDelay != -1)
+            {
+                if (monsterCounter <= 0)
+                    onNoMatch();
+                else
+                {
+                    monsterCounter -= elapsed;
+                    if (monsterCounter <= 5500)
+                    {
+                        var timeLeft:int = Math.round(monsterCounter / 1000)
+
+                        if (timeLeft < 4)
+                        {
+                            attackWarningLabel.textColor = 0xff0000;
+                        }
+                        else
+                        {
+                            attackWarningLabel.textColor = 0xffffff;
+                        }
+
+                        attackWarningLabel.text = timeLeft == 0 ? "!!" : timeLeft.toString();
+                    }
+                    else
+                    {
+                        attackWarningLabel.text = "";
+                    }
+                }
             }
         }
 

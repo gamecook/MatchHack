@@ -22,9 +22,10 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.effects.CountUpTextEffect;
+    import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.gamecook.matchhack.factories.TextFieldFactory;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
@@ -56,6 +57,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            activeState.increaseTotalLosses();
             // Add you lose bitmap.
             var youLose:Bitmap = addChild(Bitmap(new YouLoseImage())) as Bitmap;
             youLose.x = (fullSizeWidth * .5) - (youLose.width * .5);
@@ -65,11 +67,11 @@ package com.gamecook.matchhack.activities
             character.x = (fullSizeWidth - character.width) * .5;
             character.y = youLose.y + youLose.height + 15;
 
-            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, formatBonusText(), 160)) as TextField;
+            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, formatBonusText(), 160)) as TextField;
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = character.y + character.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -81,16 +83,17 @@ package com.gamecook.matchhack.activities
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
             var countUpEffect:CountUpTextEffect = new CountUpTextEffect(scoreTF);
-            countUpEffect.newValue(activeState.score, scoreTF.text);
+            countUpEffect.resetValues(activeState.score, activeState.initialScore, 1, scoreTF.text);
             addThread(countUpEffect);
 
             // Clear out the rest of the activeState values since the game is over.
-            activeState.clear();
+            activeState.reset();
         }
 
         private function formatBonusText():String
         {
             var message:String = "GAME STATS\n" +
+                    "Difficulty: " + DifficultyLevels.getLabel(activeState.difficulty) + "\n" +
                     "Level: " + activeState.playerLevel + "\n" +
                     "Total Turns: " + activeState.levelTurns + "\n" +
                     "Best Bonus: x" + activeState.bestBonus;

@@ -31,14 +31,15 @@ package com.gamecook.matchhack.views
 
         [Embed(source="../../../../../build/assets/life_bar_bg.png")]
         private var LifeBarBackground:Class;
-        private var total:int;
-        private var initialTotal:int;
+        private var life:int;
+        private var maxLife:int;
         private var backgroundImage:Bitmap;
         private var lifeBar:Shape;
 
-        public function LifeBarView(total:int)
+        public function LifeBarView(life:int, maxLife:int)
         {
-            this.total = initialTotal = total;
+            this.life = life;
+            this.maxLife = maxLife;
 
             backgroundImage = addChild(new LifeBarBackground) as Bitmap;
 
@@ -54,26 +55,20 @@ package com.gamecook.matchhack.views
             updateLifeBar();
         }
 
-        public function subtractTotal(value:int):void
+        public function setTotal(value:int):void
         {
-            total -= value;
-            updateLifeBar();
-        }
-
-        public function addTotal(value:int):void
-        {
-            total += value;
+            life = value;
             updateLifeBar();
         }
 
         public function getTotal():int
         {
-            return total;
+            return life;
         }
 
         private function updateLifeBar():void
         {
-            lifeBar.scaleY = 1 - total / initialTotal;
+            lifeBar.scaleY = 1 - life / maxLife;
         }
     }
 }

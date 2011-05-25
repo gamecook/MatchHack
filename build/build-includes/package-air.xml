@@ -21,9 +21,9 @@
         <if>
             <istrue value="${mobile}" />
             <then>
-                <copy file="${basedir}/build/android-resources/template-air-app.xml"
+                <copy file="${basedir}/build/android-template/template-air-app.xml"
                     tofile="${tmp.loc}/${project.name}-air-app.xml"/>
-                <copy file="${basedir}/build/android-resources/air.properties"
+                <copy file="${basedir}/build/android-template/air.properties"
                     tofile="${tmp.loc}/air.properties"/>
             </then>
             <else>
@@ -37,7 +37,7 @@
         <replace file="${tmp.loc}/${project.name}-air-app.xml" >
             <replacefilter token="@project@" value="${project.name}"/>
             <replacefilter token="@package@" value="${app.package}"/>
-            <replacefilter token="@version@" value="1"/>
+            <replacefilter token="@version@" value="${ver.num}"/>
             <replacefilter token="@projectversion@" value="${project.name.versioned}"/>
         </replace>
 

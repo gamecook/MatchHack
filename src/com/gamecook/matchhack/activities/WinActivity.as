@@ -22,14 +22,19 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.effects.CountUpTextEffect;
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
+    import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
     import flash.text.TextField;
+
+    import uk.co.soulwire.display.PaperSprite;
 
     /**
      *
@@ -47,6 +52,12 @@ package com.gamecook.matchhack.activities
 
         private var scoreTF:TextField;
         private var bonusTF:TextField;
+        private var treasureChest:PaperSprite;
+        private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+        private var treasureTF:TextField;
+        private var equipmentMessage:String;
+        private var countUpEffect:CountUpTextEffect;
+        private var continueLabel:Bitmap;
 
         public function WinActivity(activityManager:IActivityManager, data:*)
         {
@@ -58,20 +69,56 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            activeState.increaseTotalWins();
+
             //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
             youWin.x = (fullSizeWidth * .5) - (youWin.width * .5);
-            youWin.y = logo.y + logo.height + 30;
+            youWin.y = logo.y + logo.height + 20;
 
-            var character:Bitmap = addChild(data.characterImage) as Bitmap;
-            character.x = (fullSizeWidth - character.width) * .5;
-            character.y = youWin.y + youWin.height + 15;
+            //TODO need to be able to show player or tresaure chest based on the difficulty level.
 
-            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, formatBonusText(), 160)) as TextField;
+            /*var character:Bitmap = addChild(data.characterImage) as Bitmap;
+             character.x = (fullSizeWidth - character.width) * .5;
+             character.y = youWin.y + youWin.height + 15;*/
+
+            treasureChest = addChild(new PaperSprite()) as PaperSprite;
+            treasureChest.x = (fullSizeWidth - treasureChest.width) * .5;
+            treasureChest.y = youWin.y + youWin.height + 50;
+            treasureChest.front = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite("T")));
+
+            if (data.droppedEquipment)
+            {
+                var tileID:String = data.droppedEquipment.tileID;
+                treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getEquipmentPreview(tileID)));
+                equipmentMessage = "You found a " + data.droppedEquipment.description;
+
+                activeState.unlockEquipment(tileID);
+            }
+            else
+            {
+                var coinID:String = getCoin();
+                if (coinID)
+                {
+                    treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(coinID)));
+                    equipmentMessage = "You got a " + TileTypes.getTileName(coinID);
+                    activeState.addCoin(coinID);
+                }
+                else
+                {
+                    equipmentMessage = "The treasure chest was empty.";
+                }
+            }
+
+            treasureTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmallCenter, "You have discovered a treasure chest.", 200)) as TextField;
+            treasureTF.x = (fullSizeWidth - treasureTF.width) * .5;
+            treasureTF.y = treasureChest.y + treasureChest.height - 20;
+
+            bonusTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, formatBonusText(), 160)) as TextField;
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
-            bonusTF.y = character.y + character.height + 10;
+            bonusTF.y = treasureTF.y + treasureTF.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -80,14 +127,34 @@ package com.gamecook.matchhack.activities
             // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
 
-            var continueLabel:Bitmap = addChild(Bitmap(new ContinueImage())) as Bitmap;
+            continueLabel = addChild(Bitmap(new ContinueImage())) as Bitmap;
+            continueLabel.visible;
             continueLabel.x = (fullSizeWidth - continueLabel.width) * .5;
             continueLabel.y = fullSizeHeight - (continueLabel.height + 10);
 
-            var countUpEffect:CountUpTextEffect = new CountUpTextEffect(scoreTF);
-            countUpEffect.newValue(activeState.score, scoreTF.text);
+            countUpEffect = new CountUpTextEffect(scoreTF, null, onCountUpComplete);
+            countUpEffect.resetValues(activeState.score, activeState.initialScore, 1, scoreTF.text);
             addThread(countUpEffect);
 
+        }
+
+        private function getCoin():String
+        {
+            if (activeState.levelTurns == 5)
+                return "C3"
+            else if (activeState.levelTurns == 6)
+                return "C2"
+            else if (activeState.levelTurns == 7)
+                return "C1";
+
+            return "";
+        }
+
+        private function onCountUpComplete():void
+        {
+            treasureChest.flip();
+            treasureTF.text = equipmentMessage;
+            continueLabel.visible = true;
         }
 
         private function generateNewScore():int
@@ -113,10 +180,27 @@ package com.gamecook.matchhack.activities
 
         private function onClick(event:MouseEvent):void
         {
-            activeState.playerLevel ++;
-            soundManager.destroySounds(true);
-            soundManager.play(MHSoundClasses.WalkStairsSound);
-            nextActivity(GameActivity);
+            if (countUpEffect.isRunning())
+            {
+                threadManager.removeThread(countUpEffect);
+                countUpEffect.forceStop();
+                continueLabel.visible = true;
+            }
+            else
+            {
+                activeState.playerLevel ++;
+                soundManager.destroySounds(true);
+                soundManager.play(MHSoundClasses.WalkStairsSound);
+                nextActivity(GameActivity);
+            }
+        }
+
+        /**
+         * We are loading, there is nothing to go back to.
+         */
+        override public function onBack():void
+        {
+
         }
     }
 }

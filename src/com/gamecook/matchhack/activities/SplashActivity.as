@@ -23,7 +23,7 @@
 package com.gamecook.matchhack.activities
 {
     import com.jessefreeman.factivity.activities.BaseActivity;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
 
@@ -36,7 +36,6 @@ package com.gamecook.matchhack.activities
     {
 
         [Embed(source="../../../../../build/assets/gamecook_presents.png")]
-
         private var SplashImage:Class;
 
         public function SplashActivity(activityManager:IActivityManager, data:*)
@@ -56,7 +55,7 @@ package com.gamecook.matchhack.activities
 
 
             // Go to the main activity after 3 seconds
-            startNextActivityTimer(StartActivity, 3);
+            startNextActivityTimer(WarningActivity, 3);
         }
     }
 }

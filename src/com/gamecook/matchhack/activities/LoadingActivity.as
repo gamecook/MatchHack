@@ -22,8 +22,11 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
+    import com.jessefreeman.factivity.managers.SingletonManager;
 
     import flash.display.Bitmap;
     import flash.events.MouseEvent;
@@ -63,6 +66,12 @@ package com.gamecook.matchhack.activities
 
             // Add event listener to activity for click.
             addEventListener(MouseEvent.CLICK, onClick);
+
+            var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
+            spriteSheet.clear();
+
+            SpriteSheetFactory.parseSpriteSheet(spriteSheet);
+
         }
 
         private function onClick(event:MouseEvent):void
@@ -74,5 +83,12 @@ package com.gamecook.matchhack.activities
             nextActivity(GameActivity);
         }
 
+        /**
+         * We are loading, there is nothing to go back to.
+         */
+        override public function onBack():void
+        {
+
+        }
     }
 }

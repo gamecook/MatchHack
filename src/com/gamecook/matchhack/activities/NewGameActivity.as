@@ -22,8 +22,8 @@
 
 package com.gamecook.matchhack.activities
 {
-    import com.gamecook.matchhack.sounds.MHSoundClasses;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.gamecook.matchhack.enums.DifficultyLevels;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
     import flash.display.SimpleButton;
@@ -60,11 +60,6 @@ package com.gamecook.matchhack.activities
         [Embed(source="../../../../../build/assets/difficulty_levels.png")]
         private var DifficultyImage:Class;
 
-        private const EASY:String = "easy";
-        private const MEDIUM:String = "medium";
-        private const HARD:String = "hard";
-
-
         public function NewGameActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
@@ -77,24 +72,24 @@ package com.gamecook.matchhack.activities
 
             var newGameLabel:Bitmap = addChild(new NewGame()) as Bitmap;
             newGameLabel.x = (fullSizeWidth - newGameLabel.width) * .5;
-            newGameLabel.y = logo.y + logo.height + 50;
+            newGameLabel.y = logo.y + logo.height + 10;
 
             // Adding and setting up difficulty level buttons.
 
             var easyButton:SimpleButton = addChild(new SimpleButton(new EasyUp(), new EasyOver(), new EasyOver(), new EasyUp())) as SimpleButton;
-            easyButton.name = EASY;
+            easyButton.name = DifficultyLevels.EASY;
             easyButton.x = (fullSizeWidth - easyButton.width) * .5;
-            easyButton.y = newGameLabel.y + newGameLabel.height + 20;
+            easyButton.y = newGameLabel.y + newGameLabel.height + 10;
             easyButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var mediumButton:SimpleButton = addChild(new SimpleButton(new MediumUp(), new MediumOver(), new MediumOver(), new MediumUp())) as SimpleButton;
-            mediumButton.name = MEDIUM;
+            mediumButton.name = DifficultyLevels.MEDIUM;
             mediumButton.x = (fullSizeWidth - mediumButton.width) * .5;
             mediumButton.y = easyButton.y + easyButton.height + 5;
             mediumButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var hardButton:SimpleButton = addChild(new SimpleButton(new HardUp(), new HardOver(), new HardOver(), new HardUp())) as SimpleButton;
-            hardButton.name = HARD;
+            hardButton.name = DifficultyLevels.HARD;
             hardButton.x = (fullSizeWidth - hardButton.width) * .5;
             hardButton.y = mediumButton.y + mediumButton.height + 5;
             hardButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
@@ -102,7 +97,7 @@ package com.gamecook.matchhack.activities
             // Sets up teh difficulty description image
             var difficultyImage:Bitmap = addChild(new DifficultyImage()) as Bitmap;
             difficultyImage.x = (fullSizeWidth - difficultyImage.width) * .5;
-            difficultyImage.y = fullSizeHeight - difficultyImage.height - 25;
+            difficultyImage.y = hardButton.y + hardButton.height + 10;
 
             enableLogo();
         }
@@ -120,19 +115,19 @@ package com.gamecook.matchhack.activities
             // Set up difficulty mode based on currently click on target's name.
             switch (event.target.name)
             {
-                case EASY:
+                case DifficultyLevels.EASY:
                     difficulty = 1;
                     break;
-                case MEDIUM:
+                case DifficultyLevels.MEDIUM:
                     difficulty = 2;
                     break;
-                case HARD:
+                case DifficultyLevels.HARD:
                     difficulty = 3;
                     break;
             }
 
             // Clear the active state for a new game
-            activeState.clear();
+            activeState.reset();
 
             // Reset active state values
             activeState.difficulty = difficulty;
@@ -141,6 +136,11 @@ package com.gamecook.matchhack.activities
 
             // Go to next activity, GameActivity
             nextActivity(LoadingActivity);
+        }
+
+        override public function onBack():void
+        {
+            nextActivity(StartActivity);
         }
     }
 }

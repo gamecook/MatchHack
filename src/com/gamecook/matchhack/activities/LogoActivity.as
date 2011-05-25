@@ -24,7 +24,7 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.states.ActiveGameState;
     import com.jessefreeman.factivity.activities.BaseActivity;
-    import com.jessefreeman.factivity.managers.IActivityManager;
+    import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
     import flash.display.Sprite;
@@ -109,8 +109,25 @@ package com.gamecook.matchhack.activities
          */
         override public function onStop():void
         {
-            activeState.save();
+            saveState();
+
+            if (logoContainer.hasEventListener(MouseEvent.CLICK))
+                logoContainer.removeEventListener(MouseEvent.CLICK, onHome);
+
             super.onStop();
+        }
+
+        override public function saveState():void
+        {
+            activeState.mute = soundManager.mute;
+            activeState.save();
+            super.saveState();
+        }
+
+        override public function onBack():void
+        {
+            super.onBack();
+            nextActivity(StartActivity);
         }
     }
 }
