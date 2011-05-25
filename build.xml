@@ -16,55 +16,18 @@
     <import file="${includes.loc}/compile-swf.xml" />
     <import file="${includes.loc}/android.xml" />
     <import file="${includes.loc}/chrome.xml" />
-
+    <import file="${includes.loc}/ios.xml" />
 
     <target name="usage" depends="misc.usage" description="Prints usage message" />
 
     <target name="compile" description="Compiles the project as a swf">
-        <!--check for compiler flag: normal compile vs apparat compile-->
-        <if>
-            <equals arg1="air" arg2="${compile.platform}" casesensitive="false" />
-            <then>
-            	<echo>[compile] Compiling AIR</echo>
-            	<runtarget target="compile-swf.compile" />
-            	<runtarget target="package-air.package" />
-            </then>
-            <else>
-            	<echo>[compile] Compiling SWF</echo>
-
-            	<runtarget target="compile-swf.compile" />
-            </else>
-        </if>
+        <runtarget target="compile-swf.compile" />
     </target>
 
-    <target name="run" description="Runs app">
-        <if>
-            <equals arg1="air" arg2="${compile.platform}" casesensitive="false" />
-            <else><runtarget target="compile-swf.local-run" /></else>
-        </if>
-    </target>
-
-    <target name="full-build" description="Runs tests, compiles project, and optionally runs it.">
-    	<if>
-    		<istrue value="${run.test}"/>
-            <then>
-    			<runtarget target="test" />
-            </then>
-        </if>
-
-    	<if>
-			<istrue value="${mobile}"/>
-	        <then>
-	        	<runtarget target="deploy-to-phone" />
-	        </then>
-    		<else>
-    			<runtarget target="compile" />
-            </else>
-	    </if>
-    	
+    <target name="full-build" depends="compile" description="Runs tests, compiles project, and optionally runs it.">
         <if>
             <istrue value="${autolaunch.url}"/>
-            <then><runtarget target="run"/></then>
+            <then><runtarget target="compile-swf.local-run"/></then>
         </if>
     </target>
 
@@ -74,14 +37,13 @@
         <runtarget target="android.package-apk" />
     </target>
 
-    <target name="package-chrome-app" description="Packages up project for deployment to Chrome Market">
-        <var name="mobile" value="false" />
-        <runtarget target="compile" />
-        <runtarget target="chrome.package-chrome-app" />
-    </target>
-
     <target name="deploy-to-emulator" depends="package-apk,android.deploy-to-emulator" />
 
-    <target name="deploy-to-device" depends="package-apk,android.deploy-to-device" />
-    
+    <target name="deploy-to-phone" depends="package-apk,android.deploy-to-device" />
+
+    <target name="package-ipa" description="Packages up project for deployment to android">
+        <var name="mobile" value="true" />
+        <runtarget target="compile" />
+        <runtarget target="ios.package-ipa" />
+    </target>
 </project>

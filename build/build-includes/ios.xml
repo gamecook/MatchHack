@@ -26,7 +26,7 @@
 
         <replace file="${tmp.loc}/${project.name}-air-app.xml">
             <replacefilter token="@project@" value="${project.name}"/>
-            <replacefilter token="@package@" value="${app.package}"/>
+            <replacefilter token="@package@" value="${ipa.package}"/>
             <replacefilter token="@version@" value="${ver.num}"/>
             <replacefilter token="@projectversion@" value="${project.name.versioned}"/>
         </replace>
@@ -48,7 +48,7 @@
             <arg value="${basedir}/build/ios-resources/${certificate.filename}"/>
             <arg value="-storepass"/>
             <arg value="${certificate.password}"/>
-            <arg value="${ipas.loc}/${project.name}.ipa"/>
+            <arg value="${basedir}/ipas/${project.name}.ipa"/>
             <arg value="${tmp.loc}/${project.name}-air-app.xml"/>
             <arg value="-C"/>
             <arg value="${tmp.loc}"/>
@@ -57,22 +57,5 @@
 
         <delete dir="${tmp.loc}" />
     </target>
-
-
-    <!--<target name="package-for-iPad" depends="prep-folders">
-        <exec executable="${IPHONE_PACKAGER}">
-            <arg line="-package -target ipa-ad-hoc" />
-            <arg line="-provisioning-profile '${MOBILE_PROVISION}'" />
-            <arg line="-storetype pkcs12" />
-            <arg line="-keystore '${CERT}'" />
-            <arg line="-storepass '${CERT_PASSWORD}'" />
-            <arg line="'${ant.project.name}.ipa'" />
-            <arg line="'${IPAD_DESCRIPTOR}'" />
-            <arg line="'${DEPLOY_DIR}/${ant.project.name}iPad.swf'" />
-            <arg line="'${BUILD_DIR}/Default.png'" />
-            <arg line="'${BUILD_DIR}/57.png'" />
-        </exec>
-    </target>-->
-
 
     </project>
