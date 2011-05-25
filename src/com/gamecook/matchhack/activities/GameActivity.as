@@ -195,9 +195,10 @@ package com.gamecook.matchhack.activities
             attackWarningLabel.filters = filterArray;
 
             if (DeviceUtil.os != DeviceUtil.IOS)
+            {
                 quakeEffect = new Quake(null);
-            textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
-
+                textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
+            }
             createBonusLabel();
 
             createHighlights();
