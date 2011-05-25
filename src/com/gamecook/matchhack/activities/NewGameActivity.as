@@ -72,14 +72,14 @@ package com.gamecook.matchhack.activities
 
             var newGameLabel:Bitmap = addChild(new NewGame()) as Bitmap;
             newGameLabel.x = (fullSizeWidth - newGameLabel.width) * .5;
-            newGameLabel.y = logo.y + logo.height + 10;
+            newGameLabel.y = logo.y + logo.height + 20;
 
             // Adding and setting up difficulty level buttons.
 
             var easyButton:SimpleButton = addChild(new SimpleButton(new EasyUp(), new EasyOver(), new EasyOver(), new EasyUp())) as SimpleButton;
             easyButton.name = DifficultyLevels.EASY;
             easyButton.x = (fullSizeWidth - easyButton.width) * .5;
-            easyButton.y = newGameLabel.y + newGameLabel.height + 10;
+            easyButton.y = newGameLabel.y + newGameLabel.height + 20;
             easyButton.addEventListener(MouseEvent.MOUSE_UP, onNewGame);
 
             var mediumButton:SimpleButton = addChild(new SimpleButton(new MediumUp(), new MediumOver(), new MediumOver(), new MediumUp())) as SimpleButton;
@@ -97,7 +97,7 @@ package com.gamecook.matchhack.activities
             // Sets up teh difficulty description image
             var difficultyImage:Bitmap = addChild(new DifficultyImage()) as Bitmap;
             difficultyImage.x = (fullSizeWidth - difficultyImage.width) * .5;
-            difficultyImage.y = hardButton.y + hardButton.height + 10;
+            difficultyImage.y = hardButton.y + hardButton.height + 30;
 
             enableLogo();
         }
@@ -135,7 +135,7 @@ package com.gamecook.matchhack.activities
             activeState.activeGame = true;
 
             // Go to next activity, GameActivity
-            nextActivity(LoadingActivity);
+            nextActivity(GameActivity);
         }
 
         override public function onBack():void

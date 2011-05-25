@@ -72,6 +72,7 @@ package com.gamecook.matchhack.activities
             bonusTF.y = character.y + character.height + 10;
 
             scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF.textColor = 0x33ff00;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -92,11 +93,11 @@ package com.gamecook.matchhack.activities
 
         private function formatBonusText():String
         {
-            var message:String = "GAME STATS\n" +
-                    "Difficulty: " + DifficultyLevels.getLabel(activeState.difficulty) + "\n" +
+            var message:String = "<span class='lightGrey'>GAME STATS</span>\n" +
+                    "<span class='orange'>Difficulty: " + DifficultyLevels.getLabel(activeState.difficulty) + "\n" +
                     "Level: " + activeState.playerLevel + "\n" +
                     "Total Turns: " + activeState.levelTurns + "\n" +
-                    "Best Bonus: x" + activeState.bestBonus;
+                    "Best Bonus: x" + activeState.bestBonus+"</span>";
 
             return message;
         }

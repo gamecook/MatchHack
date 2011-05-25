@@ -59,7 +59,7 @@ package com.gamecook.matchhack.views
             turnsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.TURNS_LABEL + TextFieldFactory.padLevel())) as TextField;
             turnsTF.x = levelTF.x + levelTF.width;
 
-            _message = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, "Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.", turnsTF.x + turnsTF.width)) as TextField;
+            _message = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, "", turnsTF.x + turnsTF.width)) as TextField;
             _message.y = scoreTF.height;
             clear();
         }
@@ -70,9 +70,9 @@ package com.gamecook.matchhack.views
             scoreTF.htmlText = TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(value.toString());
         }
 
-        public function setLevel(value:int):void
+        public function setLevel(value:int, optional:String = ""):void
         {
-            levelTF.htmlText = TextFieldFactory.LEVEL_LABEL + TextFieldFactory.padLevel(value.toString());
+            levelTF.htmlText = TextFieldFactory.LEVEL_LABEL + TextFieldFactory.padLevel(value.toString())+optional;
         }
 
         public function setTurns(value:int):void
@@ -82,7 +82,7 @@ package com.gamecook.matchhack.views
 
         public function setMessage(value:String):void
         {
-            _message.text = value;
+            _message.htmlText = value;
         }
 
         public function clear():void
