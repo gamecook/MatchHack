@@ -60,7 +60,7 @@ package com.gamecook.matchhack.views
             turnsTF.x = levelTF.x + levelTF.width;
 
             _message = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, "", turnsTF.x + turnsTF.width)) as TextField;
-            _message.y = scoreTF.height;
+            _message.y = scoreTF.height-5;
             clear();
         }
 

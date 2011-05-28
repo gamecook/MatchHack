@@ -16,6 +16,8 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
+    import com.gamecook.matchhack.views.IMenuOptions;
+    import com.gamecook.matchhack.views.MenuBar;
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
 
@@ -31,7 +33,7 @@ package com.gamecook.matchhack.activities
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
 
-    public class InventoryActivity extends LogoActivity
+    public class InventoryActivity extends LogoActivity implements IMenuOptions
     {
 
         [Embed(source="../../../../../build/assets/inventory_text.png")]
@@ -66,7 +68,7 @@ package com.gamecook.matchhack.activities
 
             var inventoryText:Bitmap = addChild(new InventoryText()) as Bitmap;
             inventoryText.x = (fullSizeWidth - inventoryText.width) * .5;
-            inventoryText.y = 43;
+            inventoryText.y = 53;
 
 
             textFieldStamp = new TextField();
@@ -83,19 +85,26 @@ package com.gamecook.matchhack.activities
             // Remove
 
 
-            createCoinDisplay();
 
             //TODO need to add support for equipment logic
             playerSprite = addChild(new Bitmap()) as Bitmap;
             playerSprite.x = 10;
-            playerSprite.y = 95;
+            playerSprite.y = inventoryText.y + inventoryText.height + 5;
             updatePlayerDisplay();
+
+            createCoinDisplay();
 
             statsTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatSmall, formatStatsText(), 160)) as TextField;
             statsTF.x = playerSprite.x + playerSprite.width;
             statsTF.y = playerSprite.y;
 
             scrollerContainer = addChild(new Sprite()) as Sprite;
+
+            var unlockedLabel:TextField = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Items Unlocked ", fullSizeWidth)) as TextField;
+            unlockedLabel.x = 10;
+            unlockedLabel.y = playerSprite.y + playerSprite.height;
+
+            offset = unlockedLabel.y + unlockedLabel.height + 10;
 
             createScrubber();
             //Generate Bitmap Data
@@ -106,9 +115,7 @@ package com.gamecook.matchhack.activities
             bitmapData = generateBitmapSheets();
             bitmapScroller.bitmapDataCollection = [bitmapData];
 
-            var unlockedLabel:TextField = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLarge, "Items Unlocked " + unlockedPercent + "%", fullSizeWidth)) as TextField;
-            unlockedLabel.x = 10;
-            unlockedLabel.y = 165;
+            unlockedLabel.htmlText += unlockedPercent + "%";
 
             createEaseScrollBehavior();
 
@@ -124,7 +131,7 @@ package com.gamecook.matchhack.activities
             var message:String =
                     "<span class='lightGrey'>Wins:</span>\n<span class='green'>" + activeState.totalWins + "</span>\n" +
                     "<span class='lightGrey'>Losses:</span>\n<span class='red'>" + activeState.totalLosses + "</span>\n" +
-                    "<span class='lightGrey'>Turns:</span>\n<span class='orange'>" + activeState.totalTurns + "</span>";
+                    "<span class='lightGrey'>Turns:</span>\n" + activeState.totalTurns;
             return message;
         }
 
@@ -179,7 +186,7 @@ package com.gamecook.matchhack.activities
                 totalMoney += total * (i + 1);
             }
             coinContainer.x = fullSizeWidth - coinContainer.width - 10;
-            coinContainer.y = 100;
+            coinContainer.y = playerSprite.y + 5;
 
             textFieldStamp.textColor = 0xf1f102;
             textFieldStamp.text = "COINS: $" + totalMoney;
@@ -335,6 +342,9 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            var menuBar:MenuBar = addChild(new MenuBar(MenuBar.EXIT_ONLY_MODE, logo.width, this)) as MenuBar;
+            menuBar.x = logo.x;
+            menuBar.y = logo.y + logo.height - 2;
             enableLogo();
         }
 
@@ -381,5 +391,17 @@ package com.gamecook.matchhack.activities
             super.update(elapsed);
         }
 
+        public function onExit():void
+        {
+            onBack();
+        }
+
+        public function onInventory():void
+        {
+        }
+
+        public function onPause()
+        {
+        }
     }
 }

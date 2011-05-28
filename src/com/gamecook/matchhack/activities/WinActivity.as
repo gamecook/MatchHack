@@ -118,8 +118,8 @@ package com.gamecook.matchhack.activities
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = treasureTF.y + treasureTF.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "<span class='grey'>SCORE</span>\n" +TextFieldFactory.padScore(), 160)) as TextField;
-            scoreTF.textColor = 0x33ff00;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "SCORE\n<span class='green'>" +TextFieldFactory.padScore(), 160)) as TextField;
+            //scoreTF.textColor = 0x33ff00;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
 
@@ -171,7 +171,7 @@ package com.gamecook.matchhack.activities
 
         private function formatBonusText():String
         {
-            var message:String = "<span class='lightGrey'>SUCCESS BONUS</span>\n" +
+            var message:String = "SUCCESS BONUS\n" +
                     "<span class='lightGrey'>Life:</span> <span class='orange'>+" + activeState.playerLife + "</span>\n" +
                     "<span class='lightGrey'>Turns:</span> <span class='orange'>+" + activeState.levelTurns + "</span>\n" +
                     "<span class='lightGrey'>Level:</span> <span class='orange'>x" + activeState.playerLevel + "</span>";

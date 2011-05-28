@@ -44,7 +44,6 @@
             <replacefilter token="@width@" property="width"/>
             <replacefilter token="@height@" property="height"/>
             <replacefilter token="@example@" value="${project.name.versioned}"/>
-            <replacefilter token="@version@" value="${ver.num}"/>
             <replacefilter token="@version_major@" property="version_major"/>
             <replacefilter token="@version_minor@" property="version_minor"/>
             <replacefilter token="@version_minor@" property="version_minor"/>
@@ -96,7 +95,7 @@
             <arg value="-incremental=true"/>
             <arg value="-verbose-stacktraces=true"/>
             <arg value="-headless-server=true"/>
-            <arg value="-use-network=true"/>
+            <arg value="-use-network=false"/>
             <arg value="-default-frame-rate=31"/>
             <arg value="-define=CONFIG::mobile,${mobile}"/>
         </java>

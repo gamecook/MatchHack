@@ -35,6 +35,7 @@ package
     import flash.display.StageQuality;
     import flash.display.StageScaleMode;
     import flash.events.KeyboardEvent;
+    import flash.text.TextField;
     import flash.ui.Keyboard;
 
     [SWF(width="480",height="700",backgroundColor="#000000",frameRate="60")]
@@ -44,6 +45,7 @@ package
         private var tracker:ITrack;
         private var scale:Number = 1;
         private var version:String = "1";
+        private var testTextField:TextField;
 
         /*
          You will need to create a class called analytics.as with the following in it:
@@ -76,7 +78,7 @@ package
             //TODO need to add in logic to track versions
 
             // Automatically figures out the scale based on stage's height. Used to scale up on each device.
-            scale = DeviceUtil.getScreenHeight(stage) / 400;
+            scale = DeviceUtil.getScreenHeight(stage) / 410;
 
             // Google Analytics Tracker
             tracker = new GoogleTracker(this, key, "AS3", false);
@@ -90,6 +92,7 @@ package
             //super(new ActivityManager(tracker), LoadingActivity, 0, 0, scale);
 
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+
         }
 
         private function configureStage():void
