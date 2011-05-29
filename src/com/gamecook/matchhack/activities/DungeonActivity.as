@@ -12,10 +12,12 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.helpers.MovementHelper;
     import com.gamecook.frogue.io.Controls;
     import com.gamecook.frogue.io.IControl;
+    import com.gamecook.frogue.iterators.TreasureIterator;
     import com.gamecook.frogue.managers.TileInstanceManager;
     import com.gamecook.frogue.maps.MapAnalytics;
     import com.gamecook.frogue.maps.MapPopulater;
     import com.gamecook.frogue.maps.RandomMap;
+    import com.gamecook.frogue.renderer.PreviewMapRenderer;
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.templates.Template;
     import com.gamecook.frogue.templates.TemplateApplicator;
@@ -24,13 +26,9 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.tiles.EquipmentTile;
     import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.frogue.tiles.TileTypes;
-    import com.gamecook.tilecrusader.factories.TCTileFactory;
-    import com.gamecook.tilecrusader.iterators.TreasureIterator;
-    import com.gamecook.tilecrusader.maps.TCMapSelection;
-    import com.gamecook.tilecrusader.renderer.MQMapBitmapRenderer;
-    import com.gamecook.tilecrusader.renderer.PreviewMapRenderer;
-    import com.gamecook.tilecrusader.sounds.TCSoundClasses;
-    import com.gamecook.tilecrusader.threads.effects.EaseScrollBehavior;
+    import com.gamecook.matchhack.factories.TCTileFactory;
+    import com.gamecook.matchhack.maps.TCMapSelection;
+    import com.gamecook.matchhack.renderer.MQMapBitmapRenderer;
     import com.jessefreeman.factivity.activities.ActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.utils.TimeMethodExecutionUtil;
@@ -94,7 +92,7 @@ package com.gamecook.matchhack.activities
         private var mouseDown:Boolean;
         private var previewMapShape:Shape;
         private var previewMapRenderer:PreviewMapRenderer;
-        private var scrollThread:EaseScrollBehavior;
+
         //private var characterSheet:CharacterSheetView;
         private var monsters:Array = [];
         private var chests:Array = [];
@@ -338,8 +336,6 @@ package com.gamecook.matchhack.activities
              textEffect = new TypeTextEffect(statusLabel.textField, onTextEffectUpdate);
              }*/
 
-            scrollThread = new EaseScrollBehavior(renderer, onScrollUpdate, onScrollComplete);
-
             //TODO this isn't working look into it.
             /*if(activeGameState.startMessage)
              PopUpManager.showOverlay(new AlertPopUpWindow(activeGameState.startMessage));*/
@@ -381,19 +377,6 @@ package com.gamecook.matchhack.activities
             enableLogo();
         }
 
-        private function onScrollComplete():void
-        {
-            //trace("Scroll Complete");
-            renderer.scrollX = 0;
-            renderer.scrollY = 0;
-        }
-
-        private function onScrollUpdate():void
-        {
-            //trace("Scroll Update", renderer.scrollX, scrollThread.targetX);
-            invalidate();
-        }
-
         private function onKeyDown(event:KeyboardEvent):void
         {
             switch (event.keyCode)
@@ -407,11 +390,6 @@ package com.gamecook.matchhack.activities
             }
 
             invalidate();
-        }
-
-        private function onTextEffectUpdate():void
-        {
-            soundManager.play(TCSoundClasses.TypeSound);
         }
 
         private function configureGame():void
@@ -448,32 +426,7 @@ package com.gamecook.matchhack.activities
 
         private function nextMove(value:Point):void
         {
-            if (!scrollThread.isRunning())
-            {
-                if (value.y == 1)
-                {
-                    scrollThread.targetX = 0;
-                    scrollThread.targetY = -32;
-                }
-                else if (value.x == 1)
-                {
-                    scrollThread.targetX = -32;
-                    scrollThread.targetY = 0;
-                }
-                else if (value.y == -1)
-                {
-                    scrollThread.targetX = 0;
-                    scrollThread.targetY = 32;
-                }
-                else
-                {
-
-                    scrollThread.targetX = 32;
-                    scrollThread.targetY = 0;
-                }
-
-                _nextMove = value;
-            }
+            _nextMove = value;
         }
 
         public function move(value:Point):void
@@ -492,7 +445,7 @@ package com.gamecook.matchhack.activities
                 {
                     case TileTypes.IMPASSABLE:
                         //TODO need to make sure we don't call render here
-                        soundManager.play(TCSoundClasses.WallHit);
+                        //soundManager.play(MatchHack.WallHit);
                         return;
                     case TileTypes.MONSTER:
                     case TileTypes.BOSS:

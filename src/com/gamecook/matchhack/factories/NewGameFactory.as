@@ -7,8 +7,8 @@
  */
 package com.gamecook.matchhack.factories
 {
+    import com.gamecook.matchhack.enums.PlayerClassTemplates;
     import com.gamecook.matchhack.states.ActiveGameState;
-    import com.gamecook.tilecrusader.enum.PlayerClassTemplates;
     import com.jessefreeman.factivity.utils.ArrayUtil;
 
     public class NewGameFactory

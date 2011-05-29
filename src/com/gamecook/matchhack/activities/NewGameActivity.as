@@ -23,11 +23,8 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.enums.DifficultyLevels;
+    import com.gamecook.matchhack.enums.PlayerClassTemplates;
     import com.gamecook.matchhack.factories.NewGameFactory;
-    import com.gamecook.tilecrusader.enum.BooleanOptions;
-    import com.gamecook.tilecrusader.enum.ClassOptions;
-    import com.gamecook.tilecrusader.enum.DarknessOptions;
-    import com.gamecook.tilecrusader.enum.GameModeOptions;
     import com.jessefreeman.factivity.activities.IActivityManager;
 
     import flash.display.Bitmap;
@@ -141,11 +138,11 @@ package com.gamecook.matchhack.activities
 
             // Go to next activity, GameActivity
             //nextActivity(ClassicGameActivity);
-            NewGameFactory.createCoffeeBreakGame(ClassOptions.getValues(),
-                    DarknessOptions.getValues(),
-                    GameModeOptions.getValues(),
+            NewGameFactory.createCoffeeBreakGame(PlayerClassTemplates.getPlayerClasses(),
+                    ["Reveal"],
+                    ["ModeA"],
                     [13],
-                    BooleanOptions.getTFOptions(),
+                    [true],
                     [true]);
 
             nextActivity(DungeonActivity);
