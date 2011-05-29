@@ -110,7 +110,7 @@ package
         {
             TileTypes.registerTile('F1', { name: 'Floor1', sprite: "sprite0"});
             TileTypes.registerTile('F2', { name: 'Floor2', sprite: "sprite1"});
-            TileTypes.registerTile('F3', { name: 'Floor3', sprite: "sprite"});
+            TileTypes.registerTile('F3', { name: 'Floor3', sprite: "sprite2"});
             TileTypes.registerTile('F4', { name: 'Floor4', sprite: "sprite3"});
             TileTypes.registerTile('F5', { name: 'Floor5', sprite: "sprite4"});
             TileTypes.registerTile('F6', { name: 'Floor6', sprite: "sprite5"});
