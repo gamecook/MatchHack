@@ -60,7 +60,7 @@ package com.gamecook.matchhack.activities
             // Sets up the ActiveGameState object
             activeState = new ActiveGameState();
             activeState.load();
-
+            soundManager.mute = true;
             super.onCreate();
         }
 

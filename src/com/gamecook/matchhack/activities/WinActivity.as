@@ -192,7 +192,9 @@ package com.gamecook.matchhack.activities
                 activeState.playerLevel ++;
                 soundManager.destroySounds(true);
                 soundManager.play(MHSoundClasses.WalkStairsSound);
-                nextActivity(GameActivity);
+                //TODO need to know what game mode we are in
+                //nextActivity(ClassicGameActivity);
+                nextActivity(DungeonActivity);
             }
         }
 

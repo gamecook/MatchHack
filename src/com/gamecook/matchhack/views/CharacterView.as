@@ -74,7 +74,7 @@ package com.gamecook.matchhack.views
             }
             else
             {
-                var monsters:Array = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"];
+                var monsters:Array = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
                 baseSpriteID = ArrayUtil.pickRandomArrayElement(monsters)
             }
             //Cleanup sprite name

@@ -24,6 +24,8 @@ package com.gamecook.matchhack.states
 {
     import com.jessefreeman.factivity.state.AbstractStateObject;
 
+    import flash.geom.Point;
+
     public class ActiveGameState extends AbstractStateObject
     {
         private const MATCH_HACK:String = "matchhack";
@@ -241,5 +243,88 @@ package com.gamecook.matchhack.states
         {
             return _dataObject.initialScore;
         }
+
+        public function set map(value:Object):void
+        {
+            _dataObject.map = value;
+        }
+
+        public function get map():Object
+        {
+            return _dataObject.map;
+        }
+
+        public function get size():int
+        {
+            return _dataObject.size;
+        }
+
+        public function set size(value:int):void
+        {
+            _dataObject.size = value;
+        }
+
+        public function get startPositionPoint():Point
+        {
+            var obj:Object = _dataObject.startPosition;
+            return new Point(obj.x, obj.y);
+        }
+
+        public function set startPositionPoint(value:Point):void
+        {
+            _dataObject.startPosition = {x:value.x, y:value.y};
+        }
+
+        public function set treasurePool(treasurePool:Array):void
+        {
+            _dataObject.treasurePool = treasurePool;
+        }
+
+        public function get treasurePool():Array
+        {
+            return _dataObject.treasurePool;
+        }
+
+        public function get mapSelection():Object
+        {
+            return _dataObject.mapSelection;
+        }
+
+        public function set mapSelection(value:Object):void
+        {
+            _dataObject.mapSelection = value;
+        }
+
+        public function get tileInstanceManager():Object
+        {
+            return _dataObject.tileInstanceManager;
+        }
+
+        public function set tileInstanceManager(value:Object):void
+        {
+            _dataObject.tileInstanceManager = value;
+        }
+
+        public function clearMapData():void
+        {
+            delete _dataObject.tileInstanceManager;
+            delete _dataObject.mapSelection;
+            delete _dataObject.startPosition;
+            delete _dataObject.map;
+            delete _dataObject.size;
+            delete _dataObject.treasurePool;
+        }
+
+        //TODO need to move all player stats into the player object
+        public function get player():Object
+        {
+            return _dataObject.player;
+        }
+
+        public function set player(value:Object):void
+        {
+            _dataObject.player = value;
+        }
+
     }
 }

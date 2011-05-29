@@ -8,6 +8,8 @@
 package com.gamecook.matchhack.factories
 {
     import com.gamecook.frogue.sprites.SpriteSheet;
+    import com.gamecook.frogue.tiles.TileTypes;
+    import com.jessefreeman.factivity.utils.ColorUtil;
 
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -19,7 +21,7 @@ package com.gamecook.matchhack.factories
         [Embed(source="../../../../../build/assets/tc_sprite_sheet.png")]
         public static var SpriteSheetImage:Class;
 
-        private static const TILE_SIZE:int = 64;
+        private static const TILE_SIZE:int = 32;
 
         public static function parseSpriteSheet(spriteSheet:SpriteSheet):void
         {
@@ -38,6 +40,7 @@ package com.gamecook.matchhack.factories
             }
 
             createLifeBar(spriteSheet);
+            createDarknessTiles(spriteSheet);
         }
 
         private static function createLifeBar(spriteSheet:SpriteSheet):void
@@ -67,6 +70,40 @@ package com.gamecook.matchhack.factories
 
                 spriteSheet.cacheSprite("life" + Math.round(i / total * 100), bitmapData);
             }
+        }
+
+        private static function createDarknessTiles(spriteSheet:SpriteSheet):SpriteSheet
+        {
+            var i:int = 0;
+            var total:int = 10;
+            var bitmapData:BitmapData = new BitmapData(TILE_SIZE, TILE_SIZE, true, 0xFF000000);
+            var rect:Rectangle = new Rectangle(0, 0, TILE_SIZE, TILE_SIZE);
+            var id:String;
+
+            for (i = 0; i < total; i ++)
+            {
+                id = "light" + i;
+                bitmapData.fillRect(rect, ColorUtil.returnARGB(0x000000, i * 20));
+                spriteSheet.cacheSprite(id, bitmapData.clone());
+            }
+
+            //TODO this may not be accurate
+            // Register last light tile as darkness since it's out of range
+            TileTypes.registerTile(id, {type:TileTypes.DARKNESS});
+
+            // Black Tile
+            bitmapData.fillRect(rect, 0x00000000);
+            id = "light" + i;
+            spriteSheet.cacheSprite(id, bitmapData.clone());
+
+            //Register last light tile as darkness
+            TileTypes.registerTile(id, {type:TileTypes.DARKNESS});
+
+            /*//This is the tile for the monster's eyes
+            TileTypes.registerTile("sprite3", {type:TileTypes.DARKNESS});*/
+
+            return spriteSheet;
+
         }
     }
 }

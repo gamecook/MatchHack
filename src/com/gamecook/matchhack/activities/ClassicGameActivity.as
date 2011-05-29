@@ -64,7 +64,7 @@ package com.gamecook.matchhack.activities
      * This class represents the core logic for the game.
      *
      */
-    public class GameActivity extends LogoActivity implements IMenuOptions
+    public class ClassicGameActivity extends LogoActivity implements IMenuOptions
     {
 
         [Embed(source="../../../../../build/assets/game_board.png")]
@@ -94,7 +94,7 @@ package com.gamecook.matchhack.activities
         private var monsterAttackDelay:int = 15000;
         private var attackWarningLabel:TextField;
 
-        public function GameActivity(activityManager:IActivityManager, data:*)
+        public function ClassicGameActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
         }
