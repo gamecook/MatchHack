@@ -132,13 +132,6 @@ package com.gamecook.matchhack.activities
             // Clear the active state for a new game
             activeState.reset();
 
-            NewGameFactory.createCoffeeBreakGame(PlayerClassTemplates.getPlayerClasses(),
-                    ["Reveal"],
-                    ["ModeA"],
-                    [15],
-                    [true],
-                    [true]);
-
             // Reset active state values
             activeState.difficulty = difficulty;
             activeState.playerLevel = 1;

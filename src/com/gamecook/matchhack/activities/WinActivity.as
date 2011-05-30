@@ -67,11 +67,9 @@ package com.gamecook.matchhack.activities
         }
 
 
-        override public function onStart():void
+        override protected function onCreate():void
         {
-            super.onStart();
-
-            activeState.increaseTotalWins();
+            super.onCreate();
 
             //TODO need to update player stats and save out state.
             var youWin:Bitmap = addChild(Bitmap(new YouWinImage())) as Bitmap;
@@ -139,6 +137,14 @@ package com.gamecook.matchhack.activities
             countUpEffect = new CountUpTextEffect(scoreTF, null, onCountUpComplete);
             countUpEffect.resetValues(activeState.score, activeState.initialScore, 1, scoreTF.text);
             addThread(countUpEffect);
+        }
+
+        override public function onStart():void
+        {
+            super.onStart();
+
+            activeState.increaseTotalWins();
+
 
         }
 

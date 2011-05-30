@@ -93,6 +93,7 @@ package com.gamecook.matchhack.activities
         private var monsterCounter:int = 0;
         private var monsterAttackDelay:int = 15000;
         private var attackWarningLabel:TextField;
+        private var gameMode:String;
 
         public function CombatActivity(activityManager:IActivityManager, data:*)
         {
@@ -110,6 +111,7 @@ package com.gamecook.matchhack.activities
 
             // Set the difficulty level from the active state object
             difficulty = activeState.difficulty;
+            gameMode = activeState.gameMode;
         }
 
         override public function onStart():void
@@ -224,6 +226,7 @@ package com.gamecook.matchhack.activities
 
             updateStatusBar();
 
+            //TODO need to updated this message based on gameMode
             // Update status message
             updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 

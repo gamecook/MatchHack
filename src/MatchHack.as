@@ -29,6 +29,7 @@ package
     import com.jessefreeman.factivity.AbstractApplication;
     import com.jessefreeman.factivity.activities.ActivityManager;
     import com.jessefreeman.factivity.activities.BaseActivity;
+    import com.jessefreeman.factivity.activities.transitions.ActivitySwapTransition;
     import com.jessefreeman.factivity.analytics.ITrack;
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
@@ -88,7 +89,7 @@ package
             configureStage();
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
-            super(new ActivityManager(tracker,null,null,new ActivityTileFlipTransition()), SplashActivity, 0, 0, scale);
+            super(new ActivityManager(tracker,null,null,new ActivitySwapTransition()), SplashActivity, 0, 0, scale);
             //super(new ActivityManager(tracker), DebugStartActivity, 0, 0, scale);
 
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);

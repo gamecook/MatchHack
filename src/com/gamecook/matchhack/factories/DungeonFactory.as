@@ -33,7 +33,7 @@ package com.gamecook.matchhack.factories
             else
             {
                 // If there were no tiles, generate a new map
-                TimeMethodExecutionUtil.execute("generateMap", map.generateMap, activeState.size, 2);
+                TimeMethodExecutionUtil.execute("generateMap", map.generateMap, 20, 2);
 
                 var monsters:Array = generateLinearPool(12, ["1","2","3","4","5","6","7","8"]);
                 var treasurePool:Array = generateRandomPool(5, ["T"]);

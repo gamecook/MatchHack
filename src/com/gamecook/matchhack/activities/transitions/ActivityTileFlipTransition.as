@@ -14,14 +14,17 @@ package com.gamecook.matchhack.activities.transitions
     import flash.display.BitmapData;
     import flash.display.DisplayObjectContainer;
     import flash.events.Event;
+    import flash.geom.Rectangle;
+
+    import spark.primitives.Rect;
 
     import uk.co.soulwire.display.PaperSprite;
 
     public class ActivityTileFlipTransition extends ActivitySwapTransition
     {
 
-        private var currentActivityBitmapData:BitmapData;
-        private var newActivityBitmapData:BitmapData;
+        private var currentActivityBitmapData:BitmapData = new BitmapData(BaseActivity.fullSizeWidth, BaseActivity.fullSizeHeight, false, 0);
+        private var newActivityBitmapData:BitmapData = new BitmapData(BaseActivity.fullSizeWidth, BaseActivity.fullSizeHeight, false, 0);
         private var activeFlipCard:PaperSprite;
 
         public function ActivityTileFlipTransition()
@@ -38,7 +41,7 @@ package com.gamecook.matchhack.activities.transitions
 
         override public function onSwapActivities(newActivity:BaseActivity):void
         {
-            currentActivityBitmapData = new BitmapData(BaseActivity.fullSizeWidth, BaseActivity.fullSizeHeight, false, 0);
+            //currentActivityBitmapData = new BitmapData(BaseActivity.fullSizeWidth, BaseActivity.fullSizeHeight, false, 0);
             if(_currentActivity)
                 currentActivityBitmapData.draw(_currentActivity);
 
@@ -52,18 +55,14 @@ package com.gamecook.matchhack.activities.transitions
 
             _currentActivity = newActivity;
 
-            _target.addChild(_currentActivity);
-
-            _currentActivity.onStart();
-
-            newActivityBitmapData = new BitmapData(BaseActivity.fullSizeWidth, BaseActivity.fullSizeHeight, false, 0);
+            //newActivityBitmapData.fillRect(new Rectangle(0,0,newActivity.width, newActivity.height), 0);
             newActivityBitmapData.draw(_currentActivity);
 
-            _currentActivity.visible = false;
             activeFlipCard = new PaperSprite(new Bitmap(currentActivityBitmapData), new Bitmap(newActivityBitmapData));
-            activeFlipCard.flipTime = 10;
+            //activeFlipCard.flipTime = 10;
             activeFlipCard.x += (activeFlipCard.width * .5);
             activeFlipCard.y += (activeFlipCard.height * .5);
+
             _target.addChild(activeFlipCard);
             activeFlipCard.flip();
             activeFlipCard.addEventListener(Event.COMPLETE, onFlipComplete);
@@ -71,12 +70,11 @@ package com.gamecook.matchhack.activities.transitions
 
         private function onFlipComplete(event:Event):void
         {
-            _currentActivity.visible = true;
-            if(activeFlipCard)
-            {
-                _target.removeChild(activeFlipCard);
-                activeFlipCard = null;
-            }
+            _target.removeChild(activeFlipCard);
+            activeFlipCard = null;
+
+            _target.addChild(_currentActivity);
+            _currentActivity.onStart();
 
         }
     }

@@ -178,8 +178,10 @@ package com.gamecook.matchhack.states
             _dataObject.levelTurns = 0;
             _dataObject.score = 0;
             _dataObject.turns = 0;
-            _dataObject.playerLevel = 0;
+            _dataObject.playerLevel = 1;
             _dataObject.activeGame = false;
+            _dataObject.monster = null;
+            clearMapData();
         }
 
         public function get equippedInventory():Array
@@ -253,16 +255,6 @@ package com.gamecook.matchhack.states
         public function get map():Object
         {
             return _dataObject.map;
-        }
-
-        public function get size():int
-        {
-            return _dataObject.size;
-        }
-
-        public function set size(value:int):void
-        {
-            _dataObject.size = value;
         }
 
         public function get startPositionPoint():Point

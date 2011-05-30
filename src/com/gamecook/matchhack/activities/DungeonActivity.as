@@ -275,7 +275,7 @@ package com.gamecook.matchhack.activities
             }
 
             enableLogo();
-
+            updateStatusBar();
             update();
         }
 
