@@ -46,4 +46,10 @@
         <runtarget target="compile" />
         <runtarget target="ios.package-ipa" />
     </target>
+
+    <target name="package-chrome-app" description="Packages up project for deployment to Chrome Market">
+        <var name="mobile" value="false" />
+        <runtarget target="compile" />
+        <runtarget target="chrome.package-chrome-app" />
+    </target>
 </project>

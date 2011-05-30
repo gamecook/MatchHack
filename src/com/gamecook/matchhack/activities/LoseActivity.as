@@ -71,7 +71,7 @@ package com.gamecook.matchhack.activities
             bonusTF.x = (fullSizeWidth - bonusTF.width) * .5;
             bonusTF.y = character.y + character.height + 10;
 
-            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 160)) as TextField;
+            scoreTF = addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "FINAL "+TextFieldFactory.SCORE_LABEL + TextFieldFactory.padScore(), 200)) as TextField;
             scoreTF.textColor = 0x33ff00;
             scoreTF.x = (fullSizeWidth - scoreTF.width) * .5;
             scoreTF.y = bonusTF.y + bonusTF.height + 10;
@@ -93,11 +93,11 @@ package com.gamecook.matchhack.activities
 
         private function formatBonusText():String
         {
-            var message:String = "<span class='lightGrey'>GAME STATS</span>\n" +
-                    "<span class='orange'>Difficulty: " + DifficultyLevels.getLabel(activeState.difficulty) + "\n" +
-                    "Level: " + activeState.playerLevel + "\n" +
-                    "Total Turns: " + activeState.levelTurns + "\n" +
-                    "Best Bonus: x" + activeState.bestBonus+"</span>";
+            var message:String = "GAME STATS\n" +
+                    /*"<span class='orange'>Difficulty:</span> <span class='orange'>" + DifficultyLevels.getLabel(activeState.difficulty) + "</span>\n" +*/
+                    "<span class='lightGrey'>Level:</span> <span class='orange'>" + activeState.playerLevel + "-"+DifficultyLevels.getLabel(activeState.difficulty).substr(0,1).toUpperCase()+"</span>\n"+
+                    "<span class='lightGrey'>Total Turns:</span> <span class='orange'>" + activeState.levelTurns + "</span>\n" +
+                    "<span class='lightGrey'>Best Bonus:</span> <span class='orange'>x" + activeState.bestBonus+"</span>";
 
             return message;
         }

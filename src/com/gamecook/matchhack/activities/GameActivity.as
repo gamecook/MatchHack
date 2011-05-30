@@ -35,6 +35,8 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.views.CharacterView;
+    import com.gamecook.matchhack.views.IMenuOptions;
+    import com.gamecook.matchhack.views.MenuBar;
     import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
@@ -62,7 +64,7 @@ package com.gamecook.matchhack.activities
      * This class represents the core logic for the game.
      *
      */
-    public class GameActivity extends LogoActivity
+    public class GameActivity extends LogoActivity implements IMenuOptions
     {
 
         [Embed(source="../../../../../build/assets/game_board.png")]
@@ -114,6 +116,9 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
+            var menuBar:MenuBar = addChild(new MenuBar(MenuBar.EXIT_ONLY_MODE, logo.width, this)) as MenuBar;
+            menuBar.x = logo.x;
+            menuBar.y = logo.y + logo.height - 2;
 
             activeState.initialScore = activeState.score;
 
@@ -149,7 +154,7 @@ package com.gamecook.matchhack.activities
 
             statusBar = addChild(new StatusBarView()) as StatusBarView;
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
-            statusBar.y = logo.y + logo.height;
+            statusBar.y = menuBar.y + 8;
             var spriteName:String;
 
             //TODO need to inject player and monster into this array
@@ -237,6 +242,8 @@ package com.gamecook.matchhack.activities
 */
                 monsterCounter
             }
+
+            addChild(menuBar);
 
         }
 
@@ -845,5 +852,19 @@ package com.gamecook.matchhack.activities
             }
         }
 
+        public function onExit():void
+        {
+            onBack();
+        }
+
+        public function onInventory():void
+        {
+
+        }
+
+        public function onPause()
+        {
+
+        }
     }
 }
