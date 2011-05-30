@@ -30,7 +30,6 @@
 package com.gamecook.matchhack.factories
 {
     import flash.text.StyleSheet;
-    import flash.text.StyleSheet;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;

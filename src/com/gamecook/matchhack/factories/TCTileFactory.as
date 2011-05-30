@@ -21,8 +21,6 @@ package com.gamecook.matchhack.factories
     import com.gamecook.frogue.tiles.PlayerTile;
     import com.jessefreeman.factivity.managers.SingletonManager;
 
-    import flash.text.StyleSheet;
-
     public class TCTileFactory extends TileFactory
     {
         private var templates:ITemplateCollection;

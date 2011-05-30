@@ -30,10 +30,8 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.enums.DifficultyLevels;
     import com.gamecook.matchhack.factories.SpriteFactory;
-    import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
-    import com.gamecook.matchhack.utils.ArrayUtil;
     import com.gamecook.matchhack.utils.BitmapUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.IMenuOptions;
@@ -43,17 +41,16 @@ package com.gamecook.matchhack.activities
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.threads.effects.Quake;
     import com.jessefreeman.factivity.threads.effects.TypeTextEffect;
+    import com.jessefreeman.factivity.utils.ArrayUtil;
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.Bitmap;
-    import flash.display.BitmapData;
     import flash.display.DisplayObject;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.filters.BitmapFilterQuality;
     import flash.filters.GlowFilter;
-    import flash.geom.Matrix;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
     import flash.text.TextFormat;
@@ -67,7 +64,7 @@ package com.gamecook.matchhack.activities
      * This class represents the core logic for the game.
      *
      */
-    public class DungeonCombatActivity extends LogoActivity implements IMenuOptions
+    public class CombatActivity extends LogoActivity implements IMenuOptions
     {
 
         [Embed(source="../../../../../build/assets/game_board.png")]
@@ -97,7 +94,7 @@ package com.gamecook.matchhack.activities
         private var monsterAttackDelay:int = 15000;
         private var attackWarningLabel:TextField;
 
-        public function DungeonCombatActivity(activityManager:IActivityManager, data:*)
+        public function CombatActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
         }
@@ -209,11 +206,14 @@ package com.gamecook.matchhack.activities
             filterArray.push(outline);
             attackWarningLabel.filters = filterArray;
 
+            quakeEffect = new Quake(null);
+
+            //TODO maybe one day this will work on iOS?
             if (DeviceUtil.os != DeviceUtil.IOS)
             {
-                quakeEffect = new Quake(null);
                 textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
             }
+
             createBonusLabel();
 
             createHighlights();

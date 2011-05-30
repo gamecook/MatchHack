@@ -7,7 +7,6 @@
  */
 package com.gamecook.matchhack.views
 {
-    import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.SimpleButton;

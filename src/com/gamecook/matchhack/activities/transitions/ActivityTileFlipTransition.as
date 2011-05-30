@@ -11,12 +11,9 @@ package com.gamecook.matchhack.activities.transitions
     import com.jessefreeman.factivity.activities.transitions.ActivitySwapTransition;
 
     import flash.display.Bitmap;
-
     import flash.display.BitmapData;
     import flash.display.DisplayObjectContainer;
     import flash.events.Event;
-
-    import mx.states.AddChild;
 
     import uk.co.soulwire.display.PaperSprite;
 
@@ -50,6 +47,8 @@ package com.gamecook.matchhack.activities.transitions
 
         override protected function addActivity(newActivity:BaseActivity):void
         {
+            if(_currentActivity)
+                _currentActivity.onStop();
 
             _currentActivity = newActivity;
 
@@ -73,8 +72,12 @@ package com.gamecook.matchhack.activities.transitions
         private function onFlipComplete(event:Event):void
         {
             _currentActivity.visible = true;
-            _target.removeChild(activeFlipCard);
-            activeFlipCard = null;
+            if(activeFlipCard)
+            {
+                _target.removeChild(activeFlipCard);
+                activeFlipCard = null;
+            }
+
         }
     }
 }

@@ -57,17 +57,6 @@ package com.gamecook.matchhack.activities
             graphics.drawRect(0, 0, fullSizeWidth, fullSizeHeight);
             graphics.endFill();
 
-            // Sets up the ActiveGameState object
-            activeState = new ActiveGameState();
-            activeState.load();
-            soundManager.mute = true;
-            super.onCreate();
-        }
-
-        override public function onStart():void
-        {
-            super.onStart();
-
             // Creates a container for the logo
             logoContainer = addChild(new Sprite()) as Sprite;
 
@@ -76,6 +65,11 @@ package com.gamecook.matchhack.activities
             logo.x = (fullSizeWidth - logo.width) * .5;
             logo.y = 6;
 
+            // Sets up the ActiveGameState object
+            activeState = new ActiveGameState();
+            activeState.load();
+            soundManager.mute = true;
+            super.onCreate();
         }
 
         /**

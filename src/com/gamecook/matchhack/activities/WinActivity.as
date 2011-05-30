@@ -24,6 +24,7 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.frogue.sprites.SpriteSheet;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.enums.GameModes;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.BitmapUtil;
@@ -87,6 +88,7 @@ package com.gamecook.matchhack.activities
             treasureChest.x = (fullSizeWidth - treasureChest.width) * .5;
             treasureChest.y = youWin.y + youWin.height + 50;
             treasureChest.front = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getTileSprite("T")),2));
+            treasureChest.invalidate();
 
             if (data.droppedEquipment)
             {
@@ -190,16 +192,19 @@ package com.gamecook.matchhack.activities
             }
             else
             {
-                activeState.playerLevel ++;
                 soundManager.destroySounds(true);
 
-                activeState.monster = null;
-
-
-                //soundManager.play(MHSoundClasses.WalkStairsSound);
-                //TODO need to know what game mode we are in
-                //nextActivity(ClassicGameActivity);
-                nextActivity(DungeonActivity);
+                if(activeState.gameMode == GameModes.CLASSIC_MODE)
+                {
+                    activeState.playerLevel ++;
+                    nextActivity(CombatActivity);
+                    soundManager.play(MHSoundClasses.WalkStairsSound);
+                }
+                else if(activeState.gameMode == GameModes.DUNGEON_MODE)
+                {
+                    activeState.monster = null;
+                    nextActivity(DungeonActivity);
+                }
             }
         }
 

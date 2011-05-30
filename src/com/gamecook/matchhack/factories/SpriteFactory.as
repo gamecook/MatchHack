@@ -22,7 +22,7 @@
 
 package com.gamecook.matchhack.factories
 {
-    import com.gamecook.matchhack.utils.ArrayUtil;
+    import com.jessefreeman.factivity.utils.ArrayUtil;
 
     public class SpriteFactory
     {

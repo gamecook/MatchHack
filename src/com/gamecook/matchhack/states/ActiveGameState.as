@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.states
 {
+    import com.gamecook.matchhack.enums.GameModes;
     import com.jessefreeman.factivity.state.AbstractStateObject;
 
     import flash.geom.Point;
@@ -275,16 +276,6 @@ package com.gamecook.matchhack.states
             _dataObject.startPosition = {x:value.x, y:value.y};
         }
 
-        public function set treasurePool(treasurePool:Array):void
-        {
-            _dataObject.treasurePool = treasurePool;
-        }
-
-        public function get treasurePool():Array
-        {
-            return _dataObject.treasurePool;
-        }
-
         public function get mapSelection():Object
         {
             return _dataObject.mapSelection;
@@ -311,7 +302,7 @@ package com.gamecook.matchhack.states
             delete _dataObject.mapSelection;
             delete _dataObject.startPosition;
             delete _dataObject.map;
-            delete _dataObject.size;
+            //delete _dataObject.size;
             delete _dataObject.treasurePool;
         }
 
@@ -334,6 +325,19 @@ package com.gamecook.matchhack.states
         public function set monster(value:Object):void
         {
             _dataObject.monster = value;
+        }
+
+        public function set gameMode(gameMode:String):void
+        {
+            _dataObject.gameMode = gameMode;
+        }
+
+        public function get gameMode():String
+        {
+            if(!_dataObject.gameMode)
+                _dataObject.gameMode = GameModes.CLASSIC_MODE;
+
+            return _dataObject.gameMode;
         }
     }
 }

@@ -22,6 +22,7 @@
 
 package com.gamecook.matchhack.activities
 {
+    import com.gamecook.matchhack.enums.GameModes;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.activities.IActivityManager;
 
@@ -208,7 +209,7 @@ package com.gamecook.matchhack.activities
         {
             soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onNewGame);
-            nextActivity(NewGameActivity);
+            nextActivity(ChooseAdventureActivity);
         }
 
         /**
@@ -221,7 +222,11 @@ package com.gamecook.matchhack.activities
         {
             soundManager.play(MHSoundClasses.WallHit);
             event.target.removeEventListener(MouseEvent.MOUSE_UP, onContinue);
-            nextActivity(ClassicGameActivity);
+
+            if(activeState.gameMode == GameModes.CLASSIC_MODE)
+                nextActivity(CombatActivity);
+            else if(activeState.gameMode == GameModes.DUNGEON_MODE)
+                nextActivity(DungeonActivity);
         }
 
 

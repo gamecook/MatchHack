@@ -14,7 +14,6 @@ package com.gamecook.matchhack.activities
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
 
-
     public class DebugStartActivity extends LogoActivity
     {
 

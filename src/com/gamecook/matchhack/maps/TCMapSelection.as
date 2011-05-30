@@ -31,6 +31,7 @@ package com.gamecook.matchhack.maps
 {
     import com.gamecook.frogue.managers.TileInstanceManager;
     import com.gamecook.frogue.maps.IMap;
+
     import serialize.ISerializeToObject;
 
     public class TCMapSelection extends AdvancedFogOfWarMapSelection implements ISerializeToObject

@@ -8,14 +8,11 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.frogue.combat.ICombatant;
-    import com.gamecook.frogue.equipment.IEquipable;
     import com.gamecook.frogue.helpers.MovementHelper;
     import com.gamecook.frogue.io.Controls;
     import com.gamecook.frogue.io.IControl;
-    import com.gamecook.frogue.iterators.TreasureIterator;
     import com.gamecook.frogue.managers.TileInstanceManager;
     import com.gamecook.frogue.maps.MapAnalytics;
-    import com.gamecook.frogue.maps.MapPopulater;
     import com.gamecook.frogue.maps.RandomMap;
     import com.gamecook.frogue.renderer.PreviewMapRenderer;
     import com.gamecook.frogue.sprites.SpriteSheet;
@@ -23,16 +20,22 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.templates.TemplateApplicator;
     import com.gamecook.frogue.templates.TemplateCollection;
     import com.gamecook.frogue.templates.TemplateProperties;
-    import com.gamecook.frogue.tiles.EquipmentTile;
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.enums.DifficultyLevels;
+    import com.gamecook.matchhack.factories.DungeonFactory;
     import com.gamecook.matchhack.factories.TCTileFactory;
     import com.gamecook.matchhack.maps.TCMapSelection;
     import com.gamecook.matchhack.renderer.MQMapBitmapRenderer;
+    import com.gamecook.matchhack.views.IMenuOptions;
+    import com.gamecook.matchhack.views.MenuBar;
+    import com.gamecook.matchhack.views.StatusBarView;
     import com.jessefreeman.factivity.activities.ActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
-    import com.jessefreeman.factivity.utils.TimeMethodExecutionUtil;
+    import com.jessefreeman.factivity.threads.effects.TypeTextEffect;
+    import com.jessefreeman.factivity.utils.ArrayUtil;
+    import com.jessefreeman.factivity.utils.DeviceUtil;
 
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -45,7 +48,7 @@ package com.gamecook.matchhack.activities
     import flash.geom.Rectangle;
     import flash.ui.Keyboard;
 
-    public class DungeonActivity extends LogoActivity implements IControl
+    public class DungeonActivity extends LogoActivity implements IControl, IMenuOptions
     {
 
 
@@ -60,7 +63,7 @@ package com.gamecook.matchhack.activities
         private var invalid:Boolean = true;
         private var player:PlayerTile;
         private var tileInstanceManager:TileInstanceManager;
-        private var treasureIterator:TreasureIterator;
+        //private var treasureIterator:TreasureIterator;
         private var spriteSheet:SpriteSheet = SingletonManager.getClassReference(SpriteSheet);
         private var mapBitmap:Bitmap;
         private var mapSelection:TCMapSelection;
@@ -94,9 +97,10 @@ package com.gamecook.matchhack.activities
         private var previewMapShape:Shape;
         private var previewMapRenderer:PreviewMapRenderer;
 
-        //private var characterSheet:CharacterSheetView;
-        private var monsters:Array = [];
-        private var chests:Array = [];
+        private var statusBar:StatusBarView;
+        private var difficulty:int;
+        private var textEffect:TypeTextEffect;
+        private var pause:Boolean;
 
         public function DungeonActivity(activityManager:ActivityManager, data:* = null)
         {
@@ -105,132 +109,12 @@ package com.gamecook.matchhack.activities
 
         override protected function onCreate():void
         {
-
             super.onCreate();
 
-            createMap();
-            //saveState();
+            difficulty = activeState.difficulty;
+            map = DungeonFactory.createMap(activeState);
 
         }
-
-        private function createMap():void
-        {
-            //Create new Random Map
-            map = new RandomMap();
-
-            // Test to see if the current active state already has map
-            if (activeState.map)
-            {
-                // Get tiles from game state's map object
-                map.setTiles(activeState.map.tiles);
-            }
-            else
-            {
-                // If there were no tiles, generate a new map
-                TimeMethodExecutionUtil.execute("generateMap", map.generateMap, activeState.size, 2);
-
-                //activeState.startMessage = "You enter the dark dungeon.";
-
-                generateMonsters();
-                generateTreasure();
-
-
-                //TODO Create start position and exit based on game mode.
-
-                var populateMapHelper:MapPopulater = new MapPopulater(map);
-                populateMapHelper.populateMap.apply(this, monsters);
-                populateMapHelper.populateMap.apply(this, chests);
-
-                var exitPosition:Point = populateMapHelper.getRandomEmptyPoint();
-                map.swapTile(exitPosition, "E");
-
-                activeState.startPositionPoint = populateMapHelper.getRandomEmptyPoint();
-
-                activeState.map = map.toObject();
-
-                // Swap out some open tiles
-                var total:int = populateMapHelper.getOpenSpaces() * .3;
-                var i:int;
-                for (i = 0; i < total; i++)
-                {
-                    map.swapTile(populateMapHelper.getRandomEmptyPoint(), TileTypes.getRandomOpenTile());
-                }
-            }
-
-            trace("Map Size", map.width, map.height, "was generated");
-
-        }
-
-        private function generateTreasure():void
-        {
-
-            // Config stuff
-            var emptyTreasureChests:Boolean = true;
-            var trapTreasureChests:Boolean = false;
-
-            var totalChests:int = 10;//Math.floor((Math.random() * monsters.length) + .1);
-            var treasurePool:Array = [];
-
-            // These are the types of treasure in the game
-            var treasureTypes:Array = ["$","P"];
-
-            if (emptyTreasureChests)
-                treasureTypes.push("K");
-
-            if (emptyTreasureChests)
-                treasureTypes.push(" ");
-
-            var treasureTypesTotal:int = treasureTypes.length;
-
-            // Calculate the amount of treasure based on the total monsters in the game
-            var treasurePoolTotal:int = Math.floor((Math.random() * monsters.length) + .1);
-
-            var i:int;
-            //var treasureChestTotal:int = treasurePoolTotal *
-            for (i = 0; i < treasurePoolTotal; i ++)
-            {
-
-                treasurePool.push(treasureTypes[Math.floor((Math.random() * treasureTypesTotal))]);
-                if (i < totalChests)
-                {
-                    chests.push("T");
-                }
-            }
-
-            activeState.treasurePool = treasurePool;
-            trace("Treasure Pool", treasurePool.length, "in", chests.length, "values", treasurePool.toString());
-
-        }
-
-        private function generateMonsters():void
-        {
-            var monsterTypes:Array = ["1","2","3","4","5","6","7","8"];
-            var monsterPercentage:Array = [.3,.2,.1, .1, .05, .02, .02, .01];
-            var totalMonsterPercent:Number = .3;
-            var i:int = 0;
-            var j:int = 0;
-            var total:int = monsterTypes.length;
-            var monsterValues:Number;
-            var monsterType:int;
-            var totalTiles:int = Math.ceil(RandomMap(map).getOpenTiles().length * totalMonsterPercent);
-
-            for (i = 0; i < total; i++)
-            {
-                //TODO need to look into why the values are sometimes larger then what they really are.
-                monsterValues = Math.floor(monsterPercentage[i] * totalTiles);
-                monsterType = monsterTypes[i];
-                //trace("MonsterType", monsterType, "monsterValues", monsterValues);
-                for (j = 0; j < monsterValues; j++)
-                {
-
-                    monsters.push(monsterType);
-                }
-            }
-
-            //monsters.push("9");
-
-        }
-
 
         private function configureMonsterTemplates():void
         {
@@ -249,8 +133,14 @@ package com.gamecook.matchhack.activities
 
         override public function onStart():void
         {
+            super.onStart();
+
             display = addChild(new Sprite()) as Sprite;
             overlayLayer = addChild(new Sprite()) as Sprite;
+
+            var menuBar:MenuBar = addChild(new MenuBar(MenuBar.EXIT_ONLY_MODE, logo.width, this)) as MenuBar;
+            menuBar.x = logo.x;
+            menuBar.y = logo.y + logo.height - 2;
 
             //map = data.mapInstance;
             /*analytics = new MapAnalytics(map);
@@ -258,10 +148,12 @@ package com.gamecook.matchhack.activities
             TimeMethodExecutionUtil.execute("updateMapAnalytics", analytics.update);*/
             //var remainingMonsters:int = TimeMethodExecutionUtil.execute("remainingMonsters", analytics.getTotal, "1", "2", "3", "4", "5", "6", "7", "8", "9");
             //trace("Monsters in MapAnalytics", remainingMonsters);
-
+            statusBar = addChild(new StatusBarView()) as StatusBarView;
+            statusBar.x = (fullSizeWidth - statusBar.width) * .5;
+            statusBar.y = menuBar.y + 8;
 
             //gameMode = activeState.gameType;
-            treasurePool = activeState.treasurePool;
+            treasurePool = ["P","$"," "];//activeState.treasurePool;
             cashPool = 100;//activeState.cashPool;
             cashRange = 10;//activeState.cashRange;
 
@@ -356,7 +248,7 @@ package com.gamecook.matchhack.activities
             /*characterSheet = addChild(new CharacterSheetView(player)) as CharacterSheetView;
             characterSheet.x = fullSizeWidth - characterSheet.width;*/
 
-            super.onStart();
+
             //This needs to be a compiler argument for debug
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
@@ -375,7 +267,23 @@ package com.gamecook.matchhack.activities
             addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
             addEventListener(MouseEvent.CLICK, onMouseClick);
 
+
+            //TODO maybe one day this will work on iOS?
+            if (DeviceUtil.os != DeviceUtil.IOS)
+            {
+                textEffect = new TypeTextEffect(statusBar.message);
+            }
+
             enableLogo();
+
+            update();
+        }
+
+        private function updateStatusBar():void
+        {
+            statusBar.setScore(activeState.score);
+            statusBar.setLevel(activeState.playerLevel, "<span class='lightGray'>-"+DifficultyLevels.getLabel(difficulty).substr(0,1).toUpperCase())+"</span>";
+            statusBar.setTurns(activeState.levelTurns);
         }
 
         private function onKeyDown(event:KeyboardEvent):void
@@ -399,7 +307,7 @@ package com.gamecook.matchhack.activities
 
             //tileInstanceManager.clear();
 
-            treasureIterator = new TreasureIterator(treasurePool);
+            //treasureIterator = new TreasureIterator(treasurePool);
 
             movementHelper.startPosition(activeState.startPositionPoint);
         }
@@ -433,7 +341,7 @@ package com.gamecook.matchhack.activities
         public function move(value:Point):void
         {
 
-            if (player.isDead)
+            if (player.isDead || pause)
                 return;
 
             var tmpPoint:Point = movementHelper.previewMove(value.x, value.y);
@@ -450,6 +358,8 @@ package com.gamecook.matchhack.activities
                         return;
                     case TileTypes.MONSTER:
                     case TileTypes.BOSS:
+                        pause = true;
+                        //TODO this needs to be moved into the map creation logic so you don't see it happen.
                         map.swapTile(tmpPoint, "X2");
                         var uID:String = map.getTileID(tmpPoint.y, tmpPoint.x).toString();
 
@@ -459,8 +369,9 @@ package com.gamecook.matchhack.activities
                         {
                             currentPoint = tmpPoint;
                             currentuID = uID;
-                            activeState.monster = tmpTile.toObject()
-                            nextActivity(DungeonCombatActivity);
+                            activeState.monster = tmpTile.toObject();
+                            updateStatusMessage("You have found a monster.\nPrepare for combat!!");
+                            startNextActivityTimer(CombatActivity,2);
                         }
                         break;
                     case TileTypes.TREASURE:
@@ -470,7 +381,7 @@ package com.gamecook.matchhack.activities
                         movePlayer(value);
                         //TODO gameover
                         //TODO play heroic theme here?
-                        trace("Level Done");
+                        onLeaveMap();
                         break;
                     default:
                         movePlayer(value);
@@ -497,40 +408,6 @@ package com.gamecook.matchhack.activities
              }*/
         }
 
-        private function equip(player:PlayerTile, tmpTile:EquipmentTile, uID:String, tilePoint:Point, nextMovePoint:Point):void
-        {
-            //TODO prompt user to equip
-
-            var droppedEquipment:IEquipable = player.equip(tmpTile.getEquipment());
-
-            addStatusMessage(player.getName() + " has equipped " + tmpTile.getEquipment().description + ".\nNew stats: Attack " + player.getAttackRolls() + " | Defense " + player.getDefenceRolls());
-            //TODO make sure the player is actually picking up the item.
-
-
-            var newTile:String = TileTypes.getEmptyTile();
-
-            // Drop weapon
-            if (droppedEquipment)
-            {
-                newTile = droppedEquipment.tileID;
-
-                var equipmentTile:EquipmentTile = new EquipmentTile();
-                equipmentTile.parseObject({equipment:droppedEquipment.toObject()});
-
-                tileInstanceManager.registerInstance(mapSelection.getTileID(movementHelper.playerPosition.y, movementHelper.playerPosition.x).toString(), equipmentTile);
-            }
-            else
-            {
-                tileInstanceManager.removeInstance(uID);
-            }
-
-            swapTileOnMap(tilePoint, newTile);
-
-            movePlayer(nextMovePoint);
-
-
-        }
-
         private function onCompleteLevel(success:Boolean):void
         {
             // Level has been finished, remove map sepcific info from state
@@ -538,10 +415,11 @@ package com.gamecook.matchhack.activities
             activeState.player = player.toObject();
             // for state to save to update the player.
             activeState.save();
+            activeState.playerLevel ++;
+            soundManager.destroySounds(true);
 
-            //TODO where do we gone when the map is completed?
-            trace("Map was completed")
-            //startNextActivityTimer(FinishMapActivity, 1, {success:success});
+            //TODO This should go to a end of level stat screen
+            startNextActivityTimer(DungeonActivity, 1, {success:success});
         }
 
         private function onLeaveMap():void
@@ -562,7 +440,7 @@ package com.gamecook.matchhack.activities
 
             addStatusMessage(player.getName() + " has opened a treasure chest.");
 
-            var treasure:String = treasureIterator.hasNext() ? treasureIterator.getNext() : " ";
+            var treasure:String = ArrayUtil.pickRandomArrayElement(treasurePool);//treasureIterator.hasNext() ? treasureIterator.getNext() : " ";
             if (treasure == "K")
             {
                 addStatusMessage("\nA trap was sprung dealing 1 point of damage.", false);
@@ -762,5 +640,40 @@ package com.gamecook.matchhack.activities
             super.onStop();
         }
 
+        public function onExit():void
+        {
+            onBack();
+        }
+
+        public function onInventory():void
+        {
+        }
+
+        public function onPause()
+        {
+        }
+
+        public function updateStatusMessage(value:String):void
+        {
+            value = "<span class='orange'>"+value+"</span>";
+
+            if (value.length > 0)
+            {
+                if (textEffect)
+                {
+                    textEffect.newMessage(value, 2);
+                    addThread(textEffect);
+                    value = "";
+                }
+                else
+                {
+                    statusBar.message.text = value;
+                }
+            }
+            else
+            {
+                statusBar.message.text = value;
+            }
+        }
     }
 }

@@ -75,7 +75,7 @@ package com.gamecook.matchhack.views
             }
             else
             {
-                baseSpriteID = model.type;
+                baseSpriteID = model.type ? model.type : ArrayUtil.pickRandomArrayElement(["1", "2", "3", "4", "5", "6", "7", "8", "9"]);
             }
             //Cleanup sprite name
             baseSpriteID = TileTypes.getTileSprite(baseSpriteID);

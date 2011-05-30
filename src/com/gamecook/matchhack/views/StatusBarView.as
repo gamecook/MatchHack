@@ -80,6 +80,11 @@ package com.gamecook.matchhack.views
             turnsTF.htmlText = TextFieldFactory.TURNS_LABEL + TextFieldFactory.padLevel(value.toString());
         }
 
+        public function hideTurns():void
+        {
+            turnsTF.visible = false;
+        }
+
         public function setMessage(value:String):void
         {
             _message.htmlText = value;

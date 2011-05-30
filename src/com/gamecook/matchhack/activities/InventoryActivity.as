@@ -21,6 +21,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.views.MenuBar;
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
+
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.Sprite;

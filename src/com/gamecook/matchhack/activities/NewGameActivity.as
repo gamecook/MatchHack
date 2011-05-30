@@ -23,6 +23,7 @@
 package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.enums.DifficultyLevels;
+    import com.gamecook.matchhack.enums.GameModes;
     import com.gamecook.matchhack.enums.PlayerClassTemplates;
     import com.gamecook.matchhack.factories.NewGameFactory;
     import com.jessefreeman.factivity.activities.IActivityManager;
@@ -131,21 +132,23 @@ package com.gamecook.matchhack.activities
             // Clear the active state for a new game
             activeState.reset();
 
+            NewGameFactory.createCoffeeBreakGame(PlayerClassTemplates.getPlayerClasses(),
+                    ["Reveal"],
+                    ["ModeA"],
+                    [15],
+                    [true],
+                    [true]);
+
             // Reset active state values
             activeState.difficulty = difficulty;
             activeState.playerLevel = 1;
             activeState.activeGame = true;
+            activeState.gameMode = data.gameMode;
 
-            // Go to next activity, GameActivity
-            //nextActivity(ClassicGameActivity);
-            NewGameFactory.createCoffeeBreakGame(PlayerClassTemplates.getPlayerClasses(),
-                    ["Reveal"],
-                    ["ModeA"],
-                    [13],
-                    [true],
-                    [true]);
-
-            nextActivity(DungeonActivity);
+            if(activeState.gameMode == GameModes.CLASSIC_MODE)
+                nextActivity(CombatActivity);
+            else if(activeState.gameMode == GameModes.DUNGEON_MODE)
+                nextActivity(DungeonActivity);
         }
 
         override public function onBack():void
