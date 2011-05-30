@@ -26,6 +26,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
+    import com.gamecook.matchhack.utils.BitmapUtil;
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.threads.effects.CountUpTextEffect;
@@ -85,12 +86,12 @@ package com.gamecook.matchhack.activities
             treasureChest = addChild(new PaperSprite()) as PaperSprite;
             treasureChest.x = (fullSizeWidth - treasureChest.width) * .5;
             treasureChest.y = youWin.y + youWin.height + 50;
-            treasureChest.front = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite("T")));
+            treasureChest.front = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getTileSprite("T")),2));
 
             if (data.droppedEquipment)
             {
                 var tileID:String = data.droppedEquipment.tileID;
-                treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getEquipmentPreview(tileID)));
+                treasureChest.back = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getEquipmentPreview(tileID)),2));
                 equipmentMessage = "<span class='green'>You found a " + data.droppedEquipment.description+"</span";
 
                 activeState.unlockEquipment(tileID);
@@ -100,7 +101,7 @@ package com.gamecook.matchhack.activities
                 var coinID:String = getCoin();
                 if (coinID)
                 {
-                    treasureChest.back = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(coinID)));
+                    treasureChest.back = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getTileSprite(coinID)),2));
                     equipmentMessage = "<span class='yellow'>You got a " + TileTypes.getTileName(coinID)+"</span>";
                     activeState.addCoin(coinID);
                 }

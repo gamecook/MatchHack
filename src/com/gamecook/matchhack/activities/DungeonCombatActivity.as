@@ -34,6 +34,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.factories.TextFieldFactory;
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.gamecook.matchhack.utils.ArrayUtil;
+    import com.gamecook.matchhack.utils.BitmapUtil;
     import com.gamecook.matchhack.views.CharacterView;
     import com.gamecook.matchhack.views.IMenuOptions;
     import com.gamecook.matchhack.views.MenuBar;
@@ -158,8 +159,7 @@ package com.gamecook.matchhack.activities
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
             statusBar.y = menuBar.y + 8;
             var spriteName:String;
-            var matrix:Matrix = new Matrix();
-            matrix.scale(2,2);
+
             //TODO need to inject player and monster into this array
             for (i = 0; i < total; i++)
             {
@@ -168,12 +168,8 @@ package com.gamecook.matchhack.activities
 
                 spriteName = TileTypes.getEquipmentPreview(sprites[typeIndex]) ? TileTypes.getEquipmentPreview(sprites[typeIndex]) : TileTypes.getTileSprite(sprites[typeIndex]);
 
-                //TODO need to upscale bitmaps
-                var srcBitmapData:BitmapData = spriteSheet.getSprite(spriteName);
+                tileBitmap = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(spriteName)));
 
-                tileBitmap = new Bitmap(new BitmapData(srcBitmapData.width * 2, srcBitmapData.height * 2, true, 0));
-
-                tileBitmap.bitmapData.draw(srcBitmapData, matrix);
                 tile = tileContainer.addChild(createTile(tileBitmap)) as PaperSprite;
                 tileInstances.push(tile);
                 tile.name = sprites[typeIndex];

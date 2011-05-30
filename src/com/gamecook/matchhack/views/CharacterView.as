@@ -30,6 +30,7 @@ package com.gamecook.matchhack.views
     import com.gamecook.frogue.tiles.IMonster;
     import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.TileTypes;
+    import com.gamecook.matchhack.utils.BitmapUtil;
     import com.jessefreeman.factivity.managers.SingletonManager;
     import com.jessefreeman.factivity.utils.ArrayUtil;
 
@@ -81,7 +82,7 @@ package com.gamecook.matchhack.views
 
             createImage();
 
-            bloodImage = new Bitmap(spriteSheet.getSprite(TileTypes.getTileSprite(ArrayUtil.pickRandomArrayElement(["X1", "X2", "X3"]))));
+            bloodImage = new Bitmap(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getTileSprite(ArrayUtil.pickRandomArrayElement(["X1", "X2", "X3"]))),2));
 
             super(container, bloodImage);
         }
@@ -111,7 +112,7 @@ package com.gamecook.matchhack.views
             if (model.getSpriteID() != "")
                 baseSpriteID = baseSpriteID.concat("," + model.getSpriteID());
 
-            var bitmapData:BitmapData = spriteSheet.getSprite.apply(this, overrideSprites ? overrideSprites : baseSpriteID.split(","));
+            var bitmapData:BitmapData = BitmapUtil.upscaleBitmapData(spriteSheet.getSprite.apply(this, overrideSprites ? overrideSprites : baseSpriteID.split(",")),2);
             characterImage = container.addChild(new Bitmap(bitmapData)) as Bitmap;
             characterImage.x -= 2;
         }

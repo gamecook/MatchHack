@@ -16,11 +16,11 @@ package com.gamecook.matchhack.activities
     import com.gamecook.matchhack.factories.SpriteFactory;
     import com.gamecook.matchhack.factories.SpriteSheetFactory;
     import com.gamecook.matchhack.factories.TextFieldFactory;
+    import com.gamecook.matchhack.utils.BitmapUtil;
     import com.gamecook.matchhack.views.IMenuOptions;
     import com.gamecook.matchhack.views.MenuBar;
     import com.jessefreeman.factivity.activities.IActivityManager;
     import com.jessefreeman.factivity.managers.SingletonManager;
-
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.Sprite;
@@ -155,7 +155,7 @@ package com.gamecook.matchhack.activities
                 sprites.push(TileTypes.getTileSprite(activeState.equippedInventory[SlotsEnum.WEAPON]));
 
 
-            playerSprite.bitmapData = spriteSheet.getSprite.apply(this, sprites);
+            playerSprite.bitmapData = BitmapUtil.upscaleBitmapData(spriteSheet.getSprite.apply(this, sprites),2);
         }
 
         private function createCoinDisplay():void
@@ -173,7 +173,7 @@ package com.gamecook.matchhack.activities
             for (i = 0; i < 3; i++)
             {
                 var matrix:Matrix = new Matrix();
-                matrix.scale(.5, .5)
+                matrix.scale(1, 1)
                 matrix.translate(40 * i, 16);
                 coinContainer.bitmapData.draw(spriteSheet.getSprite(TileTypes.getTileSprite(sprites[i])), matrix);
 
@@ -310,7 +310,8 @@ package com.gamecook.matchhack.activities
                     unlocked ++;
                 }
 
-                currentPage.draw(spriteSheet.getSprite(TileTypes.getEquipmentPreview(sprites[i])), matrix, foundColorMatrix);
+                //TODO this needs to be optimized
+                currentPage.draw(BitmapUtil.upscaleBitmapData(spriteSheet.getSprite(TileTypes.getEquipmentPreview(sprites[i]))), matrix, foundColorMatrix);
 
                 textFieldStamp.text = TileTypes.getTileName(sprites[i]);
                 matrix.translate(Math.round((tileSize - textFieldStamp.width) * .5), tileSize);
