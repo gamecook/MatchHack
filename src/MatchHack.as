@@ -25,6 +25,7 @@ package
     import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.activities.DebugStartActivity;
     import com.gamecook.matchhack.activities.SplashActivity;
+    import com.gamecook.matchhack.activities.transitions.ActivityTileFlipTransition;
     import com.gamecook.matchhack.analytics.GoogleTracker;
     import com.jessefreeman.factivity.AbstractApplication;
     import com.jessefreeman.factivity.activities.ActivityManager;
@@ -88,8 +89,8 @@ package
             configureStage();
 
             // Passes up a custom ActivityManager to super along with the start activity and scale.
-            //super(new ActivityManager(tracker), SplashActivity, 0, 0, scale);
-            super(new ActivityManager(tracker), DebugStartActivity, 0, 0, scale);
+            super(new ActivityManager(tracker,null,null,new ActivityTileFlipTransition()), SplashActivity, 0, 0, scale);
+            //super(new ActivityManager(tracker), DebugStartActivity, 0, 0, scale);
 
             stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 

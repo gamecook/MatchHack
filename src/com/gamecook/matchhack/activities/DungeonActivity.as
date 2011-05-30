@@ -459,7 +459,7 @@ package com.gamecook.matchhack.activities
                         {
                             currentPoint = tmpPoint;
                             currentuID = uID;
-                            activeState.monster = tmpTile.toObject();
+                            activeState.monster = tmpTile.toObject()
                             nextActivity(DungeonCombatActivity);
                         }
                         break;

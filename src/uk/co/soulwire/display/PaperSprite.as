@@ -285,5 +285,10 @@ package uk.co.soulwire.display
                 dispatchEvent(new Event(Event.COMPLETE, true, true))
             }
         }
+
+        public function set flipTime(value:Number):void
+        {
+            _flipTime = value;
+        }
     }
 }
