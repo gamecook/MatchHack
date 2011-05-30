@@ -326,5 +326,14 @@ package com.gamecook.matchhack.states
             _dataObject.player = value;
         }
 
+        public function get monster():Object
+        {
+            return _dataObject.monster;
+        }
+
+        public function set monster(value:Object):void
+        {
+            _dataObject.monster = value;
+        }
     }
 }

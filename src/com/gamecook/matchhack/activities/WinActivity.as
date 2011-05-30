@@ -191,7 +191,11 @@ package com.gamecook.matchhack.activities
             {
                 activeState.playerLevel ++;
                 soundManager.destroySounds(true);
-                soundManager.play(MHSoundClasses.WalkStairsSound);
+
+                activeState.monster = null;
+
+
+                //soundManager.play(MHSoundClasses.WalkStairsSound);
                 //TODO need to know what game mode we are in
                 //nextActivity(ClassicGameActivity);
                 nextActivity(DungeonActivity);

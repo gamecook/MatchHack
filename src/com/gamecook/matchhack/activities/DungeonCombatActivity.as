@@ -66,7 +66,7 @@ package com.gamecook.matchhack.activities
      * This class represents the core logic for the game.
      *
      */
-    public class CombatActivity extends LogoActivity implements IMenuOptions
+    public class DungeonCombatActivity extends LogoActivity implements IMenuOptions
     {
 
         [Embed(source="../../../../../build/assets/game_board.png")]
@@ -96,7 +96,7 @@ package com.gamecook.matchhack.activities
         private var monsterAttackDelay:int = 15000;
         private var attackWarningLabel:TextField;
 
-        public function CombatActivity(activityManager:IActivityManager, data:*)
+        public function DungeonCombatActivity(activityManager:IActivityManager, data:*)
         {
             super(activityManager, data);
         }
@@ -188,11 +188,16 @@ package com.gamecook.matchhack.activities
             createPlayer(total);
 
             var monsterModel:MonsterTile = new MonsterTile();
+
+            if(activeState.monster)
+                monsterModel.parseObject(activeState.monster);
+
             monsterModel.parseObject({name:"monster", maxLife: total / 2});
 
             monster = tileContainer.addChild(new CharacterView(monsterModel)) as CharacterView;
 
-            monster.generateRandomEquipment();
+            if(!activeState.monster)
+                monster.generateRandomEquipment();
 
             attackWarningLabel = monster.addChild(TextFieldFactory.createTextField(TextFieldFactory.textFormatLargeCenter, "", 20)) as TextField;
             attackWarningLabel.x = -32;

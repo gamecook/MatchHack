@@ -24,6 +24,7 @@ package com.gamecook.matchhack.activities
     import com.gamecook.frogue.templates.TemplateCollection;
     import com.gamecook.frogue.templates.TemplateProperties;
     import com.gamecook.frogue.tiles.EquipmentTile;
+    import com.gamecook.frogue.tiles.MonsterTile;
     import com.gamecook.frogue.tiles.PlayerTile;
     import com.gamecook.frogue.tiles.TileTypes;
     import com.gamecook.matchhack.factories.TCTileFactory;
@@ -452,13 +453,14 @@ package com.gamecook.matchhack.activities
                         map.swapTile(tmpPoint, "X2");
                         var uID:String = map.getTileID(tmpPoint.y, tmpPoint.x).toString();
 
-                        var tmpTile:ICombatant = tileInstanceManager.getInstance(uID, tile) as ICombatant;
+                        var tmpTile:MonsterTile = tileInstanceManager.getInstance(uID, tile) as MonsterTile;
 
                         if (tmpTile is ICombatant)
                         {
                             currentPoint = tmpPoint;
                             currentuID = uID;
-                            fight(tmpTile);
+                            activeState.monster = tmpTile.toObject();
+                            nextActivity(DungeonCombatActivity);
                         }
                         break;
                     case TileTypes.TREASURE:
@@ -552,13 +554,6 @@ package com.gamecook.matchhack.activities
             if (clear)
                 status = "";
             status += value;
-        }
-
-        private function fight(monster:ICombatant):void
-        {
-            trace("Fight Monster");
-            //TODO need to go into combat activity
-            nextActivity(CombatActivity);
         }
 
         private function openTreasure(tmpPoint:Point):void

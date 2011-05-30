@@ -32,7 +32,7 @@ package com.gamecook.matchhack.activities
             NewGameFactory.createCoffeeBreakGame(PlayerClassTemplates.getPlayerClasses(),
                     ["Reveal"],
                     ["ModeA"],
-                    [13],
+                    [15],
                     [true],
                     [true]);
 
