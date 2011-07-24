@@ -95,7 +95,7 @@
             <arg value="-incremental=true"/>
             <arg value="-verbose-stacktraces=true"/>
             <arg value="-headless-server=true"/>
-            <arg value="-use-network=false"/>
+            <arg value="-use-network=true"/>
             <arg value="-default-frame-rate=31"/>
             <arg value="-define=CONFIG::mobile,${mobile}"/>
         </java>
