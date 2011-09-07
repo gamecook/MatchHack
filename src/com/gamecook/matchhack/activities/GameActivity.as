@@ -93,6 +93,13 @@ package com.gamecook.matchhack.activities
         private var monsterCounter:int = 0;
         private var monsterAttackDelay:int = 15000;
         private var attackWarningLabel:TextField;
+        private var nextTileTimerActive:Boolean = true;
+        private var nextTileCounter:Number = 0;
+        private var nextTileDelay:int = 1000;
+
+        private var tileIDMatrix:Array = [];
+        private var nextTileID:String;
+        private var lastTileID:String;
 
         public function GameActivity(activityManager:IActivityManager, data:*)
         {
@@ -116,7 +123,7 @@ package com.gamecook.matchhack.activities
         {
             super.onStart();
 
-            var menuBar:MenuBar = addChild(new MenuBar(MenuBar.EXIT_ONLY_MODE, logo.width, this)) as MenuBar;
+            /*var menuBar:MenuBar = addChild(new MenuBar(MenuBar.EXIT_ONLY_MODE, logo.width, this)) as MenuBar;
             menuBar.x = logo.x;
             menuBar.y = logo.y + logo.height - 2;
 
@@ -125,15 +132,14 @@ package com.gamecook.matchhack.activities
             gameBackground = addChild(Bitmap(new GameBoardImage())) as Bitmap;
             gameBackground.x = (fullSizeWidth * .5) - (gameBackground.width * .5);
             gameBackground.y = fullSizeHeight - gameBackground.height;
-
+             */
             tileContainer = addChild(new Sprite()) as Sprite;
-            tileContainer.x = gameBackground.x + 55;
-            tileContainer.y = gameBackground.y + 50;
+            /*tileContainer.x = gameBackground.x + 55;
+            tileContainer.y = gameBackground.y + 50;*/
 
-            var total:int = 10;
-            var i:int;
-            var tile:PaperSprite;
 
+
+            /*
             var sprites:Array = SpriteFactory.createSprites(6);
 
             // Add Potions
@@ -156,11 +162,44 @@ package com.gamecook.matchhack.activities
             statusBar.x = (fullSizeWidth - statusBar.width) * .5;
             statusBar.y = menuBar.y + 8;
             var spriteName:String;
+            */
 
-            //TODO need to inject player and monster into this array
+            var total:int = 9;
+            var i:int;
+            var tile:Bitmap;
+            var tileID:String;
+            var row:int = -1;
+            var column:int = 0;
+
+            var spriteIDs:Array = ["sprite0","sprite1","sprite2","sprite0","sprite1","sprite2","sprite0","sprite1","sprite2"];
+
             for (i = 0; i < total; i++)
             {
-                if (i % typeCount == 0)
+                tileID = spriteIDs[i];
+                tile = new Bitmap(spriteSheet.getSprite(tileID));
+                tile.name = tileID;
+
+                // Calculate column
+                column = i%3;
+
+                //Test if column in TileIDMatrix exists
+                if(!tileIDMatrix[column])
+                    tileIDMatrix[column] = [];
+
+                //Push tileID into tileIDMatrix
+                tileIDMatrix[column].push(tileID);
+
+                // Add tile to display and store reference to instance.
+                tileInstances.push(tile);
+                tileContainer.addChild(tile);
+
+                // Layout Tiles
+                tile.x = column * tile.width;
+
+                if(column == 0) row++;
+                tile.y = row * tile.height;
+
+                /*if (i % typeCount == 0)
                     typeIndex ++;
 
                 spriteName = TileTypes.getEquipmentPreview(sprites[typeIndex]) ? TileTypes.getEquipmentPreview(sprites[typeIndex]) : TileTypes.getTileSprite(sprites[typeIndex]);
@@ -170,10 +209,10 @@ package com.gamecook.matchhack.activities
                 tile.name = sprites[typeIndex];
 
                 if (debug)
-                    tile.flip();
+                    tile.flip();*/
 
             }
-
+            /*
             activeState.levelTurns = 0;
 
             createPlayer(total);
@@ -217,21 +256,24 @@ package com.gamecook.matchhack.activities
             // Update status message
             updateStatusMessage("You have entered level " + activeState.playerLevel + " of the dungeon.");
 
-            // Setup monter timer
+            */
+            // Setup Next Tile Delay
+            /*nextTileCounter = nextTileDelay;
+
             if (difficulty == 1)
             {
-                monsterAttackDelay = -1
+                nextTileDelay = -1
             }
             else if (difficulty == 2)
             {
-                monsterCounter = monsterAttackDelay;
+                nextTileCounter = nextTileDelay;
             }
             else
             {
-                monsterCounter = monsterAttackDelay
-                /*monsterAttackDelay = monsterAttackDelay * .5;
+                nextTileCounter = nextTileDelay
+                nextTileDelay = nextTileDelay * .5;
 
-                if (Math.random() * 1 < .5 && player.getLife() > 1)
+                *//*if (Math.random() * 1 < .5 && player.getLife() > 1)
                 {
                     monsterCounter = monsterAttackDelay;
                 }
@@ -239,12 +281,13 @@ package com.gamecook.matchhack.activities
                 {
                     updateStatusMessage("As you enter level " + activeState.playerLevel + " a monster is waiting and attacks you!");
                 }
-*/
-                monsterCounter
-            }
 
-            addChild(menuBar);
+                monsterCounter*//*
+            }*/
+            /*
+            addChild(menuBar);*/
 
+            onShowNextTile();
         }
 
         private function createPlayer(total:int):void
@@ -328,31 +371,21 @@ package com.gamecook.matchhack.activities
          */
         private function layoutTiles():void
         {
-            tileInstances = ArrayUtil.shuffleArray(tileInstances);
 
-            tileInstances.splice(4, 0, player);
-            tileInstances.splice(7, 0, monster);
+            var totalColumns:int = tileIDMatrix.length;
+            var totalRows:int;
+            var c:int;
+            var r:int;
 
-            var total:int = tileInstances.length;
-            var columns:int = 3;
-            var i:int;
-            var nextX:int = 0;
-            var nextY:int = 0;
-            var tile:DisplayObject;
-
-            for (i = 0; i < total; i++)
+            for (c = 0; c < totalColumns; c++)
             {
-                tile = tileInstances[i];
-                tile.x = nextX;
-                tile.y = nextY;
 
-                nextX += 64;
-                if (nextX % columns == 0)
+                totalRows = tileIDMatrix[c].length;
+
+                for(r = 0; r < totalRows; r++)
                 {
-                    nextX = 0;
-                    nextY += 64;
-                }
 
+                }
             }
         }
 
@@ -820,9 +853,19 @@ package com.gamecook.matchhack.activities
         override public function update(elapsed:Number = 0):void
         {
 
+            if (nextTileTimerActive)
+            {
+                nextTileCounter += elapsed;
+                if (nextTileCounter >= nextTileDelay)
+                {
+                    nextTileCounter = 0;
+                    onShowNextTile();
+                }
+            }
+
             super.update(elapsed);
 
-            if (monsterAttackDelay != -1)
+            /*if (monsterAttackDelay != -1)
             {
                 if (monsterCounter <= 0)
                     onNoMatch();
@@ -849,7 +892,37 @@ package com.gamecook.matchhack.activities
                         attackWarningLabel.text = "";
                     }
                 }
-            }
+            }*/
+        }
+
+        private function onShowNextTile():void
+        {
+            /* Tile Map
+              [A]<- Preview
+            [0,1,2
+             3,4,5
+             6,7,8]
+              [B]<- Going Off Screen
+
+
+             */
+
+            var nextTileID:String;
+            var lastTileID:String;
+
+            /*var centerColumn:Array = tileInstances[1].slice();
+            centerColumn.unshift("sprite10");
+            lastTileID = centerColumn.pop();*/
+
+/*
+            var i:int;
+            var total:int = centerColumn.length;
+            for()*/
+
+
+            trace("Show Next Tile");
+
+            //tile = new Bitmap(spriteSheet.getSprite(tileID));
         }
 
         public function onExit():void
