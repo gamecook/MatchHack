@@ -192,7 +192,7 @@ package com.gamecook.matchhack.activities
                 activeState.playerLevel ++;
                 soundManager.destroySounds(true);
                 soundManager.play(MHSoundClasses.WalkStairsSound);
-                nextActivity(GameActivity);
+                nextActivity(GameActivity2);
             }
         }
 

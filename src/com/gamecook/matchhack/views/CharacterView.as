@@ -51,6 +51,7 @@ package com.gamecook.matchhack.views
         private var model:MonsterTile;
         private var baseSpriteID:String;
         private var overrideSprites:Array;
+        private var _equipmentIDs:Array = [];
 
         public function CharacterView(model:MonsterTile, overrideSprites:Array = null)
         {
@@ -100,7 +101,10 @@ package com.gamecook.matchhack.views
             {
                 tmpEquipment = weaponGenerator.createEquipment(1, equipmentTypes[i]);
                 if (tmpEquipment)
+                {
                     IMonster(model).equip(tmpEquipment);
+                    _equipmentIDs.push(tmpEquipment.tileID);
+                }
             }
 
             createImage();
@@ -320,5 +324,9 @@ package com.gamecook.matchhack.views
         }
 
 
+        public function get equipmentIDs():Array
+        {
+            return _equipmentIDs;
+        }
     }
 }

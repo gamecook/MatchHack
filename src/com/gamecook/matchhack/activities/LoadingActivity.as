@@ -80,7 +80,7 @@ package com.gamecook.matchhack.activities
             // Play walking sound for player entering the new game
             soundManager.play(MHSoundClasses.WalkStairsSound);
             // Return to start activity
-            nextActivity(GameActivity);
+            nextActivity(GameActivity2);
         }
 
         /**

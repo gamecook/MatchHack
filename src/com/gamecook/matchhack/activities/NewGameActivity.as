@@ -135,7 +135,7 @@ package com.gamecook.matchhack.activities
             activeState.activeGame = true;
 
             // Go to next activity, GameActivity
-            nextActivity(GameActivity);
+            nextActivity(GameActivity2);
         }
 
         override public function onBack():void
