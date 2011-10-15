@@ -199,11 +199,11 @@ package com.gamecook.matchhack.activities
             filterArray.push(outline);
             attackWarningLabel.filters = filterArray;
 
-            if (DeviceUtil.os != DeviceUtil.IOS)
-            {
+            //if (DeviceUtil.os != DeviceUtil.IOS)
+            //{
                 quakeEffect = new Quake(null);
                 textEffect = new TypeTextEffect(statusBar.message, onTextEffectUpdate);
-            }
+            //}
             createBonusLabel();
 
             createHighlights();
@@ -862,7 +862,7 @@ package com.gamecook.matchhack.activities
 
         }
 
-        public function onPause()
+        public function onPause():void
         {
 
         }

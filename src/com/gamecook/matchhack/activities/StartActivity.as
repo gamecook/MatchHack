@@ -24,7 +24,9 @@ package com.gamecook.matchhack.activities
 {
     import com.gamecook.matchhack.sounds.MHSoundClasses;
     import com.jessefreeman.factivity.activities.IActivityManager;
-
+    import com.jessefreeman.factivity.utils.DeviceUtil;
+    
+    import flash.desktop.NativeApplication;
     import flash.display.Bitmap;
     import flash.display.SimpleButton;
     import flash.events.MouseEvent;
@@ -227,7 +229,10 @@ package com.gamecook.matchhack.activities
 
         override public function onBack():void
         {
-            super.onBack();
+            if(DeviceUtil.os == DeviceUtil.ANDROID)
+				NativeApplication.nativeApplication.exit();
+			else
+				super.onBack();
         }
     }
 }

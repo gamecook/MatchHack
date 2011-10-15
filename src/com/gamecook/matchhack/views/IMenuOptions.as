@@ -11,6 +11,6 @@ package com.gamecook.matchhack.views
     {
         function onExit():void;
         function onInventory():void;
-        function onPause();
+        function onPause():void;
     }
 }

@@ -400,7 +400,7 @@ package com.gamecook.matchhack.activities
         {
         }
 
-        public function onPause()
+        public function onPause():void
         {
         }
     }

@@ -45,8 +45,8 @@ package com.gamecook.matchhack.views
 
         private function createBackButton():void
         {
-            if(DeviceUtil.os == DeviceUtil.ANDROID)
-                return;
+            //if(DeviceUtil.os == DeviceUtil.ANDROID)
+            //    return;
             var exitButton:SimpleButton = addChild(new SimpleButton(new ExitUp(), new ExitOver(), new ExitOver(), new ExitUp())) as SimpleButton;
             exitButton.name = "exitBTN";
             exitButton.x = (fullSizeWidth - exitButton.width);

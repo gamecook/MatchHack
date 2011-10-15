@@ -78,7 +78,7 @@ package
             //TODO need to add in logic to track versions
 
             // Automatically figures out the scale based on stage's height. Used to scale up on each device.
-            scale = DeviceUtil.getScreenHeight(stage) / 410;
+            scale = DeviceUtil.getScreenHeight(stage) / 400;
 
             // Google Analytics Tracker
             tracker = new GoogleTracker(this, key, "AS3", false);
